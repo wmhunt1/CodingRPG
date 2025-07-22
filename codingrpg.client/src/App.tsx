@@ -1,5 +1,5 @@
 import './App.css';
-import Game from "./Components/Game";
+import GameComponent from "./Components/GameComponent";
 
 function App() {
 
@@ -9,7 +9,7 @@ function App() {
                 <h1>Coding RPG</h1>
             </header>
             <main>
-                <Game></Game>
+                <GameComponent></GameComponent>
             </main>
             <footer>Coding RPG - 2025</footer>
         </div>

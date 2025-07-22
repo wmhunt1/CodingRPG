@@ -1,3 +1,17 @@
+import { character } from "../Models/CharacterModel"
+export function runCombat(character1: character, character2: character) {
+    const monsterStats = document.getElementById('monsterStats')
+    if (monsterStats) {
+        monsterStats.style.display = "block";
+    }
+    //const monsterName = document.querySelector("#monsterName");
+    //const monsterHealthText = document.querySelector("#monsterHealth");
+    //monsterName?.innerText = character2.name;
+    //monsterHealthText?.innerHTML = character2.name;
+    console.log(character1)
+    console.log(character2)
+
+}
 //let xp = 0;
 //let health = 100;
 //let gold = 50;
