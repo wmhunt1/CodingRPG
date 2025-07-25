@@ -1,17 +1,17 @@
 //component imports
+import CombatArena from ".//CombatComponent"
 //model imports
-import { Hero, Rat } from "../Models/CharacterModel";
+import {/* Character,*/ Hero, Rat } from "../Models/CharacterModel";
 //react imports
 import { useState } from "react";
 //stylesheet imports
 import '../StyleSheets/GameStyle.css';
 
-function GameComponent() {
+function Game() {
     const [active, setActive] = useState("MainMenu");
     const [hero, setHero] = useState(new Hero("Hero"));
     const [text, setText] = useState("Welcome to Coding RPG")
-    const [enemy, setEnemy] = useState(new Rat("Rat"))
-    const [combat, setCombat] = useState(false)
+    //const [enemy, setEnemy] = useState<Character>(new Character)
 
     const handleCreateCharacter = () => {
         const inputElement = document.getElementById('name-input') as HTMLInputElement;
@@ -27,50 +27,33 @@ function GameComponent() {
     }
 
     const handleCombat = () => {
-        setCombat(true)
-        setEnemy(new Rat("Rat"))
         setActive("Combat")
-        setText(`${hero.name} VS ${enemy.name}`)
     }
-    const handleCombatRound = () => {
-        if (hero.currentHP > 0 && enemy.currentHP > 0) {
-            console.log("combat round");
-            hero.currentHP -= enemy.weapon.power;
-            console.log(hero.currentHP)
-            enemy.currentHP -= hero.weapon.power;
-            console.log(enemy.currentHP)
-            setHero(hero)
-            setEnemy(enemy)
-        }
-        if (hero.currentHP <= 0 || enemy.currentHP <= 0)
-        {
-            setCombat(false)
-            if (hero.currentHP > 0) {
-                setText(`${hero.name} is victorious`)
+        const handleCombatEnd = (result: 'victory' | 'defeat' | 'run'|'exit', updatedHero: Hero) => {
+            setActive("Game"); 
+            setHero(updatedHero); 
+            if (result === 'victory') {
+                setText(`${updatedHero.name} is victorious!`);
+            } else if (result === 'defeat') {
+                setText(`${updatedHero.name} is defeated!`);
+            } else if (result === 'run') {
+                setText(`${updatedHero.name} managed to escape!`);
             }
-            else { setText(`${hero.name} is defeated`) }
-        }
-    }
+        };
+    const handleUpdateHeroInGame = (updatedHero: Hero) => {
+         setHero(updatedHero);
+        };
     return (
         <div id="game">
             {active === "Combat" ? <div>
-                <h2>Combat</h2>
-                <div>
-                    <h3>{hero.name}</h3>
-                    <p><span>HP: {hero.currentHP}/{hero.maxHP}</span></p>
-                </div>
-                <div>
-                    <h3>{enemy.name}</h3>
-                    <p><span>HP: {enemy.currentHP}/{enemy.maxHP}</span></p>
-                </div>
-                {combat === true ?
-                    <div>
-                        <button className='menu-button' onClick={() => handleCombatRound()}>Attack</button>
-                        <button className='menu-button' onClick={() => setActive("Game")}>Run</button>
-                    </div> : <div>
-                        <button className='menu-button' onClick={() => setActive("Game")}>Exit</button></div>}
+                <CombatArena hero={hero} enemy={new Rat("Rat")} onCombatEnd={handleCombatEnd}
+                    onUpdateHero={handleUpdateHeroInGame}></CombatArena>
+              
             </div> : <div></div>}
             {active === "Game" ? <div>
+                <div>
+                    <span>{hero.name} - Level {hero.level}</span>
+                </div>
                 <button className='menu-button' onClick={() => handleCombat()}>Combat Test</button>
                 <button className='menu-button' onClick={() => setActive("MainMenu")}>Main Menu</button>
             </div> : <div></div>}
@@ -105,4 +88,4 @@ function GameComponent() {
     );
 }
 
-export default GameComponent;
+export default Game;
