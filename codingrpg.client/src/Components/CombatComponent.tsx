@@ -1,6 +1,11 @@
+//model imports
+import { Character, Hero } from "../Models/CharacterModel";
+//react imports
+import { useEffect, useState } from 'react';
+//stylesheetimports
+import '../StyleSheets/GameStyle.css';
 import '../StyleSheets/CombatStyle.css';
-import { useEffect,useState } from 'react';
-import { Character, Hero} from "../Models/CharacterModel";
+
 interface CombatArenaProps {
     hero: Hero;
     enemy: Character;
