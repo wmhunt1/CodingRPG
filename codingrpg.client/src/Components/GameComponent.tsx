@@ -51,13 +51,14 @@ function Game() {
               
             </div> : <div></div>}
             {active === "Game" ? <div>
-                <div>
+                <div className="game-screen">
                     <span>{hero.name} - Level {hero.level}</span>
                 </div>
                 <button className='menu-button' onClick={() => handleCombat()}>Combat Test</button>
                 <button className='menu-button' onClick={() => setActive("MainMenu")}>Main Menu</button>
+                <div id="text">{text}</div>
             </div> : <div></div>}
-            {active === "LoadGame" ? <div>
+            {active === "LoadGame" ? <div className="load-game-screen">
                 <h2>Saves</h2>
                 <button className='menu-button' onClick={() => setActive("MainMenu")}>Back</button>
             </div> : <div></div>}
@@ -69,21 +70,21 @@ function Game() {
                 <button className='menu-button' onClick={() => setActive("Settings")}>Settings</button>
                 <button className='menu-button'>Exit Game</button>
             </div> : <div></div>}
-            {active === "NewGame" ? <div>
+            {active === "NewGame" ? <div className="char-creation">
                 <h2>Character Creation</h2>
                 <div>
                     <label htmlFor="name-input">Select Character Name: <input id="name-input" ></input></label>
-                    <button onClick={() => handleCreateCharacter()}>Create Character</button>
+                    <button className="char-creation" onClick={() => handleCreateCharacter()}>Create Character</button>
                 </div>
                 <div>
                     <button className='menu-button' onClick={() => setActive("MainMenu")}>Back</button>
                 </div>
             </div> : <div></div>}
-            {active === "Settings" ? <div>
+            {active === "Settings" ? <div className="char-creation">
                 <h2>Settings</h2>
                 <button className='menu-button' onClick={() => setActive("MainMenu")}>Back</button>
             </div> : <div></div>}
-            <div id="text">{text}</div>
+        
         </div>
     );
 }
