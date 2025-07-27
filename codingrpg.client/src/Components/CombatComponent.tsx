@@ -81,7 +81,8 @@ function CombatArena({ hero,enemy, onCombatEnd,onUpdateHero}: CombatArenaProps) 
                   <button className='menu-button' onClick={() => onCombatEnd('exit', currentHero)}>Exit</button>
               </div>
           }
-          <div className="combat-log">
+          <div className="game-log">
+          <h3>Combat Log</h3>
                          {combatLog.map((log, index) => (
                              <p key={index}>{log}</p>
                          ))}

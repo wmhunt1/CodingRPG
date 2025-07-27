@@ -9,7 +9,7 @@ export class Character {
     maxHP: number = 10;
     gold: number = 0;
     inventory: item[] = []
-    weapon: weapon = new weapon("Bare Hand", 5);
+    weapon: weapon = new weapon("Bare Hand", 1);
 }
 
 export class Beast extends Character {
