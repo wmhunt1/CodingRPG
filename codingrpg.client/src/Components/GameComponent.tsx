@@ -25,9 +25,17 @@ function Game() {
             setGameLog(prevLog => [...prevLog, `Please name your Character`]);
         }
     }
-
+    const showCharacterSheet = () => {
+        setActive("CharacterSheet")
+    }
     const handleCombat = () => {
         setActive("Combat")
+    }
+    const handleHeal = () => {
+        const updatedHero = { ...hero };
+        updatedHero.currentHP = updatedHero.maxHP;
+        setHero(updatedHero)
+        setGameLog(prevLog => [...prevLog, `Fully healed`]);
     }
     const handleCombatEnd = (result: 'victory' | 'defeat' | 'run' | 'exit', updatedHero: Hero) => {
         setActive("Game");
@@ -50,13 +58,27 @@ function Game() {
                     onUpdateHero={handleUpdateHeroInGame}></CombatArena>
 
             </div> : <div></div>}
+            {active === "CharacterSheet" ? <div>
+                <h2>Character Sheet</h2>
+            <h3>Base Stats</h3>
+                <p>Name: {hero.name}</p>
+                <p>Level: {hero.level} ({hero.currentXP}/{hero.maxXP})</p>
+                <p>HP: {hero.currentHP}/{hero.maxHP}</p>
+                <h3>Inventory</h3>
+                <p>Weapon: {hero.weapon.name} ({hero.weapon.power} DMG)</p>
+                <div className="menu">
+                    <button className='menu-button' onClick={() => setActive("Game")}>Back</button>
+                </div>
+            </div> : <div></div>}
             {active === "Game" ? <div>
                 <div className="player-info">
-                    <span>{hero.name} - Level {hero.level}</span>
+                    <span>{hero.name} - Level {hero.level} ({hero.currentXP}/{hero.maxXP})</span>
                 </div>
                 <div className="hud">
                     <div className="hud-options">
                         <button className='hud-button' onClick={() => handleCombat()}>Combat Test</button>
+                        <button className='hud-button' onClick={() => handleHeal()}>Heal Test</button>
+                        <button className='hud-button' onClick={() => showCharacterSheet()}>Character Sheet</button>
                         <button className='hud-button' onClick={() => setActive("MainMenu")}>Main Menu</button>
                     </div>
                 </div>

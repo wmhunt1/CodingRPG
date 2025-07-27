@@ -34,6 +34,7 @@ export class Hero extends Humanoid {
     constructor(name: string = "Rat") {
         super(name)
         this.name = name;
+        this.currentXP = 50;
         this.currentHP = 5;
         this.maxHP = 5;
         this.weapon = new weapon("Bite", 1);

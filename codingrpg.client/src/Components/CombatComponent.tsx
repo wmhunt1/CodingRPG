@@ -27,14 +27,18 @@ function CombatArena({ hero,enemy, onCombatEnd,onUpdateHero}: CombatArenaProps) 
 
     const handleCombatRound = () => {
         const updatedHero = { ...currentHero };
+        console.log(currentHero)
+        console.log(updatedHero)
         const updatedEnemy = { ...currentEnemy };
         if (combatOngoing === true) {
-            updatedHero.currentHP -= enemy.weapon.power;
             setCombatLog(prevLog => [...prevLog, `${updatedHero.name} attacks ${updatedEnemy.name}!`]);
-            updatedEnemy.currentHP -= hero.weapon.power;
+            updatedEnemy.currentHP -= updatedHero.weapon.power;
             setCurrentEnemy(updatedEnemy);
-            if (currentEnemy.currentHP <= 0) {
+            if (currentEnemy.currentHP > 0) {
+                updatedHero.currentHP -= updatedEnemy.weapon.power;
                 setCombatLog(prevLog => [...prevLog, `${updatedEnemy.name} attacks ${updatedHero.name}!`]);
+                console.log(updatedHero.currentHP)
+              
             }
             setCurrentHero(updatedHero);
         }
@@ -42,17 +46,29 @@ function CombatArena({ hero,enemy, onCombatEnd,onUpdateHero}: CombatArenaProps) 
     
     }
     const checkCombatantHP = (checkedHero: Character, checkedEnemy: Character) => {
+        const updatedHero = { ...currentHero };
         if (checkedHero.currentHP <= 0 || checkedEnemy.currentHP <= 0) {
             setCombatOngoing(false)
             if (checkedHero.currentHP > 0) {
                 setCombatLog(prevLog => [...prevLog, `${checkedHero.name} is victorius!`]);
+                setCombatLog(prevLog => [...prevLog, `${checkedHero.name} gains ${checkedEnemy.currentXP}`]);
+                updatedHero.currentXP += checkedEnemy.currentXP;
+                if (updatedHero.currentXP >= updatedHero.maxXP) {
+                    updatedHero.level += 1;
+                    updatedHero.maxXP *= 2;
+                    updatedHero.maxHP += 10;
+                    setCombatLog(prevLog => [...prevLog, `${checkedHero.name} is now ${updatedHero.level}`]);
+                    setCurrentHero(updatedHero);
+                }
             }
             else {
 
                 setCombatLog(prevLog => [...prevLog, `${checkedHero.name} is defeated!`]);
                 onCombatEnd('defeat', checkedHero);
+                setCurrentHero(updatedHero);
             }
         }
+       
     }
     const handleRun = () => {
      setCombatOngoing(false);
@@ -77,7 +93,7 @@ function CombatArena({ hero,enemy, onCombatEnd,onUpdateHero}: CombatArenaProps) 
                   <button className='menu-button' onClick={() => handleCombatRound()}>Attack</button>
                       <button className='menu-button' onClick={() => handleRun()}>Run</button>
                   </div>
-              </div> : <div>
+              </div> : <div className="controls">
                   <button className='menu-button' onClick={() => onCombatEnd('exit', currentHero)}>Exit</button>
               </div>
           }
