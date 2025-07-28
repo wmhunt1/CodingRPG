@@ -1,4 +1,5 @@
 //component imports
+import CharacterSheet from ".//CharacterSheetComponent"
 import CombatArena from ".//CombatComponent"
 //model imports
 import {/* Character,*/ Hero, Rat } from "../Models/CharacterModel";
@@ -6,6 +7,7 @@ import {/* Character,*/ Hero, Rat } from "../Models/CharacterModel";
 import { useState } from "react";
 //stylesheet imports
 import '../StyleSheets/GameStyle.css';
+
 
 function Game() {
     const [active, setActive] = useState("MainMenu");
@@ -59,30 +61,25 @@ function Game() {
 
             </div> : <div></div>}
             {active === "CharacterSheet" ? <div>
-                <h2>Character Sheet</h2>
-            <h3>Base Stats</h3>
-                <p>Name: {hero.name}</p>
-                <p>Level: {hero.level} ({hero.currentXP}/{hero.maxXP})</p>
-                <p>HP: {hero.currentHP}/{hero.maxHP}</p>
-                <h3>Inventory</h3>
-                <p>Weapon: {hero.weapon.name} ({hero.weapon.power} DMG)</p>
-                <div className="menu">
-                    <button className='menu-button' onClick={() => setActive("Game")}>Back</button>
-                </div>
+                <CharacterSheet hero={hero} back={() => setActive("Game")}></CharacterSheet>
             </div> : <div></div>}
             {active === "Game" ? <div>
-                <div className="player-info">
-                    <span>{hero.name} - Level {hero.level} ({hero.currentXP}/{hero.maxXP})</span>
-                </div>
+                {/*<div className="player-info">*/}
+                {/*    <span>{hero.name} - Level {hero.level} ({hero.currentXP}/{hero.maxXP})</span>*/}
+                {/*</div>*/}
                 <div className="hud">
                     <div className="hud-options">
-                        <button className='hud-button' onClick={() => handleCombat()}>Combat Test</button>
-                        <button className='hud-button' onClick={() => handleHeal()}>Heal Test</button>
                         <button className='hud-button' onClick={() => showCharacterSheet()}>Character Sheet</button>
                         <button className='hud-button' onClick={() => setActive("MainMenu")}>Main Menu</button>
                     </div>
                 </div>
-                <div id="game-content"></div>
+                <div id="game-content">
+                </div>
+                <div className="area-options">
+                <h2>Area Options</h2>
+                    <button className='area-button' onClick={() => handleCombat()}>Combat Test</button>
+                    <button className='area-button' onClick={() => handleHeal()}>Heal Test</button>
+                </div>
             </div> : <div></div>}
             {active === "LoadGame" ? <div className="menu">
                 <h2>Saves</h2>
