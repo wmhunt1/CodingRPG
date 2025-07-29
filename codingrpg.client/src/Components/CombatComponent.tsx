@@ -1,3 +1,5 @@
+//component imports
+import Log from ".//LogComponent"; // <--- Import your new component here
 //model imports
 import { Character, Hero } from "../Models/CharacterModel";
 //react imports
@@ -155,12 +157,7 @@ function CombatArena({ heroes, enemies, onCombatEnd, onUpdateHeroes }: CombatAre
                     <button className='menu-button' onClick={() => onCombatEnd('exit', currentHeroes)}>Exit</button>
                 </div>
             }
-            <div className="game-log">
-                <h3>Combat Log</h3>
-                {combatLog.map((log, index) => (
-                    <p key={index}>{log}</p>
-                ))}
-            </div>
+            <Log logEntries={combatLog}></Log>
         </div>
     );
 }

@@ -27,33 +27,43 @@ h1, h2, h3 {
     padding-bottom: 30%;
     box-sizing: border-box;
 }
-
-.game-log {
+.game-log-wrapper {
     position: fixed;
     bottom: 0;
     left: 0;
     width: 100%;
     padding: 10px;
     box-sizing: border-box;
-    height: 20%;
-    overflow-y: auto;
+    height: 20%; /* Defines the overall height of the log area */
     z-index: 1000;
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
+    background-color: #f9f9f9; /* Added a background color for visibility */
+    display: flex; /* Use flexbox to arrange heading and scrollable content */
+    flex-direction: column; /* Stack children vertically */
+    border: 1px solid #ccc; /* Added a border for visual separation */
 }
 
-    .game-log h3 {
+    .game-log-wrapper h3 {
         margin-top: 0;
-        margin-bottom: 5px;
+        margin-bottom: 5px; /* Space between heading and scrollable content */
         font-size: 1.2em;
+        /* Any specific styling for the heading */
     }
 
-    .game-log p {
+.log-entries-container {
+    flex-grow: 1; /* Allows this div to take up all available vertical space */
+    overflow-y: auto; /* This is crucial for scrolling the entries */
+    padding-right: 5px; /* Adds space for the scrollbar, preventing text from touching it */
+    /* You might want to add a background color here if you want the scrollable area to have a different background */
+    /* background-color: #eee; */
+}
+
+    .log-entries-container p {
         margin-bottom: 2px;
         font-size: 0.9em;
         line-height: 1.3;
     }
-
 .menu, .controls, .char-creation {
     justify-items: center
 }

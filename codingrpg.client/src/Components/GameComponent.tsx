@@ -1,9 +1,13 @@
+// Game.tsx
 //component imports
 import CharacterSheet from ".//CharacterSheetComponent"
 import CombatArena from ".//CombatComponent"
+import CreateCharacter from ".//CreateCharacterComponent"
 import { MainMenu } from ".//MenuComponent"
+import Log from ".//LogComponent"; // <--- Import your new component here
+
 //model imports
-import {Character, Hero, Rat } from "../Models/CharacterModel";
+import { Character, Hero, Rat } from "../Models/CharacterModel";
 //react imports
 import { useState } from "react";
 //stylesheet imports
@@ -19,19 +23,7 @@ function Game() {
     const handleContinueGame = () => {
         setActive("Game")
     }
-    const handleCreateCharacter = () => {
-        const inputElement = document.getElementById('name-input') as HTMLInputElement;
-        hero.name = inputElement.value;
-        console.log(hero.name)
-        if (hero.name !== "") {
-            setHero(hero);
-            setGameLog(prevLog => [...prevLog, `Hello, ${hero.name}`]);
-            setActive("Game");
-        }
-        else {
-            setGameLog(prevLog => [...prevLog, `Please name your Character`]);
-        }
-    }
+
     const showCharacterSheet = () => {
         setActive("CharacterSheet")
     }
@@ -77,53 +69,40 @@ function Game() {
         setHero(updatedHeroes[0])
     };
     return (
-        <div id="game"><div className="game-screen">
-            {active === "Combat" ? <CombatArena heroes={party} enemies={[new Rat("Rat")]} onCombatEnd={handleCombatEnd}
+        <div id="game">
+            <div className="game-screen">
+                {active === "Combat" ? <CombatArena heroes={party} enemies={[new Rat("Rat")]} onCombatEnd={handleCombatEnd}
                     onUpdateHeroes={handleUpdateHeroes}></CombatArena> : null}
-            {active === "CharacterSheet" ? <CharacterSheet hero={hero} back={() => setActive("Game")}></CharacterSheet>: null}
-            {active === "Game" ? <div>
-                <div className="hud">
-                    <div className="hud-options">
-                        <button className='hud-button' onClick={() => showCharacterSheet()}>Character Sheet</button>
-                        <button className='hud-button' onClick={() => setActive("MainMenu")}>Main Menu</button>
+                {active === "CharacterSheet" ? <CharacterSheet hero={hero} back={() => setActive("Game")}></CharacterSheet> : null}
+                {active === "Game" ? <div>
+                    <div className="hud">
+                        <div className="hud-options">
+                            <button className='hud-button' onClick={() => showCharacterSheet()}>Character Sheet</button>
+                            <button className='hud-button' onClick={() => setActive("MainMenu")}>Main Menu</button>
+                        </div>
                     </div>
-                </div>
-                <div id="game-content">
-                </div>
-                <div className="area-options">
-                <h2>Area Options</h2>
-                    <button className='area-button' onClick={() => handleCombat()}>Combat Test</button>
-                    <button className='area-button' onClick={() => handleHeal()}>Heal Test</button>
-                    <button className='area-button' onClick={() => handleShop()}>Shop Test</button>
-                </div>
-            </div> : <div></div>}
-            {active === "LoadGame" ? <div className="menu">
-                <h2>Saves</h2>
-                <button className='menu-button' onClick={() => setActive("MainMenu")}>Back</button>
-            </div> : <div></div>}
-            {active === "MainMenu" ? <MainMenu continueGame={handleContinueGame} newGame={handleNewGame} loadGame={handleLoadGame} settings={handleSettings} exitGame={handleExitGame}></MainMenu> : null}
-            {active === "NewGame" ? <div className="char-creation">
-                <h2>Character Creation</h2>
-                <div>
-                    <label htmlFor="name-input">Select Character Name: <input id="name-input" ></input></label>
-                </div>
-                <div>
-                    <button className="menu-button" onClick={() => handleCreateCharacter()}>Create Character</button>
+                    <div id="game-content">
+                    </div>
+                    <div className="area-options">
+                        <h2>Area Options</h2>
+                        <button className='area-button' onClick={() => handleCombat()}>Combat Test</button>
+                        <button className='area-button' onClick={() => handleHeal()}>Heal Test</button>
+                        <button className='area-button' onClick={() => handleShop()}>Shop Test</button>
+                    </div>
+                </div> : <div></div>}
+                {active === "LoadGame" ? <div className="menu">
+                    <h2>Saves</h2>
                     <button className='menu-button' onClick={() => setActive("MainMenu")}>Back</button>
-                </div>
-            </div> : <div></div>}
-            {active === "Settings" ? <div className="char-creation">
-                <h2>Settings</h2>
-                <button className='menu-button' onClick={() => setActive("MainMenu")}>Back</button>
-            </div> : <div></div>}
-          
-        </div>
-          {active !== "Combat" ?  < div className="game-log">
-            <h3>Log</h3>
-            {gameLog.map((log, index) => (
-                <p key={index}>{log}</p>
-            ))}
-            </div> : <div></div>}
+                </div> : <div></div>}
+                {active === "MainMenu" ? <MainMenu continueGame={handleContinueGame} newGame={handleNewGame} loadGame={handleLoadGame} settings={handleSettings} exitGame={handleExitGame}></MainMenu> : null}
+                {active === "NewGame" ? <CreateCharacter hero={hero} back={() => setActive("MainMenu")}></CreateCharacter> : <div></div>}
+                {active === "Settings" ? <div className="char-creation">
+                    <h2>Settings</h2>
+                    <button className='menu-button' onClick={() => setActive("MainMenu")}>Back</button>
+                </div> : <div></div>}
+
+            </div>
+            {active !== "Combat" && active !== "NewGame" ? <Log logEntries={gameLog}></Log> : null}
         </div>
     );
 }

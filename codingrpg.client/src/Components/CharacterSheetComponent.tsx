@@ -1,5 +1,7 @@
 import '../StyleSheets/GameStyle.css';
-import { Character} from "../Models/CharacterModel";
+import { Character } from "../Models/CharacterModel";
+
+
 
 interface CharacterSheetProps {
     hero: Character;
