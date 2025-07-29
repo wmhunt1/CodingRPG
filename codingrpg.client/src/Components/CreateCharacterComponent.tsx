@@ -4,9 +4,10 @@ import { useState } from 'react'
 import Log from ".//LogComponent"; // <--- Import your new component here
 interface CreateCharacterProps {
     hero: Hero;
-    back:()=>void
+    back: () => void
+    onCreateEnd: (heroUpdated: Hero) => void;
 }
-function CreateCharacter({ hero, back }: CreateCharacterProps) {
+function CreateCharacter({ hero, back ,onCreateEnd}: CreateCharacterProps) {
     const [newHero, setNewHero] = useState(hero)
     const [gameLog, setGameLog] = useState<string[]>(["Create your character"]);
     const handleCreateCharacter = () => {
@@ -16,6 +17,7 @@ function CreateCharacter({ hero, back }: CreateCharacterProps) {
         if (newHero.name !== "") {
             setNewHero(newHero);
             setGameLog(prevLog => [...prevLog, `Hello, ${hero.name}`]);
+            onCreateEnd(newHero)
             //setActive("Game");
         }
         else {

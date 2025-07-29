@@ -1,108 +1,192 @@
 // Game.tsx
-//component imports
-import CharacterSheet from ".//CharacterSheetComponent"
-import CombatArena from ".//CombatComponent"
-import CreateCharacter from ".//CreateCharacterComponent"
-import { MainMenu } from ".//MenuComponent"
-import Log from ".//LogComponent"; // <--- Import your new component here
+// Component Imports
+import CharacterSheet from "./CharacterSheetComponent";
+import CombatArena from "./CombatComponent";
+import CreateCharacter from "./CreateCharacterComponent";
+import { MainMenu } from "./MenuComponent";
+import Log from "./LogComponent";
 
-//model imports
+// Model Imports
 import { Character, Hero, Rat } from "../Models/CharacterModel";
-//react imports
-import { useState } from "react";
-//stylesheet imports
-import '../StyleSheets/GameStyle.css';
 
+// React Imports
+import { useState, useCallback } from "react"; // Added useCallback for memoizing functions
+
+// Stylesheet Imports
+import "../StyleSheets/GameStyle.css";
+
+// Define possible game states for better readability and type safety
+type GameState =
+    | "MainMenu"
+    | "Game"
+    | "CharacterSheet"
+    | "Combat"
+    | "LoadGame"
+    | "NewGame"
+    | "Settings";
 
 function Game() {
-    const [active, setActive] = useState("MainMenu");
-    const [hero, setHero] = useState(new Hero("Hero"));
+    const [activeScreen, setActiveScreen] = useState<GameState>("MainMenu");
+    const [hero, setHero] = useState<Hero>(new Hero("Hero"));
     const [gameLog, setGameLog] = useState<string[]>(["Welcome to Coding RPG"]);
-    const [party, setParty] = useState<Character[]>(() => [hero])
+    const [party, setParty] = useState<Character[]>(() => [hero]); // Initialize party with the hero
 
-    const handleContinueGame = () => {
-        setActive("Game")
-    }
+    // Memoized callback functions for event handlers
+    const handleContinueGame = useCallback(() => {
+        setActiveScreen("Game");
+    }, []); // No dependencies, as it only sets a static state
 
-    const showCharacterSheet = () => {
-        setActive("CharacterSheet")
-    }
-    const handleCombat = () => {
-        setActive("Combat")
-    }
-    const handleExitGame = () => {
-        console.log("Exiting Game")
-    }
-    const handleHeal = () => {
-        const updatedHero = { ...hero };
-        updatedHero.currentHP = updatedHero.maxHP;
-        setHero(updatedHero)
-        setGameLog(prevLog => [...prevLog, `Fully healed`]);
-    }
-    const handleLoadGame = () => {
-        setActive("Load Game")
-    }
-    const handleNewGame = () => {
-        setActive("NewGame")
-    }
-    const handleSettings = () => {
-        setActive("Settings")
-    }
+    const showCharacterSheet = useCallback(() => {
+        setActiveScreen("CharacterSheet");
+    }, []);
 
-    const handleShop = () => {
-        //
-    }
-    const handleCombatEnd = (result: 'victory' | 'defeat' | 'run' | 'exit', updatedHeroes: Hero[]) => {
-        setActive("Game");
-        setHero(updatedHeroes[0]);
+    const handleCombat = useCallback(() => {
+        setActiveScreen("Combat");
+    }, []);
+
+    const handleExitGame = useCallback(() => {
+        console.log("Exiting Game");
+        // In a real application, you might add more exit logic here (e.g., confirm dialog)
+    }, []);
+
+    const handleHeal = useCallback(() => {
+        setHero((prevHero) => {
+            // Use functional update for state based on previous state
+            if (prevHero.currentHP < prevHero.maxHP) {
+                setGameLog((prevLog) => [...prevLog, `${prevHero.name} fully healed!`]);
+                return { ...prevHero, currentHP: prevHero.maxHP };
+            }
+            setGameLog((prevLog) => [...prevLog, `${prevHero.name} is already at full health.`]);
+            return prevHero;
+        });
+    }, []);
+
+    const handleLoadGame = useCallback(() => {
+        setActiveScreen("LoadGame");
+    }, []);
+
+    const handleNewGame = useCallback(() => {
+        setActiveScreen("NewGame");
+    }, []);
+
+    const handleOnCreateEnd = useCallback((updatedHero: Hero) => {
+        setHero(updatedHero);
+        setParty([updatedHero]); // Ensure party is updated with the new hero
+        setActiveScreen("Game");
+    }, []);
+
+    const handleSettings = useCallback(() => {
+        setActiveScreen("Settings");
+    }, []);
+
+    const handleShop = useCallback(() => {
+        // Placeholder for shop logic
+        setGameLog((prevLog) => [...prevLog, "The shop is not implemented yet."]);
+    }, []);
+
+    const handleCombatEnd = useCallback(
+        (result: "victory" | "defeat" | "run" | "exit", updatedHeroes: Hero[]) => {
+            setActiveScreen("Game");
+            setHero(updatedHeroes[0]); // Assuming the first hero in the array is the main player
+            setParty(updatedHeroes);
+
+            let combatMessage: string;
+            switch (result) {
+                case "victory":
+                    combatMessage = `${hero.name} is victorious!`;
+                    break;
+                case "defeat":
+                    combatMessage = `${hero.name} is defeated!`;
+                    break;
+                case "run":
+                    combatMessage = `${hero.name} manages to escape...`;
+                    break;
+                default:
+                    combatMessage = "Combat ended."; // Should not happen with defined results
+            }
+            setGameLog((prevLog) => [...prevLog, combatMessage]);
+        },
+        [hero.name] // Depend on hero.name for the log message
+    );
+
+    const handleUpdateHeroes = useCallback((updatedHeroes: Hero[]) => {
         setParty(updatedHeroes);
-        if (result === 'victory') {
-            setGameLog(prevLog => [...prevLog, `${hero.name} is victorious!`]);
-        } else if (result === 'defeat') {
-            setGameLog(prevLog => [...prevLog, `${hero.name} is defeated!`]);
-        } else if (result === 'run') {
-            setGameLog(prevLog => [...prevLog, `${hero.name} manages to escape...`]);
-        }
-    };
-    const handleUpdateHeroes = (updatedHeroes: Hero[]) => {
-        setParty(updatedHeroes);
-        setHero(updatedHeroes[0])
-    };
+        setHero(updatedHeroes[0]); // Keep the main hero updated
+    }, []);
+
     return (
         <div id="game">
             <div className="game-screen">
-                {active === "Combat" ? <CombatArena heroes={party} enemies={[new Rat("Rat")]} onCombatEnd={handleCombatEnd}
-                    onUpdateHeroes={handleUpdateHeroes}></CombatArena> : null}
-                {active === "CharacterSheet" ? <CharacterSheet hero={hero} back={() => setActive("Game")}></CharacterSheet> : null}
-                {active === "Game" ? <div>
-                    <div className="hud">
-                        <div className="hud-options">
-                            <button className='hud-button' onClick={() => showCharacterSheet()}>Character Sheet</button>
-                            <button className='hud-button' onClick={() => setActive("MainMenu")}>Main Menu</button>
+                {activeScreen === "Combat" && (
+                    <CombatArena
+                        heroes={party}
+                        enemies={[new Rat("Rat")]} // Consider making enemies dynamic
+                        onCombatEnd={handleCombatEnd}
+                        onUpdateHeroes={handleUpdateHeroes}
+                    />
+                )}
+                {activeScreen === "CharacterSheet" && (
+                    <CharacterSheet hero={hero} back={() => setActiveScreen("Game")} />
+                )}
+                {activeScreen === "Game" && (
+                    <>
+                        <div className="hud">
+                            <div className="hud-options">
+                                <button className="hud-button" onClick={showCharacterSheet}>
+                                    Character Sheet
+                                </button>
+                                <button className="hud-button" onClick={() => setActiveScreen("MainMenu")}>
+                                    Main Menu
+                                </button>
+                            </div>
                         </div>
+                        <div id="game-content">
+                            {/* This div could house current area information or events */}
+                        </div>
+                        <div className="area-options">
+                            <h2>Area Options</h2>
+                            <button className="area-button" onClick={handleCombat}>
+                                Combat Test
+                            </button>
+                            <button className="area-button" onClick={handleHeal}>
+                                Heal Test
+                            </button>
+                            <button className="area-button" onClick={handleShop}>
+                                Shop Test
+                            </button>
+                        </div>
+                    </>
+                )}
+                {activeScreen === "LoadGame" && (
+                    <div className="menu">
+                        <h2>Saves</h2>
+                        <button className="menu-button" onClick={() => setActiveScreen("MainMenu")}>
+                            Back
+                        </button>
                     </div>
-                    <div id="game-content">
+                )}
+                {activeScreen === "MainMenu" && (
+                    <MainMenu
+                        continueGame={handleContinueGame}
+                        newGame={handleNewGame}
+                        loadGame={handleLoadGame}
+                        settings={handleSettings}
+                        exitGame={handleExitGame}
+                    />
+                )}
+                {activeScreen === "NewGame" && (
+                    <CreateCharacter hero={hero} back={() => setActiveScreen("MainMenu")} onCreateEnd={handleOnCreateEnd} />
+                )}
+                {activeScreen === "Settings" && (
+                    <div className="char-creation">
+                        <h2>Settings</h2>
+                        <button className="menu-button" onClick={() => setActiveScreen("MainMenu")}>
+                            Back
+                        </button>
                     </div>
-                    <div className="area-options">
-                        <h2>Area Options</h2>
-                        <button className='area-button' onClick={() => handleCombat()}>Combat Test</button>
-                        <button className='area-button' onClick={() => handleHeal()}>Heal Test</button>
-                        <button className='area-button' onClick={() => handleShop()}>Shop Test</button>
-                    </div>
-                </div> : <div></div>}
-                {active === "LoadGame" ? <div className="menu">
-                    <h2>Saves</h2>
-                    <button className='menu-button' onClick={() => setActive("MainMenu")}>Back</button>
-                </div> : <div></div>}
-                {active === "MainMenu" ? <MainMenu continueGame={handleContinueGame} newGame={handleNewGame} loadGame={handleLoadGame} settings={handleSettings} exitGame={handleExitGame}></MainMenu> : null}
-                {active === "NewGame" ? <CreateCharacter hero={hero} back={() => setActive("MainMenu")}></CreateCharacter> : <div></div>}
-                {active === "Settings" ? <div className="char-creation">
-                    <h2>Settings</h2>
-                    <button className='menu-button' onClick={() => setActive("MainMenu")}>Back</button>
-                </div> : <div></div>}
-
+                )}
             </div>
-            {active !== "Combat" && active !== "NewGame" ? <Log logEntries={gameLog}></Log> : null}
+            {activeScreen !== "Combat" && activeScreen !== "NewGame" && <Log logEntries={gameLog} />}
         </div>
     );
 }
