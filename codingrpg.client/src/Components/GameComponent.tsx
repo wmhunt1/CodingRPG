@@ -4,13 +4,14 @@ import CharacterSheet from "./CharacterSheetComponent";
 import CombatArena from "./CombatComponent";
 import CreateCharacter from "./CreateCharacterComponent";
 import { MainMenu } from "./MenuComponent";
+import Shop from "./ShopComponent"
 import Log from "./LogComponent";
 
 // Model Imports
 import { Character, Hero, Rat } from "../Models/CharacterModel";
 
 // React Imports
-import { useState, useCallback } from "react"; // Added useCallback for memoizing functions
+import { useState, useCallback } from "react";
 
 // Stylesheet Imports
 import "../StyleSheets/GameStyle.css";
@@ -23,18 +24,24 @@ type GameState =
     | "Combat"
     | "LoadGame"
     | "NewGame"
-    | "Settings";
+    | "Settings"
+    | "Shop";
 
 function Game() {
     const [activeScreen, setActiveScreen] = useState<GameState>("MainMenu");
     const [hero, setHero] = useState<Hero>(new Hero("Hero"));
     const [gameLog, setGameLog] = useState<string[]>(["Welcome to Coding RPG"]);
-    const [party, setParty] = useState<Character[]>(() => [hero]); // Initialize party with the hero
+    const [party, setParty] = useState<Character[]>(() => [hero]);
+
+    // This new memoized function is used to add new messages to the game log
+    const addGameLog = useCallback((message: string) => {
+        setGameLog((prevLog) => [...prevLog, message]);
+    }, []);
 
     // Memoized callback functions for event handlers
     const handleContinueGame = useCallback(() => {
         setActiveScreen("Game");
-    }, []); // No dependencies, as it only sets a static state
+    }, []);
 
     const showCharacterSheet = useCallback(() => {
         setActiveScreen("CharacterSheet");
@@ -46,20 +53,20 @@ function Game() {
 
     const handleExitGame = useCallback(() => {
         console.log("Exiting Game");
-        // In a real application, you might add more exit logic here (e.g., confirm dialog)
     }, []);
 
     const handleHeal = useCallback(() => {
         setHero((prevHero) => {
-            // Use functional update for state based on previous state
             if (prevHero.currentHP < prevHero.maxHP) {
-                setGameLog((prevLog) => [...prevLog, `${prevHero.name} fully healed!`]);
+                // Use the new centralized log function
+                addGameLog(`${prevHero.name} fully healed!`);
                 return { ...prevHero, currentHP: prevHero.maxHP };
             }
-            setGameLog((prevLog) => [...prevLog, `${prevHero.name} is already at full health.`]);
+            // Use the new centralized log function
+            addGameLog(`${prevHero.name} is already at full health.`);
             return prevHero;
         });
-    }, []);
+    }, [addGameLog]); // Added addGameLog to dependencies
 
     const handleLoadGame = useCallback(() => {
         setActiveScreen("LoadGame");
@@ -71,7 +78,7 @@ function Game() {
 
     const handleOnCreateEnd = useCallback((updatedHero: Hero) => {
         setHero(updatedHero);
-        setParty([updatedHero]); // Ensure party is updated with the new hero
+        setParty([updatedHero]);
         setActiveScreen("Game");
     }, []);
 
@@ -80,14 +87,15 @@ function Game() {
     }, []);
 
     const handleShop = useCallback(() => {
-        // Placeholder for shop logic
-        setGameLog((prevLog) => [...prevLog, "The shop is not implemented yet."]);
-    }, []);
+        setActiveScreen("Shop");
+        // Use the new centralized log function
+        addGameLog("The shop is not implemented yet.");
+    }, [addGameLog]); // Added addGameLog to dependencies
 
     const handleCombatEnd = useCallback(
         (result: "victory" | "defeat" | "run" | "exit", updatedHeroes: Hero[]) => {
             setActiveScreen("Game");
-            setHero(updatedHeroes[0]); // Assuming the first hero in the array is the main player
+            setHero(updatedHeroes[0]);
             setParty(updatedHeroes);
 
             let combatMessage: string;
@@ -102,31 +110,32 @@ function Game() {
                     combatMessage = `${hero.name} manages to escape...`;
                     break;
                 default:
-                    combatMessage = "Combat ended."; // Should not happen with defined results
+                    combatMessage = "Combat ended.";
             }
-            setGameLog((prevLog) => [...prevLog, combatMessage]);
+            // Use the new centralized log function
+            addGameLog(combatMessage);
         },
-        [hero.name] // Depend on hero.name for the log message
+        [hero.name, addGameLog] // Added addGameLog to dependencies
     );
 
     const handleUpdateHeroes = useCallback((updatedHeroes: Hero[]) => {
         setParty(updatedHeroes);
-        setHero(updatedHeroes[0]); // Keep the main hero updated
+        setHero(updatedHeroes[0]);
     }, []);
 
     return (
         <div id="game">
             <div className="game-screen">
+                {activeScreen === "CharacterSheet" && (
+                    <CharacterSheet hero={hero} back={() => setActiveScreen("Game")} />
+                )}
                 {activeScreen === "Combat" && (
                     <CombatArena
                         heroes={party}
-                        enemies={[new Rat("Rat")]} // Consider making enemies dynamic
+                        enemies={[new Rat("Rat")]}
                         onCombatEnd={handleCombatEnd}
                         onUpdateHeroes={handleUpdateHeroes}
                     />
-                )}
-                {activeScreen === "CharacterSheet" && (
-                    <CharacterSheet hero={hero} back={() => setActiveScreen("Game")} />
                 )}
                 {activeScreen === "Game" && (
                     <>
@@ -175,7 +184,14 @@ function Game() {
                     />
                 )}
                 {activeScreen === "NewGame" && (
-                    <CreateCharacter hero={hero} back={() => setActiveScreen("MainMenu")} onCreateEnd={handleOnCreateEnd} />
+                    <CreateCharacter
+                        hero={hero}
+                        back={() => setActiveScreen("MainMenu")}
+                        onCreateEnd={handleOnCreateEnd}
+                        // Pass down the gameLog state and the function to update it
+                        gameLog={gameLog}
+                        addGameLog={addGameLog}
+                    />
                 )}
                 {activeScreen === "Settings" && (
                     <div className="char-creation">
@@ -185,8 +201,11 @@ function Game() {
                         </button>
                     </div>
                 )}
+                {activeScreen === "Shop" && (
+                    <Shop />
+                )}
             </div>
-            {activeScreen !== "Combat" && activeScreen !== "NewGame" && <Log logEntries={gameLog} />}
+            <Log logEntries={gameLog} />
         </div>
     );
 }

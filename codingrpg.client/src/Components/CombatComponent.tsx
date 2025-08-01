@@ -3,7 +3,7 @@
 import Log from "./LogComponent";
 
 // Model Imports
-import { Character, Hero } from "../Models/CharacterModel"; // Assuming Hero extends Character and has XP/Level properties
+import { Character, Hero } from "../Models/CharacterModel";
 
 // React Imports
 import { useEffect, useState, useCallback } from "react";
@@ -12,142 +12,139 @@ import { useEffect, useState, useCallback } from "react";
 import "../StyleSheets/GameStyle.css";
 import "../StyleSheets/CombatStyle.css";
 
-// Define the props interface for clarity and type safety
+// The interface now includes the new props for the game log
 interface CombatArenaProps {
-    heroes: Hero[]; // Array of heroes (specifically Hero type for XP/level)
-    enemies: Character[]; // Array of enemies
+    heroes: Hero[];
+    enemies: Character[];
     onCombatEnd: (result: "victory" | "defeat" | "run" | "exit", heroesUpdated: Hero[]) => void;
-    onUpdateHeroes: (heroes: Hero[]) => void; // Prop to update heroes in parent
+    onUpdateHeroes: (heroes: Hero[]) => void;
+    gameLog: string[];
+    addGameLog: (message: string) => void;
 }
 
-function CombatArena({ heroes, enemies, onCombatEnd, onUpdateHeroes }: CombatArenaProps) {
-    // State to manage the combat flow and current combatants
+// The component accepts the new props
+function CombatArena({ heroes, enemies, onCombatEnd, onUpdateHeroes, gameLog, addGameLog }: CombatArenaProps) {
+
     const [combatOngoing, setCombatOngoing] = useState(true);
-    // Initialize currentHeroes and currentEnemies from props, ensuring deep copies
-    // This is crucial to prevent direct mutation of props and ensure local state
-    // reflects the initial combat setup.
     const [currentHeroes, setCurrentHeroes] = useState<Hero[]>(() =>
         heroes.map((hero) => ({ ...hero }))
     );
     const [currentEnemies, setCurrentEnemies] = useState<Character[]>(() =>
         enemies.map((enemy) => ({ ...enemy }))
     );
-    const [combatLog, setCombatLog] = useState<string[]>(["Fight!"]);
+    // The local combatLog state is removed and replaced by the prop.
+    // const [combatLog, setCombatLog] = useState<string[]>(["Fight!"]);
 
-    // Effect to synchronize hero data back to the parent component
-    // This runs whenever currentHeroes changes, ensuring the parent always has the latest state
     useEffect(() => {
         onUpdateHeroes(currentHeroes);
-    }, [currentHeroes, onUpdateHeroes]); // Dependencies ensure this runs when currentHeroes or onUpdateHeroes changes
+    }, [currentHeroes, onUpdateHeroes]);
 
-    // Memoized function to check combat end conditions
-    // Uses useCallback to prevent unnecessary re-creation on renders
     const checkCombatantHP = useCallback(
         (checkedHeroes: Hero[], checkedEnemies: Character[]) => {
             const allEnemiesDefeated = checkedEnemies.every((enemy) => enemy.currentHP <= 0);
             const allHeroesDefeated = checkedHeroes.every((hero) => hero.currentHP <= 0);
 
             if (allHeroesDefeated || allEnemiesDefeated) {
-                setCombatOngoing(false); // End combat
+                setCombatOngoing(false);
 
                 if (allHeroesDefeated) {
-                    setCombatLog((prevLog) => [...prevLog, `All heroes are defeated! You have lost!`]);
-                    onCombatEnd("defeat", checkedHeroes); // Pass the final state of heroes to parent
+                    // Use the prop function to update the main log
+                    addGameLog(`All heroes are defeated! You have lost!`);
+                    onCombatEnd("defeat", checkedHeroes);
                 } else {
-                    // All enemies defeated - handle victory, XP gain, and leveling up
-                    setCombatLog((prevLog) => [...prevLog, `All enemies are defeated! Heroes are victorious!`]);
+                    // Use the prop function to update the main log
+                    addGameLog(`All enemies are defeated! Heroes are victorious!`);
 
-                    // Process XP gain and potential level-ups for all participating heroes
                     const finalHeroes = checkedHeroes.map((hero) => {
-                        const updatedHero = { ...hero }; // Create a mutable copy for updates
+                        const updatedHero = { ...hero };
 
-                        // Loop to handle multiple level-ups if a large amount of XP is gained
                         while (updatedHero.currentXP >= updatedHero.maxXP) {
                             updatedHero.level += 1;
-                            updatedHero.currentXP -= updatedHero.maxXP; // Subtract XP required for the current level
-                            updatedHero.maxXP *= 2; // Increase XP needed for the next level (example scaling)
-                            updatedHero.maxHP += 10; // Increase max HP on level up
-                            updatedHero.currentHP = Math.min(updatedHero.currentHP + 10, updatedHero.maxHP); // Restore some HP, capped at maxHP
-                            setCombatLog((prevLog) => [...prevLog, `${updatedHero.name} is now level ${updatedHero.level}!`]);
+                            updatedHero.currentXP -= updatedHero.maxXP;
+                            updatedHero.maxXP *= 2;
+                            updatedHero.maxHP += 10;
+                            updatedHero.currentHP = Math.min(updatedHero.currentHP + 10, updatedHero.maxHP);
+                            // Use the prop function to update the main log
+                            addGameLog(`${updatedHero.name} is now level ${updatedHero.level}!`);
                         }
                         return updatedHero;
                     });
 
-                    setCurrentHeroes(finalHeroes); // Update component state with leveled-up heroes
-                    onCombatEnd("victory", finalHeroes); // Notify parent of victory with updated heroes
+                    setCurrentHeroes(finalHeroes);
+                    onCombatEnd("victory", finalHeroes);
                 }
             }
         },
-        [onCombatEnd] // Dependency: onCombatEnd prop
+        [onCombatEnd, addGameLog] // Added addGameLog to dependencies
     );
 
-    // Memoized function to handle a single combat round
-    // Uses useCallback to prevent unnecessary re-creation on renders
     const handleCombatRound = useCallback(() => {
-        if (!combatOngoing) return; // Prevent actions if combat is not ongoing
+        if (!combatOngoing) return;
 
-        // Create deep copies of current state to ensure immutability during the round
         const updatedHeroes = currentHeroes.map((h) => ({ ...h }));
         let updatedEnemies = currentEnemies.map((e) => ({ ...e }));
 
         // --- Heroes' Turn ---
         updatedHeroes.forEach((hero) => {
-            if (hero.currentHP <= 0) return; // Skip defeated heroes
+            if (hero.currentHP <= 0) return;
 
-            // Hero attacks the first living enemy
             const targetEnemy = updatedEnemies.find((enemy) => enemy.currentHP > 0);
 
             if (targetEnemy) {
                 const damageToEnemy = hero.weapon.power;
                 targetEnemy.currentHP -= damageToEnemy;
-                setCombatLog((prevLog) => [...prevLog, `${hero.name} attacks ${targetEnemy.name} for ${damageToEnemy} damage!`]);
+                // Use the prop function to update the main log
+                addGameLog(`${hero.name} attacks ${targetEnemy.name} for ${damageToEnemy} damage!`);
 
                 if (targetEnemy.currentHP <= 0) {
-                    setCombatLog((prevLog) => [...prevLog, `${targetEnemy.name} has been defeated!`]);
-                    // XP is granted to the hero who landed the killing blow
+                    // Use the prop function to update the main log
+                    addGameLog(`${targetEnemy.name} has been defeated!`);
                     hero.currentXP += targetEnemy.currentXP;
                 }
             }
         });
 
-        // Filter out defeated enemies after all hero attacks have processed
         updatedEnemies = updatedEnemies.filter((enemy) => enemy.currentHP > 0);
 
         // --- Enemies' Turn ---
-        // Only proceed if there are still living enemies
         if (updatedEnemies.some((enemy) => enemy.currentHP > 0)) {
             updatedEnemies.forEach((enemy) => {
-                if (enemy.currentHP <= 0) return; // Skip defeated enemies
+                if (enemy.currentHP <= 0) return;
 
-                // Enemy attacks the first living hero
                 const targetHero = updatedHeroes.find((hero) => hero.currentHP > 0);
 
                 if (targetHero) {
                     const damageToHero = enemy.weapon.power;
                     targetHero.currentHP -= damageToHero;
-                    setCombatLog((prevLog) => [...prevLog, `${enemy.name} attacks ${targetHero.name} for ${damageToHero} damage!`]);
+                    // Use the prop function to update the main log
+                    addGameLog(`${enemy.name} attacks ${targetHero.name} for ${damageToHero} damage!`);
 
                     if (targetHero.currentHP <= 0) {
-                        setCombatLog((prevLog) => [...prevLog, `${targetHero.name} has been defeated!`]);
+                        // Use the prop function to update the main log
+                        addGameLog(`${targetHero.name} has been defeated!`);
                     }
                 }
             });
         }
 
-        // Update the state with the results of the round
         setCurrentEnemies(updatedEnemies);
         setCurrentHeroes(updatedHeroes);
-
-        // Check combat end conditions after updating state
         checkCombatantHP(updatedHeroes, updatedEnemies);
-    }, [combatOngoing, currentHeroes, currentEnemies, checkCombatantHP]); // Dependencies: state variables and memoized function
+    }, [combatOngoing, currentHeroes, currentEnemies, checkCombatantHP, addGameLog]); // Added addGameLog to dependencies
 
-    // Memoized function to handle running from combat
+
     const handleRun = useCallback(() => {
         setCombatOngoing(false);
-        setCombatLog((prevLog) => [...prevLog, `Heroes attempt to run!`]);
-        onCombatEnd("run", currentHeroes); // Notify parent of run attempt with current hero state
-    }, [onCombatEnd, currentHeroes]); // Dependencies: onCombatEnd prop and currentHeroes state
+        // Use the prop function to update the main log
+        addGameLog(`Heroes attempt to run!`);
+        onCombatEnd("run", currentHeroes);
+    }, [onCombatEnd, currentHeroes, addGameLog]); // Added addGameLog to dependencies
+
+    // Display a welcome message at the start of combat, but only once.
+    useEffect(() => {
+        addGameLog("A new battle begins!");
+    }, []);
+
 
     return (
         <div className="combatArena">
@@ -200,15 +197,14 @@ function CombatArena({ heroes, enemies, onCombatEnd, onUpdateHeroes }: CombatAre
                     </div>
                 </div>
             ) : (
-                // Render exit button when combat is no longer ongoing
                 <div className="controls">
                     <button className="menu-button" onClick={() => onCombatEnd("exit", currentHeroes)}>
                         Exit
                     </button>
                 </div>
             )}
-            {/* Log component is always visible in combat arena */}
-            <Log logEntries={combatLog} />
+            {/* The Log component now displays the gameLog passed as a prop */}
+            <Log logEntries={gameLog} />
         </div>
     );
 }
