@@ -1,7 +1,7 @@
-function Store() {
+function Shop() {
   return (
     <p>Hello world!</p>
   );
 }
 
-export default Store;
+export default Shop;

@@ -10,7 +10,7 @@ interface CharacterSheetProps {
 function CharacterSheet({hero,back }: CharacterSheetProps) {
   return (
       <div id="character-sheet">
-          <h2>Character Sheet</h2>
+          <h2>{hero.name}'s Character Sheet</h2>
           <h3>Base Stats</h3>
           <p>Name: {hero.name}</p>
           <p>Level: {hero.level} ({hero.currentXP}/{hero.maxXP})</p>

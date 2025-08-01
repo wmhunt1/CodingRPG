@@ -26,7 +26,7 @@ interface CombatArenaProps {
 function CombatArena({ heroes, enemies, onCombatEnd, onUpdateHeroes, gameLog, addGameLog }: CombatArenaProps) {
 
     const [combatOngoing, setCombatOngoing] = useState(true);
-    const [currentHeroes, setCurrentHeroes] = useState<Hero[]>(() =>
+    const [currentHeroes, setCurrentHeroes] = useState<Character[]>(() =>
         heroes.map((hero) => ({ ...hero }))
     );
     const [currentEnemies, setCurrentEnemies] = useState<Character[]>(() =>
@@ -40,7 +40,7 @@ function CombatArena({ heroes, enemies, onCombatEnd, onUpdateHeroes, gameLog, ad
     }, [currentHeroes, onUpdateHeroes]);
 
     const checkCombatantHP = useCallback(
-        (checkedHeroes: Hero[], checkedEnemies: Character[]) => {
+        (checkedHeroes: Character[], checkedEnemies: Character[]) => {
             const allEnemiesDefeated = checkedEnemies.every((enemy) => enemy.currentHP <= 0);
             const allHeroesDefeated = checkedHeroes.every((hero) => hero.currentHP <= 0);
 
@@ -143,7 +143,7 @@ function CombatArena({ heroes, enemies, onCombatEnd, onUpdateHeroes, gameLog, ad
     // Display a welcome message at the start of combat, but only once.
     useEffect(() => {
         addGameLog("A new battle begins!");
-    }, []);
+    }, [addGameLog]);
 
 
     return (

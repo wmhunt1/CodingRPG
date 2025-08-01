@@ -3,9 +3,10 @@
 import CharacterSheet from "./CharacterSheetComponent";
 import CombatArena from "./CombatComponent";
 import CreateCharacter from "./CreateCharacterComponent";
+import Inventory from "./InventoryComponent";
+import Log from "./LogComponent";
 import { MainMenu } from "./MenuComponent";
 import Shop from "./ShopComponent"
-import Log from "./LogComponent";
 
 // Model Imports
 import { Character, Hero, Rat } from "../Models/CharacterModel";
@@ -22,6 +23,7 @@ type GameState =
     | "Game"
     | "CharacterSheet"
     | "Combat"
+    | "Inventory"
     | "LoadGame"
     | "NewGame"
     | "Settings"
@@ -43,10 +45,6 @@ function Game() {
         setActiveScreen("Game");
     }, []);
 
-    const showCharacterSheet = useCallback(() => {
-        setActiveScreen("CharacterSheet");
-    }, []);
-
     const handleCombat = useCallback(() => {
         setActiveScreen("Combat");
     }, []);
@@ -66,7 +64,7 @@ function Game() {
             addGameLog(`${prevHero.name} is already at full health.`);
             return prevHero;
         });
-    }, [addGameLog]); // Added addGameLog to dependencies
+    }, [addGameLog]);
 
     const handleLoadGame = useCallback(() => {
         setActiveScreen("LoadGame");
@@ -90,7 +88,7 @@ function Game() {
         setActiveScreen("Shop");
         // Use the new centralized log function
         addGameLog("The shop is not implemented yet.");
-    }, [addGameLog]); // Added addGameLog to dependencies
+    }, [addGameLog]);
 
     const handleCombatEnd = useCallback(
         (result: "victory" | "defeat" | "run" | "exit", updatedHeroes: Hero[]) => {
@@ -115,12 +113,30 @@ function Game() {
             // Use the new centralized log function
             addGameLog(combatMessage);
         },
-        [hero.name, addGameLog] // Added addGameLog to dependencies
+        [hero.name, addGameLog]
     );
 
-    const handleUpdateHeroes = useCallback((updatedHeroes: Hero[]) => {
+    const handleUpdateHeroes = useCallback((updatedHeroes: Character[]) => {
         setParty(updatedHeroes);
-        setHero(updatedHeroes[0]);
+        // Assuming the first hero in the party is always 'the' hero you want to update
+        if (updatedHeroes.length > 0) {
+            setHero(updatedHeroes[0] as Hero);
+        }
+    }, []);
+
+    // --- New callback for updating a single hero specifically from Inventory ---
+    const handleUpdateSingleHero = useCallback((updatedHero: Character) => {
+        setHero(updatedHero as Hero); // Update the main hero state
+        // You'll also need to update the party array if it's meant to reflect the single hero
+        setParty([updatedHero]);
+    }, []);
+    // -------------------------------------------------------------------------
+
+    const showCharacterSheet = useCallback(() => {
+        setActiveScreen("CharacterSheet");
+    }, []);
+    const showInventory = useCallback(() => {
+        setActiveScreen("Inventory");
     }, []);
 
     return (
@@ -135,6 +151,8 @@ function Game() {
                         enemies={[new Rat("Rat")]}
                         onCombatEnd={handleCombatEnd}
                         onUpdateHeroes={handleUpdateHeroes}
+                        gameLog={gameLog}
+                        addGameLog={addGameLog}
                     />
                 )}
                 {activeScreen === "Game" && (
@@ -143,6 +161,9 @@ function Game() {
                             <div className="hud-options">
                                 <button className="hud-button" onClick={showCharacterSheet}>
                                     Character Sheet
+                                </button>
+                                <button className="hud-button" onClick={showInventory}>
+                                    Inventory
                                 </button>
                                 <button className="hud-button" onClick={() => setActiveScreen("MainMenu")}>
                                     Main Menu
@@ -165,6 +186,15 @@ function Game() {
                             </button>
                         </div>
                     </>
+                )}
+                {activeScreen === "Inventory" && (
+                    <Inventory
+                        hero={hero}
+                        back={() => setActiveScreen("Game")}
+                        onUpdateHero={handleUpdateSingleHero} // Pass the new handler
+                        //gameLog={gameLog}
+                        addGameLog={addGameLog}
+                    />
                 )}
                 {activeScreen === "LoadGame" && (
                     <div className="menu">
