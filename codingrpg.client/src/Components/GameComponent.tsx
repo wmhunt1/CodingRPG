@@ -32,8 +32,10 @@ type GameState =
 function Game() {
     const [activeScreen, setActiveScreen] = useState<GameState>("MainMenu");
     const [hero, setHero] = useState<Hero>(new Hero("Hero"));
+    const [enemies, setEnemies] = useState<Character[]>(() => []);
     const [gameLog, setGameLog] = useState<string[]>(["Welcome to Coding RPG"]);
     const [party, setParty] = useState<Character[]>(() => [hero]);
+  
 
     // This new memoized function is used to add new messages to the game log
     const addGameLog = useCallback((message: string) => {
@@ -45,9 +47,11 @@ function Game() {
         setActiveScreen("Game");
     }, []);
 
-    const handleCombat = useCallback(() => {
+    const handleCombat = useCallback((enemies: Character[]) => {
+        console.log("halding combat")
         setActiveScreen("Combat");
-    }, []);
+        setEnemies(enemies)
+    }, [setEnemies]);
 
     const handleExitGame = useCallback(() => {
         console.log("Exiting Game");
@@ -139,6 +143,21 @@ function Game() {
         setActiveScreen("Inventory");
     }, []);
 
+    const area = {
+        name: "Test Area", areaOptions: [{
+            label: "Combat Test",
+            onClick: () => handleCombat([new Rat("Rat")]),
+        },
+        {
+            label: "Heal Test",
+            onClick: handleHeal,
+        },
+        {
+            label: "Shop Test",
+            onClick: handleShop,
+        },]
+    }
+
     return (
         <div id="game">
             <div className="game-screen">
@@ -148,7 +167,7 @@ function Game() {
                 {activeScreen === "Combat" && (
                     <CombatArena
                         heroes={party}
-                        enemies={[new Rat("Rat")]}
+                        enemies={enemies}
                         onCombatEnd={handleCombatEnd}
                         onUpdateHeroes={handleUpdateHeroes}
                         gameLog={gameLog}
@@ -171,19 +190,16 @@ function Game() {
                             </div>
                         </div>
                         <div id="game-content">
+                            <h2>{area.name}</h2>
                             {/* This div could house current area information or events */}
                         </div>
                         <div className="area-options">
-                            <h2>Area Options</h2>
-                            <button className="area-button" onClick={handleCombat}>
-                                Combat Test
-                            </button>
-                            <button className="area-button" onClick={handleHeal}>
-                                Heal Test
-                            </button>
-                            <button className="area-button" onClick={handleShop}>
-                                Shop Test
-                            </button>
+                            <h3>Area Options</h3>
+                            {area.areaOptions.map((button, index) => (
+                                <button key={index} className="area-button" onClick={button.onClick}>
+                                    {button.label}
+                                </button>
+                            ))}
                         </div>
                     </>
                 )}
@@ -232,7 +248,7 @@ function Game() {
                     </div>
                 )}
                 {activeScreen === "Shop" && (
-                    <Shop />
+                    <Shop back={() => setActiveScreen("Game")} />
                 )}
             </div>
             <Log logEntries={gameLog} />
