@@ -1,6 +1,5 @@
 // CombatArena.tsx
 // Component Imports
-import Log from "./LogComponent";
 
 // Model Imports
 import { Character, Hero } from "../Models/CharacterModel";
@@ -23,7 +22,7 @@ interface CombatArenaProps {
 }
 
 // The component accepts the new props
-function CombatArena({ heroes, enemies, onCombatEnd, onUpdateHeroes, gameLog, addGameLog }: CombatArenaProps) {
+function CombatArena({ heroes, enemies, onCombatEnd, onUpdateHeroes, addGameLog }: CombatArenaProps) {
 
     const [combatOngoing, setCombatOngoing] = useState(true);
     const [currentHeroes, setCurrentHeroes] = useState<Character[]>(() =>
@@ -150,44 +149,38 @@ function CombatArena({ heroes, enemies, onCombatEnd, onUpdateHeroes, gameLog, ad
         <div className="combatArena">
             <h2>Combat</h2>
             {combatOngoing ? (
-                <div>
-                    {/* Display multiple heroes */}
-                    <div className="heroes-container">
-                        {currentHeroes.map((hero, index) => (
-                            <div key={index} className="character-stats">
-                                <h3>{hero.name}</h3>
-                                <p>
-                                    <span>
-                                        HP: {hero.currentHP}/{hero.maxHP}
-                                    </span>
-                                </p>
-                                <p>
-                                    <span>
-                                        XP: {hero.currentXP}/{hero.maxXP}
-                                    </span>
-                                </p>
-                                <p>
-                                    <span>Level: {hero.level}</span>
-                                </p>
-                            </div>
-                        ))}
+                <>
+                    <div className="combat-display-area"> {/* New wrapper div */}
+                        {/* Display multiple heroes */}
+                        <div className="heroes-container">
+                            {currentHeroes.map((hero, index) => (
+                                <div key={index} className="character-stats">
+                                    <h3>{hero.name}</h3>
+                                    <p>
+                                        <span>
+                                            HP: {hero.currentHP}/{hero.maxHP}
+                                        </span>
+                                    </p>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* Display multiple enemies */}
+                        <div className="enemies-container">
+                            {currentEnemies.map((enemy, index) => (
+                                <div key={index} className="character-stats">
+                                    <h3>{enemy.name}</h3>
+                                    <p>
+                                        <span>
+                                            HP: {enemy.currentHP}/{enemy.maxHP}
+                                        </span>
+                                    </p>
+                                </div>
+                            ))}
+                        </div>
                     </div>
 
-                    {/* Display multiple enemies */}
-                    <div className="enemies-container">
-                        {currentEnemies.map((enemy, index) => (
-                            <div key={index} className="character-stats">
-                                <h3>{enemy.name}</h3>
-                                <p>
-                                    <span>
-                                        HP: {enemy.currentHP}/{enemy.maxHP}
-                                    </span>
-                                </p>
-                            </div>
-                        ))}
-                    </div>
-
-                    <div className="controls">
+                    <div className="controls"> {/* This div is now outside the combat-display-area */}
                         <button className="menu-button" onClick={handleCombatRound}>
                             Attack
                         </button>
@@ -195,7 +188,7 @@ function CombatArena({ heroes, enemies, onCombatEnd, onUpdateHeroes, gameLog, ad
                             Run
                         </button>
                     </div>
-                </div>
+                </>
             ) : (
                 <div className="controls">
                     <button className="menu-button" onClick={() => onCombatEnd("exit", currentHeroes)}>
@@ -203,8 +196,6 @@ function CombatArena({ heroes, enemies, onCombatEnd, onUpdateHeroes, gameLog, ad
                     </button>
                 </div>
             )}
-            {/* The Log component now displays the gameLog passed as a prop */}
-            <Log logEntries={gameLog} />
         </div>
     );
 }

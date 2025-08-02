@@ -10,6 +10,7 @@ export class Character {
     gold: number = 0;
     inventory: Item[] = []
     weapon: Weapon = new BareFist();
+    party: Character[] = []
 }
 
 export class Beast extends Character {

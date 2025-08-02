@@ -1,126 +1,206 @@
-html, body, #root {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    justify-self: center;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-}
-
-h1, h2, h3 {
-    text-align: center
-}
+/* src/StyleSheets/GameStyle.css */
 
 #game {
-    flex-grow: 1;
+    display: flex; /* Make #game a flex container */
+    flex-direction: column; /* Stack its children (game-screen, Log) vertically */
+    height: 100%; /* Make #game take 100% height of its parent (.app-main) */
+    font-family: 'Press Start 2P', cursive;
+    background-color: #1a1a2e;
+    color: #e0e0e0;
+    overflow: hidden; /* Prevent #game itself from scrolling, its children will handle their overflow */
+    box-sizing: border-box; /* Ensures padding/border are included in height */
+    border: 3px solid #6c5ce7; /* Apply game border here, for the whole game area */
+    border-radius: 8px; /* Apply game border-radius here */
+    box-shadow: 0 0 20px rgba(108, 92, 231, 0.5); /* Apply game shadow here */
+}
+
+.game-screen {
+    flex-grow: 1; /* This makes the game-screen take up all available vertical space */
+    display: flex; /* Keeps inner content centered */
+    justify-content: center;
+    align-items: center;
+    width: 100%; /* Ensure it spans the width of #game */
+    /* REMOVE any padding-bottom that might push content up */
+    padding-bottom: 0; /* Ensure no unwanted padding pushes content up */
+    box-sizing: border-box;
+}
+
+/* --- Updated Grid Layout for the "Game" screen (inside game-screen) --- */
+.game-layout-grid {
+    display: grid;
+    grid-template-areas:
+        "toolbar toolbar toolbar"
+        "left main options"
+        "bottom bottom bottom";
+    grid-template-columns: 1fr 3fr 1fr;
+    grid-template-rows: auto 1fr auto;
+    width: 100%; /* Make the grid fill the game-screen */
+    height: 100%; /* Make the grid fill the game-screen */
+    gap: 15px;
+    padding: 0; /* Remove padding here, it's handled by .app-main padding */
+    border: none; /* Remove border, it's now on #game */
+    background-color: transparent; /* Or remove if you want inner background */
+    box-shadow: none; /* Remove shadow, it's now on #game */
+    border-radius: 0; /* Remove radius, it's now on #game */
+}
+
+.toolbar {
+    grid-area: toolbar;
+    background-color: #4a4a70;
+    padding: 10px;
+    border-bottom: 2px solid #6c5ce7;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+}
+
+.toolbar-options {
+    display: flex;
+    gap: 15px;
+}
+
+.toolbar-button,
+.area-button,
+.menu-button {
+    background-color: #8e44ad;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.8em;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+    .toolbar-button:hover,
+    .area-button:hover,
+    .menu-button:hover {
+        background-color: #9b59b6;
+        transform: translateY(-2px);
+    }
+
+    .toolbar-button:active,
+    .area-button:active,
+    .menu-button:active {
+        background-color: #7f399c;
+        transform: translateY(0);
+    }
+
+.game-content-left {
+    grid-area: left;
+    background-color: #3b3b5b;
+    padding: 15px;
+    border-radius: 5px;
+    overflow-y: auto;
+    text-align: center;
+}
+
+.game-content-main {
+    grid-area: main;
+    background-color: #3b3b5b;
+    padding: 20px;
+    border-radius: 5px;
     display: flex;
     flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
     overflow-y: auto;
 }
 
-.game-screen {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    padding-bottom: 30%;
-    box-sizing: border-box;
-}
-.game-log-wrapper {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    padding: 10px;
-    box-sizing: border-box;
-    height: 20%; /* Defines the overall height of the log area */
-    z-index: 1000;
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
-    background-color: #f9f9f9; /* Added a background color for visibility */
-    display: flex; /* Use flexbox to arrange heading and scrollable content */
-    flex-direction: column; /* Stack children vertically */
-    border: 1px solid #ccc; /* Added a border for visual separation */
-}
-
-    .game-log-wrapper h3 {
-        margin-top: 0;
-        margin-bottom: 5px; /* Space between heading and scrollable content */
-        font-size: 1.2em;
-        /* Any specific styling for the heading */
-    }
-
-.log-entries-container {
-    flex-grow: 1; /* Allows this div to take up all available vertical space */
-    overflow-y: auto; /* This is crucial for scrolling the entries */
-    padding-right: 5px; /* Adds space for the scrollbar, preventing text from touching it */
-    /* You might want to add a background color here if you want the scrollable area to have a different background */
-    /* background-color: #eee; */
-}
-
-    .log-entries-container p {
-        margin-bottom: 2px;
-        font-size: 0.9em;
-        line-height: 1.3;
-    }
-.menu, .controls, .char-creation {
-    justify-items: center
-}
-
-.menu-button, area-button {
-    display: block;
-    width: 200px;
-    margin-bottom: 10px;
-}
-
-.player-info {
-    padding-top: 1%;
-}
-
-.hud {
-    padding: 1%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.hud-options {
-    display: flex;
-    gap: 10px;
-}
-
-#game-content, .combat-arena {
-    width: 100%;
-    height: 100%;
-}
-
-#main-menu, .controls {
-    justify-items: center
-}
-
-.game-screen {
-    justify-items: center;
-}
-
 .area-options {
-    position: fixed;
-    right: 0;
+    grid-area: options;
+    background-color: #3b3b5b;
+    padding: 20px;
+    border-radius: 5px;
     display: flex;
     flex-direction: column;
     gap: 10px;
-    padding: 1rem;
+    align-items: stretch;
+    overflow-y: auto;
 }
-.area-options h2 {
-    margin-bottom: 0.5rem;
+
+    .area-options h3,
+    .game-content-left h3,
+    .game-content-bottom h3 {
+        margin-top: 0;
+        margin-bottom: 15px;
+        color: #a0a0ff;
+        text-align: center;
+    }
+
+.game-content-bottom {
+    grid-area: bottom;
+    background-color: #3b3b5b;
+    padding: 15px;
+    border-radius: 5px;
+    overflow-y: auto;
     text-align: center;
 }
 
-.area-button {
-    width: 100%;
-    text-align: center;
-    padding: 0.75rem 1.5rem; 
-    border: none;
-    border-radius: 0.5rem;
-    cursor: pointer;
+/* --- Other Game Screens (adjust styles as needed) --- */
+.char-creation,
+.menu {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+    border: 3px solid #6c5ce7;
+    background-color: #2e2e4e;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(108, 92, 231, 0.5);
+    width: 80%;
+    max-width: 600px;
+    gap: 20px;
 }
+
+    .char-creation h2,
+    .menu h2 {
+        color: #e0e0e0;
+        margin-bottom: 20px;
+    }
+
+/* Log Component Styles */
+.game-log {
+    background-color: #1f1f3a;
+    color: #b0b0b0;
+    font-size: 0.75em;
+    padding: 10px 20px;
+    height: 100px; /* Consistent height for the log */
+    overflow-y: auto; /* Scrollbar appears when content overflows */
+    border-top: 2px solid #6c5ce7;
+    box-sizing: border-box;
+    width: 100%; /* Ensures it spans the width of #game */
+    /* Remove any `position: fixed` or `position: absolute` */
+    /* Remove `z-index` here unless truly needed for overlap with other fixed elements */
+}
+
+    .game-log p {
+        margin: 2px 0;
+    }
+
+/* Basic styling for other components to make them visible */
+/*.combat-arena,*/
+.character-sheet-container,
+.inventory-container,
+.shop-container {
+    width: 90%;
+    height: 90%;
+    background-color: #3b3b5b;
+    border: 3px solid #6c5ce7;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(108, 92, 231, 0.5);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');

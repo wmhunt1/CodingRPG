@@ -1,24 +1,55 @@
-﻿#root {
-    /*max-width: 1280px;*/
-    margin: 0 auto;
-    padding: 2rem;
+﻿body, html, #root {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden; /* Prevent body scrolling if content is managed internally */
+    width:100%;
+}
+
+.app-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* Use full viewport height */
+    font-family: 'Press Start 2P', cursive; /* Match game font */
+    background-color: #1a1a2e; /* Dark background from game */
+    color: #e0e0e0; /* Light text color from game */
     text-align: center;
-    border: solid black 1px;
-    font-family: serif;
-    width:1000px;
-    height:750px
+    box-sizing: border-box; /* Include padding in height/width */
 }
 
-th, td {
-    padding-left: 1rem;
-    padding-right: 1rem;
+.app-header {
+    background-color: #4a4a70; /* HUD background color */
+    padding: 20px;
+    border-bottom: 3px solid #6c5ce7; /* Border from game components */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4); /* Subtle shadow */
+    z-index: 10; /* Ensure header is on top */
 }
 
-h1 {
-    text-align: center
+    .app-header h1 {
+        margin: 0;
+        color: #e0e0e0;
+        font-size: 2em; /* Adjust as needed */
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Retro text effect */
+    }
+
+.app-main {
+    flex-grow: 1; /* Allows the main content area to fill available space */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px; /* Padding around the game component */
+    box-sizing: border-box;
 }
-footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
+
+.app-footer {
+    background-color: #1f1f3a; /* Game log background color */
+    padding: 15px;
+    border-top: 3px solid #6c5ce7; /* Border from game components */
+    font-size: 0.7em;
+    color: #b0b0b0; /* Log text color */
+    box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.4); /* Subtle shadow */
+    z-index: 10; /* Ensure footer is on top */
 }
+
+/* Ensure the 'Press Start 2P' font is available */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');

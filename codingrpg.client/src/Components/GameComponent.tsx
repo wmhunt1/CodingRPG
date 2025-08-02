@@ -6,7 +6,9 @@ import CreateCharacter from "./CreateCharacterComponent";
 import Inventory from "./InventoryComponent";
 import Log from "./LogComponent";
 import { MainMenu } from "./MenuComponent";
+import Settings from "./SettingsComponent";
 import Shop from "./ShopComponent"
+import Toolbar from "./ToolbarComponent"
 
 // Model Imports
 import { Character, Hero, Rat } from "../Models/CharacterModel";
@@ -34,8 +36,14 @@ function Game() {
     const [hero, setHero] = useState<Hero>(new Hero("Hero"));
     const [enemies, setEnemies] = useState<Character[]>(() => []);
     const [gameLog, setGameLog] = useState<string[]>(["Welcome to Coding RPG"]);
-    const [party, setParty] = useState<Character[]>(() => [hero]);
-  
+    const [party, setParty] = useState<Character[]>(() => [hero, ...hero.party])
+
+    //const [combat, setCombat] = useState(null)
+    //const [dialogue, setDialogue] = useState(null)
+    //const [dungeon, setDungeon] = useState(null)
+    //const [shop, setShop] = useState(null)
+    //const [skill, setSkill] = useState(null)
+    //const [town, setTown] = useState(null)
 
     // This new memoized function is used to add new messages to the game log
     const addGameLog = useCallback((message: string) => {
@@ -48,7 +56,7 @@ function Game() {
     }, []);
 
     const handleCombat = useCallback((enemies: Character[]) => {
-        console.log("halding combat")
+        console.log("handling combat")
         setActiveScreen("Combat");
         setEnemies(enemies)
     }, [setEnemies]);
@@ -57,18 +65,35 @@ function Game() {
         console.log("Exiting Game");
     }, []);
 
+    // --- UPDATED handleHeal FUNCTION ---
     const handleHeal = useCallback(() => {
+        // Use a functional update to get the latest hero state
         setHero((prevHero) => {
+            // Check if healing is needed
             if (prevHero.currentHP < prevHero.maxHP) {
-                // Use the new centralized log function
+                // Create the new, healed hero object
+                const updatedHero = { ...prevHero, currentHP: prevHero.maxHP };
+
+                // Log the message
                 addGameLog(`${prevHero.name} fully healed!`);
-                return { ...prevHero, currentHP: prevHero.maxHP };
+
+                // Update the party array to reflect the healed hero
+                setParty((prevParty) => {
+                    const newParty = [...prevParty];
+                    // Assuming the main hero is always the first party member
+                    newParty[0] = updatedHero;
+                    return newParty;
+                });
+
+                // Return the updated hero for the `setHero` state
+                return updatedHero;
             }
-            // Use the new centralized log function
+            // If already at full health, just log a message and return the hero unchanged
             addGameLog(`${prevHero.name} is already at full health.`);
             return prevHero;
         });
-    }, [addGameLog]);
+    }, [addGameLog, setParty]); // Added setParty to the dependency array
+    // --- END OF UPDATED FUNCTION ---
 
     const handleLoadGame = useCallback(() => {
         setActiveScreen("LoadGame");
@@ -80,7 +105,7 @@ function Game() {
 
     const handleOnCreateEnd = useCallback((updatedHero: Hero) => {
         setHero(updatedHero);
-        setParty([updatedHero]);
+        setParty([updatedHero, ...updatedHero.party]);
         setActiveScreen("Game");
     }, []);
 
@@ -146,7 +171,7 @@ function Game() {
     const area = {
         name: "Test Area", areaOptions: [{
             label: "Combat Test",
-            onClick: () => handleCombat([new Rat("Rat")]),
+            onClick: () => handleCombat([new Rat("Rat"), new Rat("Rat"), new Rat("Rat"), new Rat("Rat")]),
         },
         {
             label: "Heal Test",
@@ -175,23 +200,24 @@ function Game() {
                     />
                 )}
                 {activeScreen === "Game" && (
-                    <>
-                        <div className="hud">
-                            <div className="hud-options">
-                                <button className="hud-button" onClick={showCharacterSheet}>
-                                    Character Sheet
-                                </button>
-                                <button className="hud-button" onClick={showInventory}>
-                                    Inventory
-                                </button>
-                                <button className="hud-button" onClick={() => setActiveScreen("MainMenu")}>
-                                    Main Menu
-                                </button>
-                            </div>
+                    // This is the new grid container for the "Game" screen
+                    <div className="game-layout-grid">
+                        <div className="toolbar">
+                            <Toolbar characterSheet={() => showCharacterSheet()} inventory={() => showInventory()} mainMenu={() => setActiveScreen("MainMenu")} />
                         </div>
-                        <div id="game-content">
+                        <div className="game-content-left">
+                            <h3>Party</h3>
+                            {party.map((partyMember, index) => (
+                                <div key={index}>
+                                    <p>{partyMember.name} - LV: {partyMember.level}</p>
+                                    <p>HP: {partyMember.currentHP}/{partyMember.maxHP}</p>
+                                </div>
+                            ))}
+                        </div>
+                        <div className="game-content-main">
                             <h2>{area.name}</h2>
-                            {/* This div could house current area information or events */}
+                            <p>Placeholder for Main Game Content</p>
+                            {/* Map */}
                         </div>
                         <div className="area-options">
                             <h3>Area Options</h3>
@@ -201,14 +227,18 @@ function Game() {
                                 </button>
                             ))}
                         </div>
-                    </>
+                        <div className="game-content-bottom">
+                            {/*Movement*/}
+                            <h3>Interaction / Status</h3>
+                            <p>Placeholder for Bottom Panel</p>
+                        </div>
+                    </div>
                 )}
                 {activeScreen === "Inventory" && (
                     <Inventory
                         hero={hero}
                         back={() => setActiveScreen("Game")}
-                        onUpdateHero={handleUpdateSingleHero} // Pass the new handler
-                        //gameLog={gameLog}
+                        onUpdateHero={handleUpdateSingleHero}
                         addGameLog={addGameLog}
                     />
                 )}
@@ -240,12 +270,7 @@ function Game() {
                     />
                 )}
                 {activeScreen === "Settings" && (
-                    <div className="char-creation">
-                        <h2>Settings</h2>
-                        <button className="menu-button" onClick={() => setActiveScreen("MainMenu")}>
-                            Back
-                        </button>
-                    </div>
+                    <Settings back={() => setActiveScreen("MainMenu")} />
                 )}
                 {activeScreen === "Shop" && (
                     <Shop back={() => setActiveScreen("Game")} />
