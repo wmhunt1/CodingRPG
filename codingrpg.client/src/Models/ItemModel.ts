@@ -3,6 +3,7 @@ export class Item {
     name: string;
     quantity: number;
     cost: number;
+    description:string = ""
     constructor(name: string, quantity: number,cost:number) {
         this.name = name
         this.quantity = quantity;
@@ -58,6 +59,7 @@ export class Weapon extends Equipable {
     constructor(name: string, quantity: number, power: number, slot: string, cost: number) {
         super(name,quantity,slot,cost)
         this.power = power;
+        this.description = `A ${this.name} with ${this.power}`
     }
     override use(user: Character): void {
         // Store a reference to the old weapon
@@ -85,7 +87,8 @@ export class Weapon extends Equipable {
 }
 export class BluntWeapon extends Weapon {
     constructor(name: string, quantity: number, power: number, slot: string, cost: number) {
-        super(name, quantity, power, slot,cost)
+        super(name, quantity, power, slot, cost)
+        this.description = `${this.power} DMG`
     }
 }
 export class Club extends BluntWeapon {
@@ -95,7 +98,8 @@ export class Club extends BluntWeapon {
         const power = 2;
         const slot = "Weapon"
         const cost = 2
-        super(name, quantity, power, slot,cost)
+        super(name, quantity, power, slot, cost)
+        this.description = `${this.power} DMG`
 
     }
 }
@@ -106,13 +110,15 @@ export class Stick extends BluntWeapon {
         const power = 1;
         const slot = "Weapon"
         const cost = 1
-        super(name, quantity, power, slot,cost)
+        super(name, quantity, power, slot, cost)
+        this.description = `A ${this.name} picked up off the ground. Deals ${this.power} DMG`
 
     }
 }
 export class NaturalWeapon extends Weapon {
     constructor(name: string, quantity: number, power: number, slot: string, cost: number) {
-        super(name, quantity, power,slot,cost)
+        super(name, quantity, power, slot, cost)
+        this.description = `${this.power} DMG`
     }
 }
 export class BareFist extends NaturalWeapon {
@@ -122,7 +128,8 @@ export class BareFist extends NaturalWeapon {
         const power = 1;
         const slot = "Weapon"
         const cost = 0;
-        super(name, quantity, power,slot,cost)
+        super(name, quantity, power, slot, cost)
+        this.description = `${this.power} DMG`
 
     }
 }
@@ -133,6 +140,7 @@ export class RatBite extends NaturalWeapon {
         const power = 1;
         const slot = "Weapon"
         const cost = 0
-        super(name, quantity, power,slot,cost)
+        super(name, quantity, power, slot, cost)
+        this.description = `${this.power} DMG`
     }
 }

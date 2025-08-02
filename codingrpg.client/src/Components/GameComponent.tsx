@@ -212,6 +212,8 @@ function Game() {
                                 <div key={index}>
                                     <p>{partyMember.name} - LV: {partyMember.level}</p>
                                     <p>HP: {partyMember.currentHP}/{partyMember.maxHP}</p>
+                                    <p>HP: {partyMember.currentMP}/{partyMember.maxMP}</p>
+                                    <p>HP: {partyMember.currentSP}/{partyMember.maxSP}</p>
                                 </div>
                             ))}
                         </div>
@@ -229,9 +231,8 @@ function Game() {
                             ))}
                         </div>
                         <div className="game-content-bottom">
-                            {/*Movement*/}
-                            <h3>Interaction / Status</h3>
-                            <p>Placeholder for Bottom Panel</p>
+                            <h3>{area.name} (X,Y)</h3>
+                            <p>Controls</p>
                         </div>
                     </div>
                 )}

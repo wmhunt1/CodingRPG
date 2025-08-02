@@ -7,6 +7,10 @@ export class Character {
     maxXP: number = 50;
     currentHP: number = 10;
     maxHP: number = 10;
+    currentMP: number = 10;
+    maxMP: number = 10;
+    currentSP: number = 10;
+    maxSP: number = 10;
     gold: number = 0;
     inventory: Item[] = []
     weapon: Weapon = new BareFist();
@@ -17,6 +21,8 @@ export class Beast extends Character {
     constructor(name: string) {
         super()
         this.name = name;
+        this.currentMP = 0;
+        this.maxMP = 0;
     }
 }
 export class Humanoid extends Character {

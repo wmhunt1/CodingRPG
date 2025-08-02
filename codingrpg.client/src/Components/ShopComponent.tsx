@@ -1,6 +1,6 @@
 import '../StyleSheets/GameStyle.css';
 import { Character } from "../Models/CharacterModel";
-import {Item } from "../Models/ItemModel"
+import { Item } from "../Models/ItemModel"
 import { ShopModel } from "../Models/ShopModel"
 
 import { useState, useEffect } from "react";
@@ -12,11 +12,11 @@ interface ShopProps {
     onUpdateHero: (updatedHero: Character) => void;
     addGameLog: (message: string) => void;
 }
-type ShopState =
-    | "Buy"
-    | "Sell";
+//type ShopState =
+//    | "Buy"
+//    | "Sell";
 function Shop({ hero, back, shop, onUpdateHero, addGameLog }: ShopProps) {
-    const [activeScreen, setActiveScreen] = useState<ShopState>("Buy");
+    //const [activeScreen, setActiveScreen] = useState<ShopState>("Buy");
     const [currentHero, setCurrentHero] = useState(hero);
     const shopInventory = shop.inventory;
     useEffect(() => {
@@ -58,7 +58,7 @@ function Shop({ hero, back, shop, onUpdateHero, addGameLog }: ShopProps) {
     }
     function handleSellItem(itemToSell: Item) {
         const updatedHero: Character = JSON.parse(JSON.stringify(currentHero));
-        updatedHero.gold += itemToSell.cost / 2;
+        updatedHero.gold += Math.floor(itemToSell.cost / 2);
         // Find the index of the item in the updated hero's inventory
         const itemIndex = updatedHero.inventory.findIndex((item: Item) => item.name === itemToSell.name);
 
@@ -77,46 +77,61 @@ function Shop({ hero, back, shop, onUpdateHero, addGameLog }: ShopProps) {
         }
         setCurrentHero(updatedHero);
         onUpdateHero(updatedHero);
-        addGameLog(`${hero.name} has sold ${itemToSell.name} for ${itemToSell.cost/2}.`);
+        addGameLog(`${hero.name} has sold ${itemToSell.name} for ${Math.floor(itemToSell.cost / 2)}.`);
     }
     return (
-        <div id="shop">
-            <h2>{shop.name}</h2>
-            <h3>{currentHero.name}: {currentHero.gold} GP</h3>
-            <div id="inventory" className="inventory-wrapper">
-                {activeScreen == "Buy" && (<div id="shop-inventory" className="inventory-items-container">
-                        <div>
-                            {
-                                shopInventory.map((item, index) => (
-                                    <p key={index}>
-                                        {item.name} x {item.quantity}{' '}
-                                        <button onClick={() => handleBuyItem(item)}>Buy({item.cost} GP)</button>
-                                    </p>
-                                ))
-                            }
-                        </div>
-                </div>)}
-                {activeScreen == "Sell" && (<div id="player-inventory" className="inventory-items-container">
+        <div id="shop" className="game-layout-grid">
+            <div className="toolbar">
+                <h2>{shop.name}</h2>
+            </div>
+            <div className="game-content-left">
+                <h3>Player Gold</h3>
+                <p>{currentHero.gold} GP</p>
+            </div>
+            <div className="game-content-main">
+            <div className="inventory-display-area">
+           <div id="shop-inventory" className="inventory-items-container">
+           <h3>Buy</h3>
+                    <div className="shop-items">
+                        {
+                            shopInventory.map((item, index) => (
+                                <p key={index}>
+                                    <button className="buy-sell-button" onClick={() => handleBuyItem(item)}>Buy {item.name} ({item.description}) ({item.cost} GP)</button>
+                                </p>
+                            ))
+                        }
+                    </div>
+                </div>
+                    <div id="player-inventory" className="inventory-items-container">
+                <h3>Sell</h3>
+                <div>
                     {currentHero.inventory.length > 0 ? (
-                        <div>
+                        <div className = "shop-items">
                             {
                                 currentHero.inventory.map((item, index) => (
                                     <p key={index}>
-                                        {item.name} x {item.quantity}{' '} 
-                                        <button onClick={() => handleSellItem(item)}>Sell({item.cost/2} GP)</button>
+                                        <button className="buy-sell-button" onClick={() => handleSellItem(item)}>Sell {item.name} x {item.quantity}{' '} ({Math.floor(item.cost / 2)} GP)</button>
                                     </p>
                                 ))
                             }
                         </div>
                     ) : (
-                        <div><p>Your inventory is empty</p></div>
+                        <div className="shop-items"><p>Your inventory is empty</p></div>
                     )}
-                </div>)}
+                    </div>
+                </div>
+                </div>
             </div>
-            <div className="controls">
-                <button className='menu-button' onClick={() => setActiveScreen("Buy")}>Buy</button>
-                <button className='menu-button' onClick={() => setActiveScreen("Sell")}>Sell</button>
-                <button className='menu-button' onClick={() => back()}>Back</button>
+            <div className="area-options">
+                <h3>Options</h3>
+                {/*<button className='area-button' onClick={() => setActiveScreen("Buy")}>Buy</button>*/}
+                {/*<button className='area-button' onClick={() => setActiveScreen("Sell")}>Sell</button>*/}
+                <button className='area-button' onClick={() => back()}>Leave</button>
+            </div>
+            <div className="game-content-bottom">
+                {/*Movement*/}
+                <h3>Interaction / Status</h3>
+                <p>Placeholder for Bottom Panel</p>
             </div>
         </div>
     );

@@ -12,7 +12,7 @@ interface InventoryProps {
     addGameLog: (message: string) => void;
 }
 
-function Inventory({ hero, back, onUpdateHero,addGameLog }: InventoryProps) {
+function Inventory({ hero, back, onUpdateHero, addGameLog }: InventoryProps) {
     const [currentHero, setCurrentHero] = useState(hero);
     const [inventory, setInventory] = useState(hero.inventory);
 
@@ -37,7 +37,7 @@ function Inventory({ hero, back, onUpdateHero,addGameLog }: InventoryProps) {
             // Create a new array for the updated inventory to ensure immutability
             const newInventory = [...updatedHero.inventory];
 
- 
+
             newInventory[itemIndex].quantity--;
 
             if (newInventory[itemIndex].quantity <= 0) {
@@ -58,17 +58,23 @@ function Inventory({ hero, back, onUpdateHero,addGameLog }: InventoryProps) {
     }
 
     return (
-        <div id="inventory" className="inventory-wrapper">
-            <h2>{currentHero.name}'s Inventory</h2>
-            <div className="inventory-items-container">
+        <div className="game-layout-grid inventory-wrapper" id="inventory">
+            <div className="toolbar">
+                <h2>{currentHero.name}'s Inventory</h2>
+            </div>
+            <div className="game-content-left">
+                <h3>Placeholder</h3>
+            </div>
+            <div className="game-content-main inventory-items-container">
+            <div className="inventory-display-area">
                 {inventory.length > 0 ? (
-                    <div>
+                    <div className="inventory-items">
                         {
                             inventory.map((item, index) => (
                                 <p key={index}>
-                                    {item.name} x {item.quantity}{' '}
-                                    <button onClick={() => handleUseItem(item)}>
-                                        {"slot" in item ? "Equip" : "Use"}</button>
+                                    {item.name} ({item.description}) 
+                                    <button className="use-equip-button"onClick={() => handleUseItem(item)}>
+                                        {"slot" in item ? "Equip" : "Use"} x {item.quantity}</button>
                                 </p>
                             ))
                         }
@@ -76,12 +82,20 @@ function Inventory({ hero, back, onUpdateHero,addGameLog }: InventoryProps) {
                 ) : (
                     <div><p>Your inventory is empty</p></div>
                 )}
+                </div>
             </div>
-            <div className="menu">
-                <button className='menu-button' onClick={() => back()}>Back</button>
+            <div className="area-options">
+                <h3>Area Options</h3>
+                <button className='area-button' onClick={() => back()}>Back</button>
+            </div>
+            <div className="game-content-bottom">
+                {/*Movement*/}
+                <h3>Interaction / Status</h3>
+                <p>Placeholder for Bottom Panel</p>
             </div>
         </div>
     );
 }
+
 
 export default Inventory;

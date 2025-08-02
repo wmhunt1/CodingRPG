@@ -12,6 +12,7 @@
     border: 3px solid #6c5ce7; /* Apply game border here, for the whole game area */
     border-radius: 8px; /* Apply game border-radius here */
     box-shadow: 0 0 20px rgba(108, 92, 231, 0.5); /* Apply game shadow here */
+    width: 100%
 }
 
 .game-screen {
@@ -60,9 +61,13 @@
     gap: 15px;
 }
 
-.toolbar-button,
+
 .area-button,
-.menu-button {
+.buy-sell-button,
+.menu-button,
+.toolbar-button,
+.use-equip-button
+{
     background-color: #8e44ad;
     color: white;
     padding: 10px 15px;
@@ -153,8 +158,9 @@
     background-color: #2e2e4e;
     border-radius: 8px;
     box-shadow: 0 0 20px rgba(108, 92, 231, 0.5);
-    width: 80%;
-    max-width: 600px;
+    /* Changed to full width as requested */
+    width: 100%;
+    /* Removed max-width to allow it to expand */
     gap: 20px;
 }
 
@@ -184,12 +190,11 @@
     }
 
 /* Basic styling for other components to make them visible */
-/*.combat-arena,*/
 .character-sheet-container,
 .inventory-container,
 .shop-container {
-    width: 90%;
-    height: 90%;
+    width: 100%; /* Updated to 100% */
+    height: 100%; /* Updated to 100% */
     background-color: #3b3b5b;
     border: 3px solid #6c5ce7;
     border-radius: 8px;
@@ -201,6 +206,75 @@
     padding: 20px;
     box-sizing: border-box;
     text-align: center;
+}
+
+/* Ensure these styles are present and correct */
+
+.combatArena {
+    display: flex;
+    flex-direction: column; /* Stacks children vertically */
+    align-items: center; /* Centers children horizontally */
+    width: 100%; /* Make sure it's taking up space */
+    min-height: 200px; /* Add a minimum height for visibility during development */
+    border: 1px dashed blue; /* Add a temporary border to see its boundaries */
+}
+
+.combat-display-area,
+.inventory-display-area,
+.stats-display-area { /* This is the new wrapper div */
+    display: flex;
+    justify-content: space-around; /* Or space-between */
+    width: 100%; /* Important: Make sure it spans the width */
+    margin-bottom: 20px;
+    gap: 20px; /* Space between hero and enemy containers */
+
+}
+
+.heroes-container,
+.enemies-container,
+.inventory-items-container
+.stats-container{
+    display: flex;
+    flex-direction: column; /* This makes items stack vertically */
+    gap: 15px; /* Spacing between the vertically stacked items */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    flex: 1;
+    min-width: 300px; /* Ensures the container itself has a minimum width */
+    max-height: 400px; /* Or a fixed height, for vertical scrolling */
+    overflow-y: auto;
+    overflow-x: hidden; /* Crucial to prevent horizontal scroll */
+    box-sizing: border-box;
+}
+
+    .heroes-container,
+    .enemies-container,
+    .stats-container, .inventory-items-container h3 {
+        background-color: #3b3b5b;
+    }
+
+.heroes-container {
+    align-items: center;
+}
+
+.enemies-container {
+    align-items: center;
+}
+
+.character-stats, .inventory-items,.shop-items, .stats {
+    background-color: #e0e0e0;
+    padding: 10px;
+    border-radius: 5px;
+    text-align: center;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+    color: #333;
+    width: 100%; /* Make each character stat box take full width of its container */
+    /* Removed max-width to let it expand to full width of parent container */
+    /* If text is long and causes horizontal overflow within a character-stats div */
+    word-break: break-word; /* Breaks long words that would otherwise overflow */
+    white-space: normal; /* Ensures text wraps if it's currently preventing wraps */
 }
 
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');

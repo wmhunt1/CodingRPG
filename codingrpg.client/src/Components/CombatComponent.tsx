@@ -80,54 +80,71 @@ function CombatArena({ heroes, enemies, onCombatEnd, onUpdateHeroes, addGameLog 
     }, [addGameLog]);
 
     return (
-        <div className="combatArena">
-            <h2>Combat</h2>
-            {combatOngoing ? (
-                <>
-                    <div className="combat-display-area">
-                        <div className="heroes-container">
-                            {currentHeroes.map((hero, index) => (
-                                <div key={index} className="character-stats">
-                                    <h3>{hero.name}</h3>
-                                    <p>
-                                        <span>
-                                            HP: {hero.currentHP}/{hero.maxHP}
-                                        </span>
-                                    </p>
-                                </div>
-                            ))}
-                        </div>
-
-                        <div className="enemies-container">
-                            {currentEnemies.map((enemy, index) => (
-                                <div key={index} className="character-stats">
-                                    <h3>{enemy.name}</h3>
-                                    <p>
-                                        <span>
-                                            HP: {enemy.currentHP}/{enemy.maxHP}
-                                        </span>
-                                    </p>
-                                </div>
-                            ))}
-                        </div>
+        <div className="game-layout-grid">
+            <div className="toolbar">
+                <h2>Combat</h2>
+            </div>
+            <div className="game-content-left">
+                <h3>Placeholder</h3>
+                <p>Placeholder for spellcasting etc perhaps</p>
+            </div>
+            <div className="game-content-main">
+                <div className="combat-display-area">
+                    <div className="heroes-container">
+                        <h3>Heroes</h3>
+                        {currentHeroes.map((hero, index) => (
+                            <div key={index} className="character-stats">
+                                <h3>{hero.name}</h3>
+                                <p>
+                                    <span>
+                                        HP: {hero.currentHP}/{hero.maxHP} -
+                                        MP: {hero.currentMP}/{hero.maxMP} -
+                                        SP: {hero.currentSP}/{hero.maxSP}
+                                    </span>
+                                </p>
+                            </div>
+                        ))}
                     </div>
-
-                    <div className="controls">
-                        <button className="menu-button" onClick={handleCombatRound}>
+                    <div className="enemies-container">
+                        <h3>Enemies</h3>
+                        {currentEnemies.map((enemy, index) => (
+                            <div key={index} className="character-stats">
+                                <h3>{enemy.name}</h3>
+                                <p>
+                                    <span>
+                                        HP: {enemy.currentHP}/{enemy.maxHP} -
+                                        MP: {enemy.currentMP}/{enemy.maxMP} -
+                                        SP: {enemy.currentSP}/{enemy.maxSP}
+                                    </span>
+                                </p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+            <div className="area-options">
+                <h3>Combat Options</h3>
+                {/*Maybe use item etc overhere*/}
+                {combatOngoing ? (
+                    <>
+                        <button className="area-button" onClick={handleCombatRound}>
                             Attack
                         </button>
-                        <button className="menu-button" onClick={handleRun}>
+                        <button className="area-button" onClick={handleRun}>
                             Run
                         </button>
-                    </div>
-                </>
-            ) : (
-                <div className="controls">
-                    <button className="menu-button" onClick={() => onCombatEnd("exit", currentHeroes)}>
+                    </>
+                ) : (
+                    <button className="area-button" onClick={() => onCombatEnd("exit", currentHeroes)}>
                         Exit
                     </button>
-                </div>
-            )}
+                )}
+
+            </div>
+            <div className="game-content-bottom">
+                <h3>Placeholder</h3>
+                <p>Placeholder</p>
+            </div>
         </div>
     );
 }
