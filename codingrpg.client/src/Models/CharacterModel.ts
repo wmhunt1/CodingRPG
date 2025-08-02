@@ -1,4 +1,4 @@
-import {BareFist, Club,HealthPotion, Item,RatBite,Stick,Weapon } from './ItemModel.ts';
+import {BareFist, Item,RatBite,Stick,Weapon } from './ItemModel.ts';
 
 export class Character {
     name: string = "";
@@ -31,12 +31,12 @@ export class Hero extends Humanoid {
         this.name = name;
         this.gold = 50;
         this.weapon = new Stick();
-        this.inventory = [new HealthPotion("Basic Health Potion",1,5),new Club()]
+        this.inventory = []
     }
 } export class Rat extends Beast {
-    constructor(name: string = "Rat") {
+    constructor() {
+        const name = "Rat";
         super(name)
-        this.name = name;
         this.currentXP = 5;
         this.currentHP = 5;
         this.maxHP = 5;

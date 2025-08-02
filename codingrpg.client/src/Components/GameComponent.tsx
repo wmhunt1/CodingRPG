@@ -12,6 +12,7 @@ import Toolbar from "./ToolbarComponent"
 
 // Model Imports
 import { Character, Hero, Rat } from "../Models/CharacterModel";
+import { ShopModel, TestShop } from "../Models/ShopModel"
 
 // React Imports
 import { useState, useCallback } from "react";
@@ -41,7 +42,7 @@ function Game() {
     //const [combat, setCombat] = useState(null)
     //const [dialogue, setDialogue] = useState(null)
     //const [dungeon, setDungeon] = useState(null)
-    //const [shop, setShop] = useState(null)
+    const [currentShop, setCurrentShop] = useState<ShopModel>(new TestShop())
     //const [skill, setSkill] = useState(null)
     //const [town, setTown] = useState(null)
 
@@ -113,11 +114,11 @@ function Game() {
         setActiveScreen("Settings");
     }, []);
 
-    const handleShop = useCallback(() => {
-        setActiveScreen("Shop");
+    const handleShop = useCallback((shop: ShopModel) => {
+        setCurrentShop(shop)
+        setActiveScreen("Shop")
         // Use the new centralized log function
-        addGameLog("The shop is not implemented yet.");
-    }, [addGameLog]);
+    }, []);
 
     const handleCombatEnd = useCallback(
         (result: "victory" | "defeat" | "run" | "exit", updatedHeroes: Hero[]) => {
@@ -171,7 +172,7 @@ function Game() {
     const area = {
         name: "Test Area", areaOptions: [{
             label: "Combat Test",
-            onClick: () => handleCombat([new Rat("Rat"), new Rat("Rat"), new Rat("Rat"), new Rat("Rat")]),
+            onClick: () => handleCombat([new Rat()]),
         },
         {
             label: "Heal Test",
@@ -179,7 +180,7 @@ function Game() {
         },
         {
             label: "Shop Test",
-            onClick: handleShop,
+            onClick: () => handleShop(new TestShop()),
         },]
     }
 
@@ -273,7 +274,8 @@ function Game() {
                     <Settings back={() => setActiveScreen("MainMenu")} />
                 )}
                 {activeScreen === "Shop" && (
-                    <Shop back={() => setActiveScreen("Game")} />
+                    <Shop hero={hero} back={() => setActiveScreen("Game")} shop={currentShop} onUpdateHero={handleUpdateSingleHero}
+                        addGameLog={addGameLog} />
                 )}
             </div>
             <Log logEntries={gameLog} />

@@ -2,16 +2,18 @@ import {Character  } from "./CharacterModel"
 export class Item {
     name: string;
     quantity: number;
-    constructor(name: string, quantity: number) {
+    cost: number;
+    constructor(name: string, quantity: number,cost:number) {
         this.name = name
         this.quantity = quantity;
+        this.cost = cost;
     }
     use(user:Character): void {console.log(user.name) };
 }
 export class Consumable extends Item {
     consumedValue: number;
-    constructor(name: string, quantity: number,consumedValue: number) {
-        super(name,quantity)
+    constructor(name: string, quantity: number, consumedValue: number, cost: number) {
+        super(name,quantity,cost)
         this.consumedValue = consumedValue
     }
     override use(user: Character): void {
@@ -19,8 +21,8 @@ export class Consumable extends Item {
     }
 }
 export class Potion extends Consumable {
-    constructor(name: string, quantity: number, consumedValue: number) {
-        super(name,quantity,consumedValue)
+    constructor(name: string, quantity: number, consumedValue: number, cost: number) {
+        super(name,quantity,consumedValue,cost)
 
     }
     override use(user: Character): void { // Method returns void (nothing)
@@ -28,8 +30,8 @@ export class Potion extends Consumable {
     }
 }
 export class HealthPotion extends Potion {
-    constructor(name: string, quantity: number, consumedValue: number) {
-        super(name, quantity, consumedValue)
+    constructor(name: string, quantity: number, consumedValue: number, cost: number) {
+        super(name, quantity, consumedValue,cost)
     }
     override use(user: Character): void { // Method returns void (nothing)
         console.log(`${user.name} drinks ${this.name}`)
@@ -41,8 +43,8 @@ export class HealthPotion extends Potion {
 }
 export class Equipable extends Item {
     slot:string
-    constructor(name: string, quantity: number,slot:string) {
-        super(name,quantity)
+    constructor(name: string, quantity: number, slot: string, cost: number) {
+        super(name,quantity,cost)
         this.name = name;
         this.quantity = quantity;
         this.slot = slot;
@@ -53,8 +55,8 @@ export class Equipable extends Item {
 }
 export class Weapon extends Equipable {
     power: number;
-    constructor(name: string, quantity: number, power: number, slot: string) {
-        super(name,quantity,slot)
+    constructor(name: string, quantity: number, power: number, slot: string, cost: number) {
+        super(name,quantity,slot,cost)
         this.power = power;
     }
     override use(user: Character): void {
@@ -75,15 +77,15 @@ export class Weapon extends Equipable {
             } else {
                 // If not, add the old weapon to the inventory as a new item
                 // We create a new instance with quantity 1 for the inventory.
-                const oldWeaponForInventory = new Weapon(oldWeapon.name, 1, oldWeapon.power, oldWeapon.slot);
+                const oldWeaponForInventory = new Weapon(oldWeapon.name, 1, oldWeapon.power, oldWeapon.slot,oldWeapon.cost);
                 user.inventory.push(oldWeaponForInventory);
             }
         }
     }
 }
 export class BluntWeapon extends Weapon {
-    constructor(name: string, quantity: number, power: number, slot: string) {
-        super(name, quantity, power, slot)
+    constructor(name: string, quantity: number, power: number, slot: string, cost: number) {
+        super(name, quantity, power, slot,cost)
     }
 }
 export class Club extends BluntWeapon {
@@ -92,7 +94,8 @@ export class Club extends BluntWeapon {
         const quantity = 1;
         const power = 2;
         const slot = "Weapon"
-        super(name, quantity, power, slot)
+        const cost = 2
+        super(name, quantity, power, slot,cost)
 
     }
 }
@@ -102,13 +105,14 @@ export class Stick extends BluntWeapon {
         const quantity = 1;
         const power = 1;
         const slot = "Weapon"
-        super(name, quantity, power, slot)
+        const cost = 1
+        super(name, quantity, power, slot,cost)
 
     }
 }
 export class NaturalWeapon extends Weapon {
-    constructor(name: string, quantity: number, power: number, slot: string) {
-        super(name, quantity, power,slot)
+    constructor(name: string, quantity: number, power: number, slot: string, cost: number) {
+        super(name, quantity, power,slot,cost)
     }
 }
 export class BareFist extends NaturalWeapon {
@@ -117,7 +121,8 @@ export class BareFist extends NaturalWeapon {
         const quantity = 1;
         const power = 1;
         const slot = "Weapon"
-        super(name, quantity, power,slot)
+        const cost = 0;
+        super(name, quantity, power,slot,cost)
 
     }
 }
@@ -127,6 +132,7 @@ export class RatBite extends NaturalWeapon {
         const quantity = 1;
         const power = 1;
         const slot = "Weapon"
-        super(name, quantity, power,slot)
+        const cost = 0
+        super(name, quantity, power,slot,cost)
     }
 }
