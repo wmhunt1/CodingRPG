@@ -11,7 +11,10 @@ import { useEffect, useState, useCallback } from "react";
 import "../StyleSheets/GameStyle.css";
 import "../StyleSheets/CombatStyle.css";
 
-// The interface now includes the new props for the game log
+// Utility Imports
+import { executeCombatRound } from "../Utils/CombatUtils";
+import { checkCombatOutcome } from "../Utils/CombatOutcomeUtils";
+
 interface CombatArenaProps {
     heroes: Hero[];
     enemies: Character[];
@@ -21,137 +24,67 @@ interface CombatArenaProps {
     addGameLog: (message: string) => void;
 }
 
-// The component accepts the new props
 function CombatArena({ heroes, enemies, onCombatEnd, onUpdateHeroes, addGameLog }: CombatArenaProps) {
-
     const [combatOngoing, setCombatOngoing] = useState(true);
-    const [currentHeroes, setCurrentHeroes] = useState<Character[]>(() =>
+    const [currentHeroes, setCurrentHeroes] = useState<Hero[]>(() =>
         heroes.map((hero) => ({ ...hero }))
     );
     const [currentEnemies, setCurrentEnemies] = useState<Character[]>(() =>
         enemies.map((enemy) => ({ ...enemy }))
     );
-    // The local combatLog state is removed and replaced by the prop.
-    // const [combatLog, setCombatLog] = useState<string[]>(["Fight!"]);
 
     useEffect(() => {
         onUpdateHeroes(currentHeroes);
     }, [currentHeroes, onUpdateHeroes]);
 
-    const checkCombatantHP = useCallback(
-        (checkedHeroes: Character[], checkedEnemies: Character[]) => {
-            const allEnemiesDefeated = checkedEnemies.every((enemy) => enemy.currentHP <= 0);
-            const allHeroesDefeated = checkedHeroes.every((hero) => hero.currentHP <= 0);
-
-            if (allHeroesDefeated || allEnemiesDefeated) {
-                setCombatOngoing(false);
-
-                if (allHeroesDefeated) {
-                    // Use the prop function to update the main log
-                    addGameLog(`All heroes are defeated! You have lost!`);
-                    onCombatEnd("defeat", checkedHeroes);
-                } else {
-                    // Use the prop function to update the main log
-                    addGameLog(`All enemies are defeated! Heroes are victorious!`);
-
-                    const finalHeroes = checkedHeroes.map((hero) => {
-                        const updatedHero = { ...hero };
-
-                        while (updatedHero.currentXP >= updatedHero.maxXP) {
-                            updatedHero.level += 1;
-                            updatedHero.currentXP -= updatedHero.maxXP;
-                            updatedHero.maxXP *= 2;
-                            updatedHero.maxHP += 10;
-                            updatedHero.currentHP = Math.min(updatedHero.currentHP + 10, updatedHero.maxHP);
-                            // Use the prop function to update the main log
-                            addGameLog(`${updatedHero.name} is now level ${updatedHero.level}!`);
-                        }
-                        return updatedHero;
-                    });
-
-                    setCurrentHeroes(finalHeroes);
-                    onCombatEnd("victory", finalHeroes);
-                }
+    // This useCallback now calls the external utility
+    const handleCheckCombatOutcome = useCallback(
+        (checkedHeroes: Hero[], checkedEnemies: Character[]) => {
+            const { combatOngoing: newCombatOngoing, finalHeroes } = checkCombatOutcome(
+                checkedHeroes,
+                checkedEnemies,
+                onCombatEnd,
+                addGameLog
+            );
+            setCombatOngoing(newCombatOngoing);
+            if (!newCombatOngoing && finalHeroes) {
+                setCurrentHeroes(finalHeroes); // Update heroes with leveled-up versions
             }
         },
-        [onCombatEnd, addGameLog] // Added addGameLog to dependencies
+        [onCombatEnd, addGameLog]
     );
 
     const handleCombatRound = useCallback(() => {
         if (!combatOngoing) return;
 
-        const updatedHeroes = currentHeroes.map((h) => ({ ...h }));
-        let updatedEnemies = currentEnemies.map((e) => ({ ...e }));
-
-        // --- Heroes' Turn ---
-        updatedHeroes.forEach((hero) => {
-            if (hero.currentHP <= 0) return;
-
-            const targetEnemy = updatedEnemies.find((enemy) => enemy.currentHP > 0);
-
-            if (targetEnemy) {
-                const damageToEnemy = hero.weapon.power;
-                targetEnemy.currentHP -= damageToEnemy;
-                // Use the prop function to update the main log
-                addGameLog(`${hero.name} attacks ${targetEnemy.name} for ${damageToEnemy} damage!`);
-
-                if (targetEnemy.currentHP <= 0) {
-                    // Use the prop function to update the main log
-                    addGameLog(`${targetEnemy.name} has been defeated!`);
-                    hero.currentXP += targetEnemy.currentXP;
-                }
-            }
-        });
-
-        updatedEnemies = updatedEnemies.filter((enemy) => enemy.currentHP > 0);
-
-        // --- Enemies' Turn ---
-        if (updatedEnemies.some((enemy) => enemy.currentHP > 0)) {
-            updatedEnemies.forEach((enemy) => {
-                if (enemy.currentHP <= 0) return;
-
-                const targetHero = updatedHeroes.find((hero) => hero.currentHP > 0);
-
-                if (targetHero) {
-                    const damageToHero = enemy.weapon.power;
-                    targetHero.currentHP -= damageToHero;
-                    // Use the prop function to update the main log
-                    addGameLog(`${enemy.name} attacks ${targetHero.name} for ${damageToHero} damage!`);
-
-                    if (targetHero.currentHP <= 0) {
-                        // Use the prop function to update the main log
-                        addGameLog(`${targetHero.name} has been defeated!`);
-                    }
-                }
-            });
-        }
+        const { updatedHeroes, updatedEnemies } = executeCombatRound(
+            currentHeroes,
+            currentEnemies,
+            addGameLog
+        );
 
         setCurrentEnemies(updatedEnemies);
         setCurrentHeroes(updatedHeroes);
-        checkCombatantHP(updatedHeroes, updatedEnemies);
-    }, [combatOngoing, currentHeroes, currentEnemies, checkCombatantHP, addGameLog]); // Added addGameLog to dependencies
+        handleCheckCombatOutcome(updatedHeroes, updatedEnemies);
+    }, [combatOngoing, currentHeroes, currentEnemies, addGameLog, handleCheckCombatOutcome]);
 
 
     const handleRun = useCallback(() => {
         setCombatOngoing(false);
-        // Use the prop function to update the main log
         addGameLog(`Heroes attempt to run!`);
         onCombatEnd("run", currentHeroes);
-    }, [onCombatEnd, currentHeroes, addGameLog]); // Added addGameLog to dependencies
+    }, [onCombatEnd, currentHeroes, addGameLog]);
 
-    // Display a welcome message at the start of combat, but only once.
     useEffect(() => {
         addGameLog("A new battle begins!");
     }, [addGameLog]);
-
 
     return (
         <div className="combatArena">
             <h2>Combat</h2>
             {combatOngoing ? (
                 <>
-                    <div className="combat-display-area"> {/* New wrapper div */}
-                        {/* Display multiple heroes */}
+                    <div className="combat-display-area">
                         <div className="heroes-container">
                             {currentHeroes.map((hero, index) => (
                                 <div key={index} className="character-stats">
@@ -165,7 +98,6 @@ function CombatArena({ heroes, enemies, onCombatEnd, onUpdateHeroes, addGameLog 
                             ))}
                         </div>
 
-                        {/* Display multiple enemies */}
                         <div className="enemies-container">
                             {currentEnemies.map((enemy, index) => (
                                 <div key={index} className="character-stats">
@@ -180,7 +112,7 @@ function CombatArena({ heroes, enemies, onCombatEnd, onUpdateHeroes, addGameLog 
                         </div>
                     </div>
 
-                    <div className="controls"> {/* This div is now outside the combat-display-area */}
+                    <div className="controls">
                         <button className="menu-button" onClick={handleCombatRound}>
                             Attack
                         </button>
