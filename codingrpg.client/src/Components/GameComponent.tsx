@@ -12,7 +12,10 @@ import Shop from "./ShopComponent"
 import Toolbar from "./ToolbarComponent"
 
 // Model Imports
-import { Character, Hero, Rat } from "../Models/CharacterModel";
+import { StartingVillage } from "../Models/AreaModel"
+//import { AreaModel, StartingVillage } from "../Models/AreaModel"
+import { Character, Hero } from "../Models/CharacterModel";
+import { CombatLocation, Location, ShopLocation } from "../Models/LocationModel"
 import { ShopModel, TestShop } from "../Models/ShopModel"
 
 // React Imports
@@ -34,6 +37,8 @@ type GameState =
     | "Settings"
     | "Shop";
 
+type AppLocation = CombatLocation | ShopLocation | Location;
+
 function Game() {
     const [activeScreen, setActiveScreen] = useState<GameState>("MainMenu");
     const [hero, setHero] = useState<Hero>(new Hero("Hero"));
@@ -41,6 +46,8 @@ function Game() {
     const [gameLog, setGameLog] = useState<string[]>(["Welcome to Coding RPG"]);
     const [party, setParty] = useState<Character[]>(() => [hero, ...hero.party])
 
+    //const [area, setArea] = useState<AreaModel>(new StartingVillage());
+    const area = new StartingVillage();
     //const [combat, setCombat] = useState(null)
     //const [dialogue, setDialogue] = useState(null)
     //const [dungeon, setDungeon] = useState(null)
@@ -92,7 +99,10 @@ function Game() {
     const handleLoadGame = useCallback(() => {
         setActiveScreen("LoadGame");
     }, []);
-
+    const handleMovement = useCallback((direction: string) => {
+        console.log(direction);
+        addGameLog("Movement not yet implmented")
+    }, [addGameLog]);
     const handleNewGame = useCallback(() => {
         setActiveScreen("NewGame");
     }, []);
@@ -112,6 +122,18 @@ function Game() {
         setActiveScreen("Shop")
         // Use the new centralized log function
     }, []);
+
+    const handleLocation = useCallback((location: AppLocation) => {
+        if ("combatants" in location) {
+            handleCombat(location.combatants);
+        }
+        if ("shop" in location) {
+            handleShop(location.shop);
+        }
+        else {
+            handleHeal()
+        }
+    }, [handleCombat, handleHeal, handleShop]);
 
     const handleCombatEnd = useCallback(
         (result: "victory" | "defeat" | "run" | "exit", updatedHeroes: Hero[]) => {
@@ -138,7 +160,6 @@ function Game() {
         },
         [hero.name, addGameLog]
     );
-
     const handleUpdateHeroes = useCallback((updatedHeroes: Character[]) => {
         setParty(updatedHeroes);
         // Assuming the first hero in the party is always 'the' hero you want to update
@@ -165,21 +186,7 @@ function Game() {
         setActiveScreen("Inventory");
     }, []);
 
-    const area = {
-        name: "Test Area", areaOptions: [{
-            label: "Combat Test",
-            onClick: () => handleCombat([new Rat()]),
-        },
-        {
-            label: "Heal Test",
-            onClick: handleHeal,
-        },
-        {
-            label: "Shop Test",
-            onClick: () => handleShop(new TestShop()),
-        },]
-    }
-
+   
     return (
         <div id="game">
             <div className="game-screen">
@@ -217,21 +224,36 @@ function Game() {
                             ))}
                         </div>
                         <div className="game-content-main">
-                            <h2>{area.name}</h2>
                             <p>Placeholder for Main Game Content</p>
                             {/* Map */}
                         </div>
                         <div className="area-options">
                             <h3>Area Options</h3>
-                            {area.areaOptions.map((button, index) => (
-                                <button key={index} className="area-button" onClick={button.onClick}>
-                                    {button.label}
+                            {area.locations.map((location, index) => (
+                                <button key={index} className="area-button" onClick={() => handleLocation(location)}>
+                                    {location.name}
                                 </button>
                             ))}
                         </div>
                         <div className="game-content-bottom">
-                            <h3>{area.name} (X,Y)</h3>
-                            <p>Controls</p>
+                            <div id="area-info">
+                                <h3>{area.name} ({area.xCoord},{area.yCoord})</h3>
+                            </div>
+                            <div id="compass">
+                                <div id="compass-north">
+                                    <button id="compass-north-west" onClick={() => handleMovement("NW")}>North-West</button>
+                                    <button id="compass-north-true" onClick={() => handleMovement("N")} >North</button>
+                                    <button id="compass-north-east" onClick={() => handleMovement("NE")}>North-East</button>
+                                </div>
+                                <div id="compass-east-west">
+                                    <button id="compass-west-true" onClick={() => handleMovement("W")}>West</button> Center <button id="compass-east-true" onClick={() => handleMovement("E")}>East</button>
+                                </div>
+                                <div id="compass-south">
+                                    <button id="compass-south-west" onClick={() => handleMovement("SW")} >South-West</button>
+                                    <button id="compass-south-true" onClick={() => handleMovement("S")} >South</button>
+                                    <button id="compass-south-east" onClick={() => handleMovement("SE")}>South-East</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 )}

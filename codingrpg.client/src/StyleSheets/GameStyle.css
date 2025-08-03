@@ -1,48 +1,65 @@
 /* src/StyleSheets/GameStyle.css */
 
+/*
+* I've reverted the compass layout from CSS Grid to a simpler Flexbox layout
+* that stacks the compass sections vertically, as requested. The overall
+* responsive behavior has been maintained.
+*/
+
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+body, html, #root {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
 #game {
     display: flex; /* Make #game a flex container */
     flex-direction: column; /* Stack its children (game-screen, Log) vertically */
-    height: 100%; /* Make #game take 100% height of its parent (.app-main) */
+    height: 100%; /* Take 100% height of its parent */
     font-family: 'Press Start 2P', cursive;
     background-color: #1a1a2e;
     color: #e0e0e0;
-    overflow: hidden; /* Prevent #game itself from scrolling, its children will handle their overflow */
+    overflow: hidden; /* **CRUCIAL**: Prevents horizontal and vertical overflow on the main container. */
     box-sizing: border-box; /* Ensures padding/border are included in height */
-    border: 3px solid #6c5ce7; /* Apply game border here, for the whole game area */
-    border-radius: 8px; /* Apply game border-radius here */
-    box-shadow: 0 0 20px rgba(108, 92, 231, 0.5); /* Apply game shadow here */
-    width: 100%
+    border: 3px solid #6c5ce7;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(108, 92, 231, 0.5);
+    width: 100%;
 }
 
 .game-screen {
     flex-grow: 1; /* This makes the game-screen take up all available vertical space */
-    display: flex; /* Keeps inner content centered */
+    display: flex;
     justify-content: center;
     align-items: center;
-    width: 100%; /* Ensure it spans the width of #game */
-    /* REMOVE any padding-bottom that might push content up */
-    padding-bottom: 0; /* Ensure no unwanted padding pushes content up */
+    width: 100%;
+    /* Use min-height to ensure the game screen has a size even if its content is small */
+    min-height: 0;
+    overflow: hidden; /* Prevents overflow from inner components affecting the screen layout */
     box-sizing: border-box;
 }
 
 /* --- Updated Grid Layout for the "Game" screen (inside game-screen) --- */
 .game-layout-grid {
     display: grid;
+    /* Use 'minmax(0, 1fr)' for flexible columns and rows.
+       This is a robust pattern that prevents content from overflowing the grid. */
     grid-template-areas:
         "toolbar toolbar toolbar"
         "left main options"
         "bottom bottom bottom";
     grid-template-columns: 1fr 3fr 1fr;
-    grid-template-rows: auto 1fr auto;
-    width: 100%; /* Make the grid fill the game-screen */
-    height: 100%; /* Make the grid fill the game-screen */
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    width: 100%;
+    height: 100%;
     gap: 15px;
-    padding: 0; /* Remove padding here, it's handled by .app-main padding */
-    border: none; /* Remove border, it's now on #game */
-    background-color: transparent; /* Or remove if you want inner background */
-    box-shadow: none; /* Remove shadow, it's now on #game */
-    border-radius: 0; /* Remove radius, it's now on #game */
+    padding: 15px; /* Added padding to the grid itself */
+    box-sizing: border-box;
+    /* Add a background to the grid to make it a distinct area */
+    background-color: #2e2e4e;
+    border-radius: 8px;
 }
 
 .toolbar {
@@ -66,8 +83,7 @@
 .buy-sell-button,
 .menu-button,
 .toolbar-button,
-.use-equip-button
-{
+.use-equip-button {
     background-color: #8e44ad;
     color: white;
     padding: 10px 15px;
@@ -78,6 +94,7 @@
     font-size: 0.8em;
     transition: background-color 0.2s ease, transform 0.1s ease;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    word-break: break-word; /* Prevents long text in buttons from overflowing */
 }
 
     .toolbar-button:hover,
@@ -94,38 +111,38 @@
         transform: translateY(0);
     }
 
-.game-content-left {
-    grid-area: left;
+.game-content-left,
+.game-content-main,
+.area-options,
+.game-content-bottom {
     background-color: #3b3b5b;
     padding: 15px;
     border-radius: 5px;
-    overflow-y: auto;
+    overflow-y: auto; /* **CRUCIAL**: Allows vertical scrolling for long content */
+    overflow-x: hidden; /* Prevents horizontal scrolling inside these panels */
+    box-sizing: border-box;
+}
+
+.game-content-left {
+    grid-area: left;
     text-align: center;
 }
 
 .game-content-main {
     grid-area: main;
-    background-color: #3b3b5b;
-    padding: 20px;
-    border-radius: 5px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start; /* Aligned to the top */
     text-align: center;
-    overflow-y: auto;
 }
 
 .area-options {
     grid-area: options;
-    background-color: #3b3b5b;
-    padding: 20px;
-    border-radius: 5px;
     display: flex;
     flex-direction: column;
     gap: 10px;
     align-items: stretch;
-    overflow-y: auto;
 }
 
     .area-options h3,
@@ -139,36 +156,36 @@
 
 .game-content-bottom {
     grid-area: bottom;
-    background-color: #3b3b5b;
-    padding: 15px;
-    border-radius: 5px;
-    overflow-y: auto;
     text-align: center;
-}
-
-/* --- Other Game Screens (adjust styles as needed) --- */
-.char-creation,
-.menu {
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    flex-direction: column; /* Stack children vertically */
     justify-content: center;
-    padding: 30px;
-    border: 3px solid #6c5ce7;
-    background-color: #2e2e4e;
-    border-radius: 8px;
-    box-shadow: 0 0 20px rgba(108, 92, 231, 0.5);
-    /* Changed to full width as requested */
-    width: 100%;
-    /* Removed max-width to allow it to expand */
-    gap: 20px;
+    align-items: center;
+    padding: 10px;
 }
 
-    .char-creation h2,
-    .menu h2 {
-        color: #e0e0e0;
-        margin-bottom: 20px;
-    }
+/* --- UPDATED COMPASS STYLES --- */
+#compass {
+    display: flex;
+    flex-direction: column; /* Stack the north, east-west, and south sections vertically */
+    gap: 5px; /* Spacing between the rows of buttons */
+    margin-top: 10px;
+}
+
+#compass-north,
+#compass-south {
+    display: flex;
+    justify-content: center;
+    gap: 5px; /* Spacing between the buttons in a row */
+}
+
+#compass-east-west {
+    display: flex;
+    justify-content: space-between; /* Pushes the 'East' and 'West' buttons to the edges */
+    gap: 5px; /* Spacing between the buttons in a row */
+    padding: 0 45px; /* Added padding to align the edges with North and South buttons */
+}
+/* --- END OF UPDATED COMPASS STYLES --- */
 
 /* Log Component Styles */
 .game-log {
@@ -176,25 +193,28 @@
     color: #b0b0b0;
     font-size: 0.75em;
     padding: 10px 20px;
-    height: 100px; /* Consistent height for the log */
-    overflow-y: auto; /* Scrollbar appears when content overflows */
+    min-height: 100px;
+    max-height: 200px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    flex-shrink: 0; /* Prevents this from shrinking when space is tight */
     border-top: 2px solid #6c5ce7;
     box-sizing: border-box;
-    width: 100%; /* Ensures it spans the width of #game */
-    /* Remove any `position: fixed` or `position: absolute` */
-    /* Remove `z-index` here unless truly needed for overlap with other fixed elements */
+    width: 100%;
 }
 
     .game-log p {
         margin: 2px 0;
     }
 
-/* Basic styling for other components to make them visible */
+/* Other Game Screens */
 .character-sheet-container,
 .inventory-container,
-.shop-container {
-    width: 100%; /* Updated to 100% */
-    height: 100%; /* Updated to 100% */
+.shop-container,
+.char-creation,
+.menu {
+    width: 100%;
+    height: 100%;
     background-color: #3b3b5b;
     border: 3px solid #6c5ce7;
     border-radius: 8px;
@@ -205,76 +225,69 @@
     justify-content: center;
     padding: 20px;
     box-sizing: border-box;
+    overflow-y: auto; /* Allow scrolling for these screens too */
+    overflow-x: hidden;
     text-align: center;
 }
 
-/* Ensure these styles are present and correct */
+    .char-creation h2,
+    .menu h2 {
+        color: #e0e0e0;
+        margin-bottom: 20px;
+    }
 
-.combatArena {
-    display: flex;
-    flex-direction: column; /* Stacks children vertically */
-    align-items: center; /* Centers children horizontally */
-    width: 100%; /* Make sure it's taking up space */
-    min-height: 200px; /* Add a minimum height for visibility during development */
-    border: 1px dashed blue; /* Add a temporary border to see its boundaries */
-}
-
+/* Specific component styles */
 .combat-display-area,
 .inventory-display-area,
-.stats-display-area { /* This is the new wrapper div */
+.stats-display-area {
     display: flex;
-    justify-content: space-around; /* Or space-between */
-    width: 100%; /* Important: Make sure it spans the width */
+    justify-content: space-around;
+    width: 100%;
     margin-bottom: 20px;
-    gap: 20px; /* Space between hero and enemy containers */
-
+    gap: 20px;
 }
 
 .heroes-container,
 .enemies-container,
-.inventory-items-container
-.stats-container{
+.inventory-items-container,
+.stats-container {
     display: flex;
-    flex-direction: column; /* This makes items stack vertically */
-    gap: 15px; /* Spacing between the vertically stacked items */
+    flex-direction: column;
+    gap: 15px;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 8px;
-    background-color: #f9f9f9;
+    background-color: #3b3b5b;
     flex: 1;
-    min-width: 300px; /* Ensures the container itself has a minimum width */
-    max-height: 400px; /* Or a fixed height, for vertical scrolling */
+    min-width: 0; /* **CRUCIAL**: Allows flex items to shrink below their content size. */
+    max-height: 400px;
     overflow-y: auto;
-    overflow-x: hidden; /* Crucial to prevent horizontal scroll */
+    overflow-x: hidden;
     box-sizing: border-box;
 }
 
-    .heroes-container,
-    .enemies-container,
-    .stats-container, .inventory-items-container h3 {
-        background-color: #3b3b5b;
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+    .game-layout-grid {
+        grid-template-areas:
+            "toolbar"
+            "left"
+            "main"
+            "options"
+            "bottom";
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto minmax(0, 1fr) auto auto;
+        gap: 10px;
     }
 
-.heroes-container {
-    align-items: center;
-}
+    .game-content-left,
+    .area-options,
+    .game-content-bottom {
+        max-height: 200px; /* Constrain height on mobile to prevent a single section from taking up all the space */
+    }
 
-.enemies-container {
-    align-items: center;
+    .game-log {
+        min-height: 75px;
+        max-height: 150px;
+    }
 }
-
-.character-stats, .inventory-items,.shop-items, .stats {
-    background-color: #e0e0e0;
-    padding: 10px;
-    border-radius: 5px;
-    text-align: center;
-    box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
-    color: #333;
-    width: 100%; /* Make each character stat box take full width of its container */
-    /* Removed max-width to let it expand to full width of parent container */
-    /* If text is long and causes horizontal overflow within a character-stats div */
-    word-break: break-word; /* Breaks long words that would otherwise overflow */
-    white-space: normal; /* Ensures text wraps if it's currently preventing wraps */
-}
-
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
