@@ -1,7 +1,9 @@
+// Inventory.tsx
 import '../StyleSheets/GameStyle.css';
 import { Character } from "../Models/CharacterModel";
-import { Item } from "../Models/ItemModel";
+import { Item, Equipable } from "../Models/ItemModel"; // Import Equipable
 import { useState, useEffect } from "react";
+import { instantiateCharacterItems } from "../Utils/CharacterUtils"
 
 interface InventoryProps {
     hero: Character;
@@ -12,37 +14,25 @@ interface InventoryProps {
 
 function Inventory({ hero, back, onUpdateHero, addGameLog }: InventoryProps) {
     const [currentHero, setCurrentHero] = useState(hero);
-    const [inventory, setInventory] = useState(hero.inventory);
+    // setInventory state is redundant if currentHero's inventory is always used
+    // const [inventory, setInventory] = useState(hero.inventory);
 
     useEffect(() => {
-        setCurrentHero(hero);
-        setInventory(hero.inventory);
+        setCurrentHero(instantiateCharacterItems(hero));
     }, [hero]);
 
     function handleUseItem(itemToUse: Item) {
-        const updatedHero: Character = JSON.parse(JSON.stringify(currentHero));
+        // Create a deep copy of currentHero to maintain immutability
+        const updatedHero: Character = instantiateCharacterItems(JSON.parse(JSON.stringify(currentHero)));
 
-        itemToUse.use(updatedHero); 
+        // Let the item's use method handle its effect and inventory changes
+        // The use method returns the modified character
+        const newHeroState = itemToUse.use(updatedHero);
 
-        const itemIndex = updatedHero.inventory.findIndex((item: Item) => item.name === itemToUse.name);
-
-        if (itemIndex > -1) {
-            const newInventory = [...updatedHero.inventory];
-
-
-            newInventory[itemIndex].quantity--;
-
-            if (newInventory[itemIndex].quantity <= 0) {
-                newInventory.splice(itemIndex, 1);
-            }
-
-            updatedHero.inventory = newInventory;
-        }
-
-        setCurrentHero(updatedHero);
-        setInventory(updatedHero.inventory);
-        onUpdateHero(updatedHero);
-        addGameLog(`${hero.name} ${"slot" in itemToUse ? "equiped" : "used"} ${itemToUse.name}.`);
+        setCurrentHero(newHeroState);
+        // setInventory(newHeroState.inventory); // No longer needed
+        onUpdateHero(newHeroState); // Notify parent of the updated hero state
+        addGameLog(`${currentHero.name} ${itemToUse instanceof Equipable ? "equipped" : "used"} ${itemToUse.name}.`);
     }
 
     return (
@@ -54,22 +44,23 @@ function Inventory({ hero, back, onUpdateHero, addGameLog }: InventoryProps) {
                 <h3>Placeholder</h3>
             </div>
             <div className="game-content-main inventory-items-container">
-            <div className="inventory-display-area">
-                {inventory.length > 0 ? (
-                    <div className="inventory-items">
-                        {
-                            inventory.map((item, index) => (
-                                <p key={index}>
-                                    {item.name} ({item.description}) 
-                                    <button className="use-equip-button"onClick={() => handleUseItem(item)}>
-                                        {"slot" in item ? "Equip" : "Use"} x {item.quantity}</button>
-                                </p>
-                            ))
-                        }
-                    </div>
-                ) : (
-                    <div><p>Your inventory is empty</p></div>
-                )}
+                <div className="inventory-display-area">
+                    {currentHero.inventory.length > 0 ? ( // Use currentHero.inventory directly
+                        <div className="inventory-items">
+                            {
+                                currentHero.inventory.map((item, index) => (
+                                    <p key={index}>
+                                        {item.name} ({item.description})
+                                        <button className="use-equip-button" onClick={() => handleUseItem(item)}>
+                                            {item instanceof Equipable ? "Equip" : "Use"} x {item.quantity}
+                                        </button>
+                                    </p>
+                                ))
+                            }
+                        </div>
+                    ) : (
+                        <div><p>Your inventory is empty</p></div>
+                    )}
                 </div>
             </div>
             <div className="area-options">
@@ -83,6 +74,5 @@ function Inventory({ hero, back, onUpdateHero, addGameLog }: InventoryProps) {
         </div>
     );
 }
-
 
 export default Inventory;

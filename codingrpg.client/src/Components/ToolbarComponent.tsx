@@ -28,6 +28,9 @@ function Toolbar({ characterSheet, equipment,inventory, mainMenu }: ToolbarProps
                 Journal
             </button>
             <button className="toolbar-button">
+                Map
+            </button>
+            <button className="toolbar-button">
                 Skills
             </button>
             <button className="toolbar-button">

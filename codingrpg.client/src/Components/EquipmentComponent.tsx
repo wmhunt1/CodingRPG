@@ -1,15 +1,49 @@
+// Equipment.tsx
 import '../StyleSheets/GameStyle.css';
 import { Character } from "../Models/CharacterModel";
+import { BareChest, BareFist, Equipable } from "../Models/ItemModel"; // Import Item for addItemToInventory
+import { useState, useEffect } from "react";
+import { instantiateCharacterItems } from "../Utils/CharacterUtils"
+
+// Import the helper function from ItemModel.ts or a separate utils file
+import { addItemToInventory } from "../Models/ItemModel"; // Assuming you put it there
 
 interface EquipmentProps {
     hero: Character;
-    back: () => void
+    back: () => void;
+    onUpdateHero: (updatedHero: Character) => void;
+    addGameLog: (message: string) => void;
 }
-function Equipment({ hero, back }: EquipmentProps) {
+function Equipment({ hero, back, onUpdateHero, addGameLog }: EquipmentProps) {
+    const [currentHero, setCurrentHero] = useState(hero);
+
+    useEffect(() => {
+        setCurrentHero(instantiateCharacterItems(hero));
+    }, [hero]);
+
+    function handleUnEquipItem(itemToUnEquip: Equipable) {
+        const updatedHero: Character = instantiateCharacterItems(JSON.parse(JSON.stringify(currentHero)));
+
+        // Remove the item from its equipped slot
+        if (itemToUnEquip.slot === "Chest") {
+            updatedHero.chest = new BareChest();
+        } else if (itemToUnEquip.slot === "Weapon") {
+            updatedHero.weapon = new BareFist();
+        }
+        // Add more slots as needed
+
+        // Use the common helper to add the unequipped item back to inventory
+        addItemToInventory(updatedHero.inventory, itemToUnEquip);
+
+        setCurrentHero(updatedHero);
+        onUpdateHero(updatedHero);
+        addGameLog(`${currentHero.name} unequipped ${itemToUnEquip.name}.`);
+    }
+
     return (
         <div className="game-layout-grid" id="character-sheet">
             <div className="toolbar">
-                <h2>{hero.name}'s Equipment</h2>
+                <h2>{currentHero.name}'s Equipment</h2>
             </div>
             <div className="game-content-left">
                 <h3>Placeholder</h3>
@@ -20,13 +54,13 @@ function Equipment({ hero, back }: EquipmentProps) {
                     <div className="stats-container">
                         <h3>Weapons</h3>
                         <div className="stats">
-                            <p>Weapon: {hero.weapon.name} ({hero.weapon.power} DMG)</p>
+                            <p>Weapon: {currentHero.weapon.name} ({currentHero.weapon.power} DMG) {currentHero.weapon.name !== "Bare Fist" ? <button className="use-equip-button" onClick={() => handleUnEquipItem(currentHero.weapon)}>UnEquip</button> : <></>}</p>
                         </div>
                     </div>
                     <div className="stats-container">
                         <h3>Armor</h3>
                         <div className="stats">
-                            <p>Chest: {hero.chest.name} ({hero.chest.protection})</p>
+                            <p>Chest: {currentHero.chest.name} ({currentHero.chest.protection}) {currentHero.chest.name !== "Bare Chest" ? <button className="use-equip-button" onClick={() => handleUnEquipItem(currentHero.chest)}>UnEquip</button> : <></>}</p>
                         </div>
                     </div>
                 </div>

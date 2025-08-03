@@ -13,7 +13,7 @@ function Compass({ move }: CompassProps) {
                 <button id="compass-north-east" onClick={() => move("NE")}>North-East</button>
             </div>
             <div id="compass-east-west">
-                <button id="compass-west-true" onClick={() => move("W")}>West</button> Center <button id="compass-east-true" onClick={() => move("E")}>East</button>
+                <button id="compass-west-true" onClick={() => move("W")}>West</button><button id="compass-east-true" onClick={() => move("E")}>East</button>
             </div>
             <div id="compass-south">
                 <button id="compass-south-west" onClick={() => move("SW")}>South-West</button>

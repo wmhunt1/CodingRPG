@@ -208,7 +208,10 @@ function Game() {
                     />
                 )}
                 {activeScreen === "Equipment" && (
-                    <Equipment hero={hero} back={() => setActiveScreen("Game")} />
+                    <Equipment hero={hero}
+                        back={() => setActiveScreen("Game")}
+                        onUpdateHero={handleUpdateSingleHero}
+                        addGameLog={addGameLog} />
                 )}
                 {activeScreen === "Game" && (
                     // This is the new grid container for the "Game" screen

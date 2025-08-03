@@ -87,6 +87,7 @@ function Shop({ hero, back, shop, onUpdateHero, addGameLog }: ShopProps) {
             <div className="game-content-left">
                 <h3>Player Gold</h3>
                 <p>{currentHero.gold} GP</p>
+                {/*or put skilling and talking options*/ }
             </div>
             <div className="game-content-main">
             <div className="inventory-display-area">
@@ -124,12 +125,10 @@ function Shop({ hero, back, shop, onUpdateHero, addGameLog }: ShopProps) {
             </div>
             <div className="area-options">
                 <h3>Options</h3>
-                {/*<button className='area-button' onClick={() => setActiveScreen("Buy")}>Buy</button>*/}
-                {/*<button className='area-button' onClick={() => setActiveScreen("Sell")}>Sell</button>*/}
+                {/*If inn etc put stay night have other options array*/}
                 <button className='area-button' onClick={() => back()}>Leave</button>
             </div>
             <div className="game-content-bottom">
-                {/*Movement*/}
                 <h3>Interaction / Status</h3>
                 <p>Placeholder for Bottom Panel</p>
             </div>
