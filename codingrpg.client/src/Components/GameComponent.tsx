@@ -3,6 +3,7 @@
 import CharacterSheet from "./CharacterSheetComponent";
 import CombatArena from "./CombatComponent";
 import CreateCharacter from "./CreateCharacterComponent";
+import Equipment from "./EquipmentComponent";
 import Inventory from "./InventoryComponent";
 import Log from "./LogComponent";
 import { MainMenu } from "./MenuComponent";
@@ -26,6 +27,7 @@ type GameState =
     | "Game"
     | "CharacterSheet"
     | "Combat"
+    | "Equipment"
     | "Inventory"
     | "LoadGame"
     | "NewGame"
@@ -46,12 +48,10 @@ function Game() {
     //const [skill, setSkill] = useState(null)
     //const [town, setTown] = useState(null)
 
-    // This new memoized function is used to add new messages to the game log
     const addGameLog = useCallback((message: string) => {
         setGameLog((prevLog) => [...prevLog, message]);
     }, []);
 
-    // Memoized callback functions for event handlers
     const handleContinueGame = useCallback(() => {
         setActiveScreen("Game");
     }, []);
@@ -66,22 +66,15 @@ function Game() {
         console.log("Exiting Game");
     }, []);
 
-    // --- UPDATED handleHeal FUNCTION ---
     const handleHeal = useCallback(() => {
-        // Use a functional update to get the latest hero state
         setHero((prevHero) => {
-            // Check if healing is needed
             if (prevHero.currentHP < prevHero.maxHP) {
-                // Create the new, healed hero object
                 const updatedHero = { ...prevHero, currentHP: prevHero.maxHP };
 
-                // Log the message
                 addGameLog(`${prevHero.name} fully healed!`);
 
-                // Update the party array to reflect the healed hero
                 setParty((prevParty) => {
                     const newParty = [...prevParty];
-                    // Assuming the main hero is always the first party member
                     newParty[0] = updatedHero;
                     return newParty;
                 });
@@ -165,6 +158,9 @@ function Game() {
     const showCharacterSheet = useCallback(() => {
         setActiveScreen("CharacterSheet");
     }, []);
+    const showEquipment = useCallback(() => {
+        setActiveScreen("Equipment");
+    }, []);
     const showInventory = useCallback(() => {
         setActiveScreen("Inventory");
     }, []);
@@ -200,11 +196,14 @@ function Game() {
                         addGameLog={addGameLog}
                     />
                 )}
+                {activeScreen === "Equipment" && (
+                    <Equipment hero={hero} back={() => setActiveScreen("Game")} />
+                )}
                 {activeScreen === "Game" && (
                     // This is the new grid container for the "Game" screen
                     <div className="game-layout-grid">
                         <div className="toolbar">
-                            <Toolbar characterSheet={() => showCharacterSheet()} inventory={() => showInventory()} mainMenu={() => setActiveScreen("MainMenu")} />
+                            <Toolbar characterSheet={() => showCharacterSheet()} equipment={() => showEquipment()} inventory={() => showInventory()} mainMenu={() => setActiveScreen("MainMenu")} />
                         </div>
                         <div className="game-content-left">
                             <h3>Party</h3>
