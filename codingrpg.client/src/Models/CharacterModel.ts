@@ -1,4 +1,4 @@
-import {BareFist, Item,RatBite,Stick,Weapon } from './ItemModel.ts';
+import {BareChest,BareFist, ChestArmor,Item,RatBite,Stick,Tunic,Weapon } from './ItemModel.ts';
 
 export class Character {
     name: string = "";
@@ -14,6 +14,7 @@ export class Character {
     gold: number = 0;
     inventory: Item[] = []
     weapon: Weapon = new BareFist();
+    chest: ChestArmor = new BareChest();
     party: Character[] = []
 }
 
@@ -37,6 +38,7 @@ export class Hero extends Humanoid {
         this.name = name;
         this.gold = 50;
         this.weapon = new Stick();
+        this.chest = new Tunic();
         this.inventory = []
     }
 } export class Rat extends Beast {

@@ -1,4 +1,4 @@
-import { Item,Stick } from "./ItemModel"
+import { Club,Item,Tunic } from "./ItemModel"
 export class ShopModel {
     name: string;
     inventory: Item[];
@@ -7,10 +7,10 @@ export class ShopModel {
         this.inventory = inventory;
     }
 }
-export class TestShop extends ShopModel {
+export class GeneralShop extends ShopModel {
     constructor() {
-        const name = "Test Shop";
-        const inventory = [new Stick()]
-        super(name,inventory)
+        const name = "General Shop";
+        const inventory = [new Club(),new Tunic()]
+        super(name, inventory)
     }
 }

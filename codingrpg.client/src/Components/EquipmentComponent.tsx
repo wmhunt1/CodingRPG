@@ -26,6 +26,7 @@ function Equipment({ hero, back }: EquipmentProps) {
                     <div className="stats-container">
                         <h3>Armor</h3>
                         <div className="stats">
+                            <p>Chest: {hero.chest.name} ({hero.chest.protection})</p>
                         </div>
                     </div>
                 </div>

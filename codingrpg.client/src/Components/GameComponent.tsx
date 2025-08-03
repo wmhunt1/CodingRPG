@@ -12,11 +12,12 @@ import Shop from "./ShopComponent"
 import Toolbar from "./ToolbarComponent"
 
 // Model Imports
-import { StartingVillage } from "../Models/AreaModel"
-//import { AreaModel, StartingVillage } from "../Models/AreaModel"
+//import { StartingVillage } from "../Models/AreaModel"
+import { AreaModel, Forest,StartingVillage } from "../Models/AreaModel"
 import { Character, Hero } from "../Models/CharacterModel";
 import { CombatLocation, Location, ShopLocation } from "../Models/LocationModel"
-import { ShopModel, TestShop } from "../Models/ShopModel"
+import {MapModel } from "../Models/MapModel"
+import { ShopModel } from "../Models/ShopModel"
 
 // React Imports
 import { useState, useCallback } from "react";
@@ -46,14 +47,8 @@ function Game() {
     const [gameLog, setGameLog] = useState<string[]>(["Welcome to Coding RPG"]);
     const [party, setParty] = useState<Character[]>(() => [hero, ...hero.party])
 
-    //const [area, setArea] = useState<AreaModel>(new StartingVillage());
-    const area = new StartingVillage();
-    //const [combat, setCombat] = useState(null)
-    //const [dialogue, setDialogue] = useState(null)
-    //const [dungeon, setDungeon] = useState(null)
-    const [currentShop, setCurrentShop] = useState<ShopModel>(new TestShop())
-    //const [skill, setSkill] = useState(null)
-    //const [town, setTown] = useState(null)
+    const [area, setArea] = useState<AreaModel>(new StartingVillage());
+    const [currentShop, setCurrentShop] = useState<ShopModel>(new ShopModel("",[]))
 
     const addGameLog = useCallback((message: string) => {
         setGameLog((prevLog) => [...prevLog, message]);
@@ -100,9 +95,55 @@ function Game() {
         setActiveScreen("LoadGame");
     }, []);
     const handleMovement = useCallback((direction: string) => {
-        console.log(direction);
-        addGameLog("Movement not yet implmented")
-    }, [addGameLog]);
+        const map = new MapModel("Map", [new StartingVillage(), new Forest("North Forest", [], 0, 1)])
+        let x = area.xCoord;
+        let y = area.yCoord;
+        let way = ""
+        if (direction === "NW") {
+            x--;
+            y++;
+            way = "North-West";
+        }
+        else if (direction === "N") {
+            y++;
+            way = "North"
+        }
+        else if (direction === "NE") {
+            x++;
+            y++;
+            way="North-East"
+        }
+        else if (direction === "W") {
+            x--;
+            way = "West"
+        }
+        else if (direction === "E") {
+            x++;
+            way = "East"
+        }
+        else if (direction === "SW") {
+            x--;
+            y--;
+            way = "South-West"
+        }
+        else if (direction === "S") {
+            y--;
+            way = "South"
+        }
+        else {
+            x++;
+            y--;
+            way = "South-East"
+        }
+        const locationIndex = map.areas.findIndex((area: AreaModel) => area.xCoord === x && area.yCoord === y);
+        if (locationIndex !== null) {
+            setArea(map.areas[locationIndex])
+            addGameLog(`${hero.name} travels ${way} to ${map.areas[locationIndex].name}`)
+        }
+        else {
+            addGameLog(`You cannot go that way`)
+        }
+    }, [addGameLog,area,hero]);
     const handleNewGame = useCallback(() => {
         setActiveScreen("NewGame");
     }, []);

@@ -54,6 +54,58 @@ export class Equipable extends Item {
         console.log(`${user.name} equips ${this.name}`)
     }
 }
+export class Armor extends Equipable {
+    protection: number;
+    constructor(name: string, quantity: number, protection: number, slot: string, cost: number) {
+        super(name, quantity, slot, cost)
+        this.protection = protection;
+        this.description = `A ${this.name} with ${this.protection}`
+    }
+    override use(user: Character): void {
+        console.log(user.name)
+    }
+}
+export class ChestArmor extends Armor {
+    constructor(name: string, quantity: number, protection: number, cost: number) {
+        const slot = "Chest"
+        super(name, quantity, protection, slot, cost)
+        this.description = `A ${this.name} with ${this.protection}`
+    }
+    override use(user: Character): void {
+        const oldArmor = user.chest;
+        user.chest = this;
+        if (oldArmor && oldArmor.name !== "Bare Chest") {
+            const existingItem = user.inventory.find(item => item.name === oldArmor.name);
+
+            if (existingItem) {
+                existingItem.quantity++;
+            } else {
+                const oldArmorForInventory = new ChestArmor(oldArmor.name, 1, oldArmor.protection, oldArmor.cost);
+                user.inventory.push(oldArmorForInventory);
+            }
+        }
+    }
+}
+export class BareChest extends ChestArmor {
+    constructor() {
+        const name = "Bare Chest"
+        const quantity = 1;
+        const protection = 0;
+        const cost = 0;
+        super(name,quantity,protection,cost)
+    }
+
+}
+export class Tunic extends ChestArmor {
+    constructor() {
+        const name = "Tunic"
+        const quantity = 1;
+        const protection = 0;
+        const cost = 1;
+        super(name, quantity, protection, cost)
+    }
+
+}
 export class Weapon extends Equipable {
     power: number;
     constructor(name: string, quantity: number, power: number, slot: string, cost: number) {

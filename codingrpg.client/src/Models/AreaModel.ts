@@ -1,29 +1,43 @@
 import { Location, RatCellar, ShopLocation } from './LocationModel.ts';
-import {TestShop } from "./ShopModel.ts"
+import { GeneralShop} from "./ShopModel.ts"
 export class AreaModel {
     name: string;
     locations: Location[]
     xCoord: number = 0; 
     yCoord: number = 0;
-    constructor(name: string,locations: Location[]) {
+    constructor(name: string,locations: Location[],x:number,y:number) {
         this.name = name;
         this.locations = locations;
+        this.xCoord = x;
+        this.yCoord = y;
+    }
+}
+export class Farm extends AreaModel {
+    constructor(name: string, locations: Location[], x: number, y: number) {
+        super(name, locations, x, y)
+    }
+}
+export class Forest extends AreaModel {
+    constructor(name: string, locations: Location[], x: number, y: number) {
+        super(name, locations, x, y)
     }
 }
 export class Settlement extends AreaModel {
-    constructor(name: string, locations: Location[]) {
-        super(name,locations)
+    constructor(name: string, locations: Location[], x: number, y: number) {
+        super(name,locations,x,y)
     }
 }
 export class Village extends Settlement {
-    constructor(name: string, locations: Location[]) {
-        super(name, locations)
+    constructor(name: string, locations: Location[], x: number, y: number) {
+        super(name, locations,x,y)
     }
 }
 export class StartingVillage extends Village {
     constructor() {
         const name = "Starting Village"
-        const locations:Location[] = [new RatCellar(),new ShopLocation("Test Shop",new TestShop()),new Location("Test Heal")]
-        super(name,locations)
+        const locations: Location[] = [new RatCellar(), new ShopLocation("General Shop", new GeneralShop()), new Location("Test Heal")]
+        const x = 0;
+        const y = 0;
+        super(name,locations,x,y)
     }
 }
