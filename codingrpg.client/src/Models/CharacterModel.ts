@@ -5,6 +5,7 @@ export class Character {
     level: number = 1;
     currentXP: number = 0;
     maxXP: number = 50;
+    //basestats
     currentHP: number = 10;
     maxHP: number = 10;
     currentMP: number = 10;
@@ -12,6 +13,17 @@ export class Character {
     currentSP: number = 10;
     maxSP: number = 10;
     gold: number = 0;
+    attractiveness: number = 10;
+    charisma: number = 10;
+    constitution: number = 10;
+    dexterity: number = 10;
+    intelligence: number = 10;
+    luck: number = 10;
+    perception: number = 10;
+    speed: number = 10;
+    strength: number = 10;
+    willPower: number = 10;
+    wisdom: number = 10;
     inventory: Item[] = []
     weapon: Weapon = new BareFist();
     chest: ChestArmor = new BareChest();

@@ -6,9 +6,7 @@ import { useState, useEffect } from "react";
 interface InventoryProps {
     hero: Character;
     back: () => void;
-    // Add the new prop to update the hero in the parent Game component
     onUpdateHero: (updatedHero: Character) => void;
-    //gameLog: string[];
     addGameLog: (message: string) => void;
 }
 
@@ -16,25 +14,19 @@ function Inventory({ hero, back, onUpdateHero, addGameLog }: InventoryProps) {
     const [currentHero, setCurrentHero] = useState(hero);
     const [inventory, setInventory] = useState(hero.inventory);
 
-    // Use useEffect to synchronize inventory state if hero prop changes
     useEffect(() => {
         setCurrentHero(hero);
         setInventory(hero.inventory);
     }, [hero]);
 
     function handleUseItem(itemToUse: Item) {
-        // Create a deep copy of the hero to avoid direct mutation of the prop's object
-        // Ensure that updatedHero is of type Hero for better type safety if possible
         const updatedHero: Character = JSON.parse(JSON.stringify(currentHero));
 
-        // Apply the item's effect to the hero
-        itemToUse.use(updatedHero); // Assuming item.use modifies the passed hero object
+        itemToUse.use(updatedHero); 
 
-        // Find the index of the item in the updated hero's inventory
         const itemIndex = updatedHero.inventory.findIndex((item: Item) => item.name === itemToUse.name);
 
         if (itemIndex > -1) {
-            // Create a new array for the updated inventory to ensure immutability
             const newInventory = [...updatedHero.inventory];
 
 
@@ -47,13 +39,9 @@ function Inventory({ hero, back, onUpdateHero, addGameLog }: InventoryProps) {
             updatedHero.inventory = newInventory;
         }
 
-        // Update the local state
         setCurrentHero(updatedHero);
         setInventory(updatedHero.inventory);
-
-        // --- Crucial Step: Call the prop function to update the hero in the Game component ---
         onUpdateHero(updatedHero);
-        // If you passed addGameLog:
         addGameLog(`${hero.name} ${"slot" in itemToUse ? "equiped" : "used"} ${itemToUse.name}.`);
     }
 
@@ -89,7 +77,6 @@ function Inventory({ hero, back, onUpdateHero, addGameLog }: InventoryProps) {
                 <button className='area-button' onClick={() => back()}>Back</button>
             </div>
             <div className="game-content-bottom">
-                {/*Movement*/}
                 <h3>Interaction / Status</h3>
                 <p>Placeholder for Bottom Panel</p>
             </div>

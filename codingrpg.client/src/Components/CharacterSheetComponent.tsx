@@ -25,7 +25,22 @@ function CharacterSheet({ hero, back }: CharacterSheetProps) {
                             <p>HP: {hero.currentHP}/{hero.maxHP}</p>
                             <p>MP: {hero.currentMP}/{hero.maxMP}</p>
                             <p>SP: {hero.currentSP}/{hero.maxSP}</p>
-                            <p>Weapon: {hero.weapon.name} ({hero.weapon.power} DMG)</p>
+                        </div>
+                    </div>
+                    <div className="stats-container">
+                        <h3>Attributes</h3>
+                        <div className="stats">
+                        <p>ATR: {hero.attractiveness}</p>
+                        <p>CHA: {hero.charisma}</p>
+                        <p>CON: {hero.constitution}</p>
+                        <p>DEX: {hero.dexterity}</p>
+                        <p>INT: {hero.intelligence}</p>
+                        <p>LCK {hero.luck}</p>
+                        <p>PER: {hero.perception}</p>
+                        <p>SPD: {hero.speed}</p>
+                        <p>STR: {hero.strength}</p>
+                        <p>WLP: {hero.willPower}</p>
+                        <p>WIS: {hero.wisdom}</p>
                         </div>
                     </div>
                 </div>

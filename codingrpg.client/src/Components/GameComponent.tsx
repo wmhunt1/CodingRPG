@@ -2,9 +2,11 @@
 // Component Imports
 import CharacterSheet from "./CharacterSheetComponent";
 import CombatArena from "./CombatComponent";
+import Compass from "./CompassComponent"
 import CreateCharacter from "./CreateCharacterComponent";
 import Equipment from "./EquipmentComponent";
 import Inventory from "./InventoryComponent";
+import LoadGame from "./LoadGameComponent";
 import Log from "./LogComponent";
 import { MainMenu } from "./MenuComponent";
 import Settings from "./SettingsComponent";
@@ -13,10 +15,10 @@ import Toolbar from "./ToolbarComponent"
 
 // Model Imports
 //import { StartingVillage } from "../Models/AreaModel"
-import { AreaModel, Forest,StartingVillage } from "../Models/AreaModel"
+import { AreaModel, StartingVillage } from "../Models/AreaModel"
 import { Character, Hero } from "../Models/CharacterModel";
 import { CombatLocation, Location, ShopLocation } from "../Models/LocationModel"
-import {MapModel } from "../Models/MapModel"
+//import { MapModel } from "../Models/MapModel"
 import { ShopModel } from "../Models/ShopModel"
 
 // React Imports
@@ -24,6 +26,9 @@ import { useState, useCallback } from "react";
 
 // Stylesheet Imports
 import "../StyleSheets/GameStyle.css";
+
+//Util Imports
+import { calculateNewLocation } from "../Utils/MovementUtil"
 
 // Define possible game states for better readability and type safety
 type GameState =
@@ -48,7 +53,7 @@ function Game() {
     const [party, setParty] = useState<Character[]>(() => [hero, ...hero.party])
 
     const [area, setArea] = useState<AreaModel>(new StartingVillage());
-    const [currentShop, setCurrentShop] = useState<ShopModel>(new ShopModel("",[]))
+    const [currentShop, setCurrentShop] = useState<ShopModel>(new ShopModel("", []))
 
     const addGameLog = useCallback((message: string) => {
         setGameLog((prevLog) => [...prevLog, message]);
@@ -95,55 +100,15 @@ function Game() {
         setActiveScreen("LoadGame");
     }, []);
     const handleMovement = useCallback((direction: string) => {
-        const map = new MapModel("Map", [new StartingVillage(), new Forest("North Forest", [], 0, 1)])
-        let x = area.xCoord;
-        let y = area.yCoord;
-        let way = ""
-        if (direction === "NW") {
-            x--;
-            y++;
-            way = "North-West";
+        const { newArea, way, message } = calculateNewLocation(area.xCoord, area.yCoord, direction);
+
+        if (newArea) {
+            setArea(newArea);
+            addGameLog(`${hero.name} travels ${way} to ${newArea.name}`);
+        } else {
+            addGameLog(message || `You cannot go that way`); // Use the message from utility or a default
         }
-        else if (direction === "N") {
-            y++;
-            way = "North"
-        }
-        else if (direction === "NE") {
-            x++;
-            y++;
-            way="North-East"
-        }
-        else if (direction === "W") {
-            x--;
-            way = "West"
-        }
-        else if (direction === "E") {
-            x++;
-            way = "East"
-        }
-        else if (direction === "SW") {
-            x--;
-            y--;
-            way = "South-West"
-        }
-        else if (direction === "S") {
-            y--;
-            way = "South"
-        }
-        else {
-            x++;
-            y--;
-            way = "South-East"
-        }
-        const locationIndex = map.areas.findIndex((area: AreaModel) => area.xCoord === x && area.yCoord === y);
-        if (locationIndex !== null) {
-            setArea(map.areas[locationIndex])
-            addGameLog(`${hero.name} travels ${way} to ${map.areas[locationIndex].name}`)
-        }
-        else {
-            addGameLog(`You cannot go that way`)
-        }
-    }, [addGameLog,area,hero]);
+    }, [addGameLog, area, hero]);
     const handleNewGame = useCallback(() => {
         setActiveScreen("NewGame");
     }, []);
@@ -161,7 +126,6 @@ function Game() {
     const handleShop = useCallback((shop: ShopModel) => {
         setCurrentShop(shop)
         setActiveScreen("Shop")
-        // Use the new centralized log function
     }, []);
 
     const handleLocation = useCallback((location: AppLocation) => {
@@ -196,26 +160,25 @@ function Game() {
                 default:
                     combatMessage = "Combat ended.";
             }
-            // Use the new centralized log function
+
             addGameLog(combatMessage);
         },
         [hero.name, addGameLog]
     );
     const handleUpdateHeroes = useCallback((updatedHeroes: Character[]) => {
         setParty(updatedHeroes);
-        // Assuming the first hero in the party is always 'the' hero you want to update
+
         if (updatedHeroes.length > 0) {
             setHero(updatedHeroes[0] as Hero);
         }
     }, []);
 
-    // --- New callback for updating a single hero specifically from Inventory ---
+
     const handleUpdateSingleHero = useCallback((updatedHero: Character) => {
-        setHero(updatedHero as Hero); // Update the main hero state
-        // You'll also need to update the party array if it's meant to reflect the single hero
+        setHero(updatedHero as Hero);
+
         setParty([updatedHero]);
     }, []);
-    // -------------------------------------------------------------------------
 
     const showCharacterSheet = useCallback(() => {
         setActiveScreen("CharacterSheet");
@@ -227,7 +190,7 @@ function Game() {
         setActiveScreen("Inventory");
     }, []);
 
-   
+
     return (
         <div id="game">
             <div className="game-screen">
@@ -280,21 +243,7 @@ function Game() {
                             <div id="area-info">
                                 <h3>{area.name} ({area.xCoord},{area.yCoord})</h3>
                             </div>
-                            <div id="compass">
-                                <div id="compass-north">
-                                    <button id="compass-north-west" onClick={() => handleMovement("NW")}>North-West</button>
-                                    <button id="compass-north-true" onClick={() => handleMovement("N")} >North</button>
-                                    <button id="compass-north-east" onClick={() => handleMovement("NE")}>North-East</button>
-                                </div>
-                                <div id="compass-east-west">
-                                    <button id="compass-west-true" onClick={() => handleMovement("W")}>West</button> Center <button id="compass-east-true" onClick={() => handleMovement("E")}>East</button>
-                                </div>
-                                <div id="compass-south">
-                                    <button id="compass-south-west" onClick={() => handleMovement("SW")} >South-West</button>
-                                    <button id="compass-south-true" onClick={() => handleMovement("S")} >South</button>
-                                    <button id="compass-south-east" onClick={() => handleMovement("SE")}>South-East</button>
-                                </div>
-                            </div>
+                            <Compass move={handleMovement}></Compass>
                         </div>
                     </div>
                 )}
@@ -307,12 +256,7 @@ function Game() {
                     />
                 )}
                 {activeScreen === "LoadGame" && (
-                    <div className="menu">
-                        <h2>Saves</h2>
-                        <button className="menu-button" onClick={() => setActiveScreen("MainMenu")}>
-                            Back
-                        </button>
-                    </div>
+                    <LoadGame back={() => setActiveScreen("MainMenu")}></LoadGame>
                 )}
                 {activeScreen === "MainMenu" && (
                     <MainMenu
