@@ -10,7 +10,7 @@ import { Character, Hero } from "../Models/CharacterModel"; // Assuming Characte
  * @returns The updated target character.
  */
 export const applyAttack = (attacker: Character, target: Character, addGameLog: (message: string) => void): Character => {
-    const damage = attacker.weapon.power;
+    const damage = attacker.mainHand.power;
     const updatedTarget = { ...target, currentHP: target.currentHP - damage };
     addGameLog(`${attacker.name} attacks ${target.name} for ${damage} damage!`);
 

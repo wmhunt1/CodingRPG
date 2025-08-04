@@ -1,7 +1,7 @@
 import '../StyleSheets/GameStyle.css';
 import { Character } from "../Models/CharacterModel";
 import { Item } from "../Models/ItemModel"
-import { addItemToInventory,removeItemFromInventory } from "../Utils/InventoryUtils"; // Assuming you put it there
+import {addItemToInventory, removeItemFromInventory } from "../Utils/InventoryUtils"; // Assuming you put it there
 import { ShopModel } from "../Models/ShopModel"
 
 import { useState, useEffect } from "react";

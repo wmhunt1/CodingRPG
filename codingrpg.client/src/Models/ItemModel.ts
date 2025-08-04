@@ -82,9 +82,9 @@ export class Equipable extends Item {
         let bareItem: Item; // The default "bare" item for the slot
 
         // Equip the new item and store the old one
-        if (this.slot === "Weapon" && user.weapon) {
-            oldEquippedItem = user.weapon;
-            user.weapon = this as unknown as Weapon;
+        if (this.slot === "Weapon" && user.mainHand) {
+            oldEquippedItem = user.mainHand;
+            user.mainHand = this as unknown as Weapon;
             bareItem = new BareFist();
         } else if (this.slot === "Chest" && user.chest) {
             oldEquippedItem = user.chest;
@@ -113,7 +113,44 @@ export class Equipable extends Item {
         return user; // Return the modified character
     }
 }
-
+export class Accessory extends Equipable {
+    constructor(name: string, quantity: number, cost: number, slot: string) {
+        super(name, quantity, cost, slot);
+    }
+}
+export class Back extends Accessory {
+    constructor(name: string, quantity: number, cost: number) {
+        const slot = "Back"
+        super(name, quantity, cost, slot);
+    }
+}
+export class BareBack extends Back {
+    constructor() {
+        super("Bare Back", 1, 0);
+    }
+}
+export class Neck extends Accessory {
+    constructor(name: string, quantity: number, cost: number) {
+        const slot = "Neck"
+        super(name, quantity, cost, slot);
+    }
+}
+export class BareNeck extends Neck {
+    constructor() {
+        super("Bare Neck", 1, 0);
+    }
+}
+export class Ring extends Accessory {
+    constructor(name: string, quantity: number, cost: number) {
+        const slot = "Finger"
+        super(name, quantity, cost, slot);
+    }
+}
+export class BareFinger extends Ring {
+    constructor() {
+        super("Bare Finger", 1, 0);
+    }
+}
 export class Armor extends Equipable {
     protection: number;
     constructor(name: string, quantity: number, cost: number, slot: string, protection: number) {
@@ -142,15 +179,97 @@ export class Tunic extends ChestArmor {
         this.description = "A simple cloth tunic. Offers minimal protection.";
     }
 }
-
+export class FootArmor extends Armor {
+    constructor(name: string, quantity: number, cost: number, protection: number) {
+        super(name, quantity, cost, "Feet", protection);
+    }
+}
+export class BareFeet extends FootArmor {
+    constructor() {
+        super("Bare Feet", 1, 0, 0);
+        //this.description = "You're bare-shouldered. No protection.";
+    }
+}
+export class HandArmor extends Armor {
+    constructor(name: string, quantity: number, cost: number, protection: number) {
+        super(name, quantity, cost, "Hands", protection);
+    }
+}
+export class BareHands extends HandArmor {
+    constructor() {
+        super("Bare Hands", 1, 0, 0);
+        //this.description = "You're bare-headed. No protection.";
+    }
+}
+export class HeadArmor extends Armor {
+    constructor(name: string, quantity: number, cost: number, protection: number) {
+        super(name, quantity, cost, "Head", protection);
+    }
+}
+export class BareHead extends HeadArmor {
+    constructor() {
+        super("Bare Head", 1, 0, 0);
+        //this.description = "You're bare-headed. No protection.";
+    }
+}
+export class LegArmor extends Armor {
+    constructor(name: string, quantity: number, cost: number, protection: number) {
+        super(name, quantity, cost, "Legs", protection);
+    }
+}
+export class BareLegs extends LegArmor {
+    constructor() {
+        super("Bare Legs", 1, 0, 0);
+        //this.description = "You're bare-shouldered. No protection.";
+    }
+}
+export class Pants extends LegArmor {
+    constructor() {
+        super("Pants", 1, 1, 0);
+        this.description = "A simple pair of pants";
+    }
+}
+export class ShoulderArmor extends Armor {
+    constructor(name: string, quantity: number, cost: number, protection: number) {
+        super(name, quantity, cost, "Shoulders", protection);
+    }
+}
+export class BareShoulders extends ShoulderArmor {
+    constructor() {
+        super("Bare Shoulders", 1, 0, 0);
+        //this.description = "You're bare-shouldered. No protection.";
+    }
+}
+export class WaistArmor extends Armor {
+    constructor(name: string, quantity: number, cost: number, protection: number) {
+        super(name, quantity, cost, "Waist", protection);
+    }
+}
+export class BareWaist extends WaistArmor {
+    constructor() {
+        super("Bare Waist", 1, 0, 0);
+        //this.description = "You're bare-shouldered. No protection.";
+    }
+}
+export class WristArmor extends Armor {
+    constructor(name: string, quantity: number, cost: number, protection: number) {
+        super(name, quantity, cost, "Wrists", protection);
+    }
+}
+export class BareWrists extends WristArmor {
+    constructor() {
+        super("Bare Wrists", 1, 0, 0);
+        //this.description = "You're bare-shouldered. No protection.";
+    }
+}
+//weapons
 export class Weapon extends Equipable {
     power: number;
     constructor(name: string, quantity: number, cost: number, power: number) {
-        super(name, quantity, cost, "Weapon"); // Weapons always go into the "Weapon" slot
+        super(name, quantity, cost, "Weapon");
         this.power = power;
         this.description = `A ${this.name} that deals ${this.power} DMG.`;
     }
-    // No need to override 'use' unless there's *unique* weapon-specific use logic beyond equipping
 }
 
 export class BluntWeapon extends Weapon {

@@ -30,17 +30,17 @@ function CharacterSheet({ hero, back }: CharacterSheetProps) {
                     <div className="stats-container">
                         <h3>Attributes</h3>
                         <div className="stats">
-                        <p>ATR: {hero.attractiveness}</p>
-                        <p>CHA: {hero.charisma}</p>
-                        <p>CON: {hero.constitution}</p>
-                        <p>DEX: {hero.dexterity}</p>
-                        <p>INT: {hero.intelligence}</p>
-                        <p>LCK {hero.luck}</p>
-                        <p>PER: {hero.perception}</p>
-                        <p>SPD: {hero.speed}</p>
-                        <p>STR: {hero.strength}</p>
-                        <p>WLP: {hero.willPower}</p>
-                        <p>WIS: {hero.wisdom}</p>
+                        {/*<p>ATR: {hero.attractiveness}</p>*/}
+                        {/*<p>CHA: {hero.charisma}</p>*/}
+                        {/*<p>CON: {hero.constitution}</p>*/}
+                        {/*<p>DEX: {hero.dexterity}</p>*/}
+                        {/*<p>INT: {hero.intelligence}</p>*/}
+                        {/*<p>LCK {hero.luck}</p>*/}
+                        {/*<p>PER: {hero.perception}</p>*/}
+                        {/*<p>SPD: {hero.speed}</p>*/}
+                        {/*<p>STR: {hero.strength}</p>*/}
+                        {/*<p>WLP: {hero.willPower}</p>*/}
+                        {/*<p>WIS: {hero.wisdom}</p>*/}
                         </div>
                     </div>
                 </div>
