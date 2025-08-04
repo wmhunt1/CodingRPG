@@ -1,5 +1,3 @@
-// src/Utils/combatUtils.ts
-
 import { Character, Hero } from "../Models/CharacterModel"; // Assuming CharacterModel is accessible
 
 /**
@@ -32,36 +30,54 @@ export const executeCombatRound = (
     enemies: Character[],
     addGameLog: (message: string) => void
 ) => {
+    // Create new mutable copies of the arrays to work with
     const updatedHeroes = heroes.map((h) => ({ ...h }));
     let updatedEnemies = enemies.map((e) => ({ ...e }));
 
-    // Heroes' Turn
-    //Make all heroes gain xp?.
-    updatedHeroes.forEach((hero) => {
-        if (hero.currentHP <= 0) return;
-        const targetEnemy = updatedEnemies.find((enemy) => enemy.currentHP > 0);
-        if (targetEnemy) {
-            const index = updatedEnemies.findIndex(e => e.name === targetEnemy.name); // Find index to update correctly
-            updatedEnemies[index] = applyAttack(hero, targetEnemy, addGameLog);
-            if (updatedEnemies[index].currentHP <= 0) {
-                hero.currentXP += targetEnemy.currentXP;
-                hero.gold += targetEnemy.gold;
+    // Randomly decide if heroes or enemies go first
+    //later make it so speed is a factor
+    const heroesGoFirst = Math.random() > 0.5;
+
+    // An array of the two turn functions to execute
+    const turns = [
+        () => { // Heroes' Turn
+            updatedHeroes.forEach((hero) => {
+                if (hero.currentHP <= 0) return;
+                const targetEnemy = updatedEnemies.find((enemy) => enemy.currentHP > 0);
+                if (targetEnemy) {
+                    const index = updatedEnemies.findIndex(e => e.name === targetEnemy.name);
+                    updatedEnemies[index] = applyAttack(hero, targetEnemy, addGameLog);
+                    if (updatedEnemies[index].currentHP <= 0) {
+                        hero.currentXP += targetEnemy.currentXP;
+                        hero.gold += targetEnemy.gold;
+                    }
+                }
+            });
+            updatedEnemies = updatedEnemies.filter((enemy) => enemy.currentHP > 0);
+        },
+        () => { // Enemies' Turn
+            if (updatedEnemies.some((enemy) => enemy.currentHP > 0)) {
+                updatedEnemies.forEach((enemy) => {
+                    if (enemy.currentHP <= 0) return;
+                    const targetHero = updatedHeroes.find((hero) => hero.currentHP > 0);
+                    if (targetHero) {
+                        const index = updatedHeroes.findIndex(h => h.name === targetHero.name);
+                        updatedHeroes[index] = applyAttack(enemy, targetHero, addGameLog) as Hero;
+                    }
+                });
             }
         }
-    });
+    ];
 
-    updatedEnemies = updatedEnemies.filter((enemy) => enemy.currentHP > 0);
-
-    // Enemies' Turn
-    if (updatedEnemies.some((enemy) => enemy.currentHP > 0)) {
-        updatedEnemies.forEach((enemy) => {
-            if (enemy.currentHP <= 0) return;
-            const targetHero = updatedHeroes.find((hero) => hero.currentHP > 0);
-            if (targetHero) {
-                const index = updatedHeroes.findIndex(h => h.name === targetHero.name); // Find index to update correctly
-                updatedHeroes[index] = applyAttack(enemy, targetHero, addGameLog) as Hero; // Cast back to Hero
-            }
-        });
+    // Execute the turns in the determined order
+    if (heroesGoFirst) {
+        //addGameLog("Heroes move first.");
+        turns[0](); // Heroes' turn
+        turns[1](); // Enemies' turn
+    } else {
+        //fiaddGameLog("Enemies ambush the heroes and get to go first!");
+        turns[1](); // Enemies' turn
+        turns[0](); // Heroes' turn
     }
 
     return { updatedHeroes, updatedEnemies };

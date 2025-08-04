@@ -35,7 +35,7 @@ export class Village extends Settlement {
 export class StartingVillage extends Village {
     constructor() {
         const name = "Starting Village"
-        const locations: Location[] = [new InnLocation("Starting Inn",new InnShop(5),5),new RatCellar(), new ShopLocation("General Shop", new GeneralShop())]
+        const locations: Location[] = [new InnLocation("Dreaming Worker Inn",new InnShop(5),5),new RatCellar(), new ShopLocation("Joe the Trader's", new GeneralShop())]
         const x = 0;
         const y = 0;
         super(name,locations,x,y)
