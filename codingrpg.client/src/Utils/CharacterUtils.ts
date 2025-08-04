@@ -3,7 +3,7 @@ import { Character } from "../Models/CharacterModel"; // Assuming Character is d
 
 import {
     Armor, Back, BareBack, BareChest, BareFeet, BareFinger, BareFist, BareHands, BareHead, BareLegs, BareNeck, BareShoulders, BareWaist, BareWrists,
-    ChestArmor, Consumable, Equipable, FootArmor, HandArmor, HeadArmor, HealthPotion, Item, LegArmor, Neck, Potion, Ring, ShoulderArmor, WaistArmor, Weapon, WristArmor
+    ChestArmor, Consumable, EmptyHand, Equipable, FootArmor, HandArmor, HeadArmor, HealthPotion, Item, LegArmor, Neck,OffHandWeapon, Potion, Ring,Shield, ShoulderArmor, WaistArmor, Weapon, WristArmor
 } from "../Models/ItemModel";
 
 export function instantiateItem(plainItem: any): Item {
@@ -12,6 +12,8 @@ export function instantiateItem(plainItem: any): Item {
     if (!plainItem || !plainItem.name) {
         if (plainItem && plainItem.name === "Bare Fist") {
             newItemInstance = new BareFist();
+        } else if (plainItem && plainItem.name === "Empty Hand") {
+            newItemInstance = new EmptyHand();
         } else if (plainItem && plainItem.name === "Bare Head") {
             newItemInstance = new BareHead();
         } else if (plainItem && plainItem.name === "Bare Shoulders") {
@@ -39,7 +41,12 @@ export function instantiateItem(plainItem: any): Item {
         }
     } else if (plainItem.slot) { // It's an Equipable
         if (plainItem.power !== undefined) {
-            newItemInstance = new Weapon(plainItem.name, plainItem.quantity, plainItem.cost, plainItem.power);
+            if (plainItem.slot === "Weapon") {
+                newItemInstance = new Weapon(plainItem.name, plainItem.quantity, plainItem.cost, plainItem.power);
+            }
+            else {
+                newItemInstance = new OffHandWeapon(plainItem.name, plainItem.quantity, plainItem.cost, plainItem.power);
+            }
         } else if (plainItem.protection !== undefined) {
             if (plainItem.slot === "Head") {
                 newItemInstance = new HeadArmor(plainItem.name, plainItem.quantity, plainItem.cost, plainItem.protection);
@@ -57,6 +64,8 @@ export function instantiateItem(plainItem: any): Item {
                 newItemInstance = new LegArmor(plainItem.name, plainItem.quantity, plainItem.cost, plainItem.protection);
             } else if (plainItem.slot === "Feet") {
                 newItemInstance = new FootArmor(plainItem.name, plainItem.quantity, plainItem.cost, plainItem.protection);
+            } else if (plainItem.slot === "OffHand") {
+                newItemInstance = new Shield(plainItem.name, plainItem.quantity, plainItem.cost, plainItem.protection);
             } else {
                 newItemInstance = new Armor(plainItem.name, plainItem.quantity, plainItem.cost, plainItem.slot, plainItem.protection);
             }
@@ -110,6 +119,12 @@ export function instantiateCharacterItems(plainCharacter: any): Character {
     );
 
     newCharacter.mainHand = plainCharacter.mainHand ? instantiateItem(plainCharacter.mainHand) as Weapon : new BareFist();
+    if (plainCharacter.offHand.power !== undefined) {
+        newCharacter.offHand = plainCharacter.offHand ? instantiateItem(plainCharacter.offHand) as OffHandWeapon : new EmptyHand();
+    }
+    if (plainCharacter.offHand.protection !== undefined) {
+        newCharacter.offHand = plainCharacter.offHand ? instantiateItem(plainCharacter.offHand) as Shield : new EmptyHand();
+    }
     newCharacter.head = plainCharacter.head ? instantiateItem(plainCharacter.head) as HeadArmor : new BareHead();
     newCharacter.shoulders = plainCharacter.shoulders ? instantiateItem(plainCharacter.shoulders) as ShoulderArmor : new BareShoulders();
     newCharacter.chest = plainCharacter.chest ? instantiateItem(plainCharacter.chest) as ChestArmor : new BareChest();

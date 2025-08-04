@@ -1,6 +1,7 @@
 import {
     Back, BareBack, BareChest, BareFeet, BareFinger, BareFist, BareHands, BareHead, BareLegs, BareNeck, BareShoulders, BareWaist, BareWrists, ChestArmor,
-    FootArmor, HandArmor, HeadArmor, Item, LegArmor, Neck,Pants, RatBite, Ring, ShoulderArmor, Stick, Tunic, WaistArmor, Weapon, WristArmor
+    EmptyHand,
+    FootArmor, HandArmor, HeadArmor, Item, LegArmor, Neck,OffHand,Pants, RatBite, Ring,Shoes, ShoulderArmor, Stick, Tunic, WaistArmor, Weapon, WristArmor
 } from './ItemModel.ts';
 
 export class Character {
@@ -30,7 +31,7 @@ export class Character {
     //wisdom: number = 10;
     inventory: Item[] = []
     mainHand: Weapon = new BareFist();
-    //offHand:
+    offHand: OffHand = new EmptyHand();
     //ammo:
     head: HeadArmor = new BareHead();
     shoulders: ShoulderArmor = new BareShoulders()
@@ -90,6 +91,9 @@ export class Humanoid extends Character {
         maxXP: number,
         gold: number) {
         super(name, maxHP, currentHP, maxMP, currentMP, maxSP, currentSP, level, currentXP, maxXP, gold)
+        this.chest = new Tunic();
+        this.legs = new Pants();
+        this.feet = new Shoes();
     }
 }
 export class Hero extends Humanoid {
@@ -106,8 +110,6 @@ export class Hero extends Humanoid {
         const gold = 10;
         super(name, maxHP, currentHP, maxMP, currentMP, maxSP, currentSP, level, currentXP, maxXP, gold)
         this.mainHand = new Stick();
-        this.chest = new Tunic();
-        this.legs = new Pants();
         this.inventory = []
     }
 }

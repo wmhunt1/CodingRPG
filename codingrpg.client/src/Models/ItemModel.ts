@@ -1,7 +1,7 @@
 // Models/ItemModel.ts
 
 import { Character } from "./CharacterModel";
-import { addItemToInventory,removeItemFromInventory } from "..//Utils/InventoryUtils";
+import { addItemToInventory, removeItemFromInventory } from "..//Utils/InventoryUtils";
 export class Item {
     name: string;
     quantity: number;
@@ -77,7 +77,6 @@ export class Equipable extends Item {
 
     // The use method now handles equipping and returning the old item
     override use(user: Character): Character {
-
         let oldEquippedItem: Equipable | Item | null = null;
         let bareItem: Item; // The default "bare" item for the slot
 
@@ -86,13 +85,55 @@ export class Equipable extends Item {
             oldEquippedItem = user.mainHand;
             user.mainHand = this as unknown as Weapon;
             bareItem = new BareFist();
+        } else if (this.slot === "OffHand" && user.offHand) {
+            oldEquippedItem = user.offHand;
+            user.offHand = this as unknown as OffHand;
+            bareItem = new EmptyHand();
+        } else if (this.slot === "Head" && user.head) {
+            oldEquippedItem = user.head;
+            user.head = this as unknown as HeadArmor;
+            bareItem = new BareHead();
+        } else if (this.slot === "Shoulders" && user.shoulders) {
+            oldEquippedItem = user.shoulders;
+            user.shoulders = this as unknown as ShoulderArmor;
+            bareItem = new BareShoulders();
         } else if (this.slot === "Chest" && user.chest) {
             oldEquippedItem = user.chest;
             user.chest = this as unknown as ChestArmor;
             bareItem = new BareChest();
-        }
-        // Add more 'else if' blocks for other equipable slots (Head, Legs, etc.)
-        else {
+        } else if (this.slot === "Wrists" && user.wrists) {
+            oldEquippedItem = user.wrists;
+            user.wrists = this as unknown as WristArmor;
+            bareItem = new BareWrists();
+        } else if (this.slot === "Hands" && user.hands) {
+            oldEquippedItem = user.hands;
+            user.hands = this as unknown as HandArmor;
+            bareItem = new BareHands();
+        } else if (this.slot === "Waist" && user.waist) {
+            oldEquippedItem = user.waist;
+            user.waist = this as unknown as WaistArmor;
+            bareItem = new BareWaist();
+        } else if (this.slot === "Legs" && user.legs) {
+            oldEquippedItem = user.legs;
+            user.legs = this as unknown as LegArmor;
+            bareItem = new BareLegs();
+        } else if (this.slot === "Feet" && user.feet) {
+            oldEquippedItem = user.feet;
+            user.feet = this as unknown as FootArmor;
+            bareItem = new BareFeet();
+        } else if (this.slot === "Neck" && user.neck) {
+            oldEquippedItem = user.neck;
+            user.neck = this as unknown as Neck;
+            bareItem = new BareNeck();
+        } else if (this.slot === "Finger" && user.finger) {
+            oldEquippedItem = user.finger;
+            user.finger = this as unknown as Ring;
+            bareItem = new BareFinger();
+        } else if (this.slot === "Back" && user.back) {
+            oldEquippedItem = user.back;
+            user.back = this as unknown as Back;
+            bareItem = new BareBack();
+        } else {
             // Handle cases where the slot isn't recognized or the current slot is empty
             console.warn(`Attempted to equip item to unhandled slot: ${this.slot}`);
             // If the item doesn't replace anything, just remove it from inventory and return
@@ -127,6 +168,11 @@ export class Back extends Accessory {
 export class BareBack extends Back {
     constructor() {
         super("Bare Back", 1, 0);
+    }
+}
+export class Cloak extends Back {
+    constructor() {
+        super("Cloak", 1, 1);
     }
 }
 export class Neck extends Accessory {
@@ -187,7 +233,16 @@ export class FootArmor extends Armor {
 export class BareFeet extends FootArmor {
     constructor() {
         super("Bare Feet", 1, 0, 0);
-        //this.description = "You're bare-shouldered. No protection.";
+    }
+}
+export class Boots extends FootArmor {
+    constructor() {
+        super("Boots", 1, 1, 1);
+    }
+}
+export class Shoes extends FootArmor {
+    constructor() {
+        super("Shoes", 1, 1, 1);
     }
 }
 export class HandArmor extends Armor {
@@ -198,7 +253,11 @@ export class HandArmor extends Armor {
 export class BareHands extends HandArmor {
     constructor() {
         super("Bare Hands", 1, 0, 0);
-        //this.description = "You're bare-headed. No protection.";
+    }
+}
+export class Gloves extends HandArmor {
+    constructor() {
+        super("Gloves", 1, 1, 1);
     }
 }
 export class HeadArmor extends Armor {
@@ -209,7 +268,11 @@ export class HeadArmor extends Armor {
 export class BareHead extends HeadArmor {
     constructor() {
         super("Bare Head", 1, 0, 0);
-        //this.description = "You're bare-headed. No protection.";
+    }
+}
+export class Hat extends HeadArmor {
+    constructor() {
+        super("Hat", 1, 1, 1);
     }
 }
 export class LegArmor extends Armor {
@@ -220,12 +283,11 @@ export class LegArmor extends Armor {
 export class BareLegs extends LegArmor {
     constructor() {
         super("Bare Legs", 1, 0, 0);
-        //this.description = "You're bare-shouldered. No protection.";
     }
 }
 export class Pants extends LegArmor {
     constructor() {
-        super("Pants", 1, 1, 0);
+        super("Pants", 1, 1, 1);
         this.description = "A simple pair of pants";
     }
 }
@@ -237,7 +299,6 @@ export class ShoulderArmor extends Armor {
 export class BareShoulders extends ShoulderArmor {
     constructor() {
         super("Bare Shoulders", 1, 0, 0);
-        //this.description = "You're bare-shouldered. No protection.";
     }
 }
 export class WaistArmor extends Armor {
@@ -248,7 +309,6 @@ export class WaistArmor extends Armor {
 export class BareWaist extends WaistArmor {
     constructor() {
         super("Bare Waist", 1, 0, 0);
-        //this.description = "You're bare-shouldered. No protection.";
     }
 }
 export class WristArmor extends Armor {
@@ -259,10 +319,43 @@ export class WristArmor extends Armor {
 export class BareWrists extends WristArmor {
     constructor() {
         super("Bare Wrists", 1, 0, 0);
-        //this.description = "You're bare-shouldered. No protection.";
     }
 }
 //weapons
+export class OffHand extends Equipable {
+    constructor(name: string, quantity: number, cost: number) {
+        super(name, quantity, cost, "OffHand");
+    }
+}
+export class EmptyHand extends OffHand {
+    constructor() {
+        const name = "Empty Hand";
+        const quantity = 1;
+        const cost = 0;
+        super(name, quantity, cost);
+    }
+}
+export class OffHandWeapon extends OffHand {
+    power: number;
+    constructor(name: string, quantity: number, cost: number, power: number) {
+        super(name, quantity, cost);
+        this.power = power;
+        this.description = `${this.name}: ${this.power} DMG.`;
+    }
+}
+export class Shield extends OffHand {
+    protection: number;
+    constructor(name: string, quantity: number, cost: number, protection: number) {
+        super(name, quantity, cost);
+        this.protection = protection;
+        this.description = `${this.name}: ${this.protection} Protection.`;
+    }
+}
+export class WoodenShield extends Shield {
+    constructor() {
+        super("Wooden Shield", 1, 1, 1);
+    }
+}
 export class Weapon extends Equipable {
     power: number;
     constructor(name: string, quantity: number, cost: number, power: number) {

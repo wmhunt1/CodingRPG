@@ -1,7 +1,7 @@
 // Equipment.tsx
 import '../StyleSheets/GameStyle.css';
 import { Character } from "../Models/CharacterModel";
-import {BareBack, BareChest, BareHands, BareHead,BareFeet,BareFinger, BareFist,BareLegs, BareNeck,BareShoulders,BareWaist,BareWrists,Equipable } from "../Models/ItemModel"; // Import Item for addItemToInventory
+import {BareBack, BareChest, BareHands, BareHead,BareFeet,BareFinger, BareFist,BareLegs, BareNeck,BareShoulders,BareWaist,BareWrists,Equipable,OffHandWeapon,Shield, EmptyHand } from "../Models/ItemModel"; // Import Item for addItemToInventory
 import { useState, useEffect } from "react";
 import { instantiateCharacterItems } from "../Utils/CharacterUtils"
 
@@ -29,6 +29,8 @@ function Equipment({ hero, back, onUpdateHero, addGameLog }: EquipmentProps) {
             updatedHero.chest = new BareChest();
         } else if (itemToUnEquip.slot === "Weapon") {
             updatedHero.mainHand = new BareFist(); // Assuming 'Weapon' unequips to a bare fist in the main hand
+        } else if (itemToUnEquip.slot === "OffHand") {
+            updatedHero.offHand = new EmptyHand(); // Assuming 'Weapon' unequips to a bare fist in the main hand
         } else if (itemToUnEquip.slot === "Head") {
             updatedHero.head = new BareHead();
         } else if (itemToUnEquip.slot === "Shoulders") {
@@ -74,7 +76,8 @@ function Equipment({ hero, back, onUpdateHero, addGameLog }: EquipmentProps) {
                     <div className="stats-container">
                         <h3>Weapons</h3>
                         <div className="stats">
-                            <p>Weapon: {currentHero.mainHand.name} ({currentHero.mainHand.power} DMG) {currentHero.mainHand.name !== "Bare Fist" ? <button className="use-equip-button" onClick={() => handleUnEquipItem(currentHero.mainHand)}>UnEquip</button> : <></>}</p>
+                            <p>Weapon: {currentHero.mainHand.name} ({currentHero.mainHand.power}) {currentHero.mainHand.name !== "Bare Fist" ? <button className="use-equip-button" onClick={() => handleUnEquipItem(currentHero.mainHand)}>UnEquip</button> : <></>}</p>
+                            <p>OffHand: {currentHero.offHand.name} {currentHero.offHand instanceof OffHandWeapon ? `(${currentHero.offHand.power})` : <></>}{currentHero.offHand instanceof Shield ? `(${currentHero.offHand.protection})` : <></>}{currentHero.offHand.name !== "Empty Hand" ? <button className="use-equip-button" onClick={() => handleUnEquipItem(currentHero.offHand)}>UnEquip</button> : <></>}</p>
                         </div>
                     </div>
                     <div className="stats-container">

@@ -1,4 +1,4 @@
-import {Back, ChestArmor,Consumable,Equipable,FootArmor,HandArmor,HeadArmor,Item,LegArmor,Neck,Potion,Ring,ShoulderArmor,WaistArmor,Weapon,WristArmor } from "../Models/ItemModel";
+import { Back, ChestArmor, Consumable, Equipable, FootArmor, HandArmor, HeadArmor, Item, LegArmor, Neck,OffHandWeapon, Potion, Ring,Shield, ShoulderArmor, WaistArmor, Weapon, WristArmor } from "../Models/ItemModel";
 export function addItemToInventory(inventory: Item[], itemToAdd: Item): void {
     const existingItem = inventory.find(item => item.name === itemToAdd.name);
 
@@ -9,6 +9,11 @@ export function addItemToInventory(inventory: Item[], itemToAdd: Item): void {
 
         if (itemToAdd instanceof Weapon) {
             newItemInstance = new Weapon(itemToAdd.name, 1, itemToAdd.cost, itemToAdd.power);
+        }
+        else if (itemToAdd instanceof OffHandWeapon) {
+            newItemInstance = new OffHandWeapon(itemToAdd.name, 1, itemToAdd.cost, itemToAdd.power);
+        } else if (itemToAdd instanceof Shield) {
+            newItemInstance = new Shield(itemToAdd.name, 1, itemToAdd.cost, itemToAdd.protection);
         } else if (itemToAdd instanceof HeadArmor) {
             newItemInstance = new HandArmor(itemToAdd.name, 1, itemToAdd.cost, itemToAdd.protection);
         } else if (itemToAdd instanceof ShoulderArmor) {
