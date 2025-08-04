@@ -9,31 +9,36 @@ export function addItemToInventory(inventory: Item[], itemToAdd: Item): void {
 
     if (existingItem) {
         existingItem.quantity++;
+        // If an item already exists, and we're just incrementing quantity,
+        // its description should already be correct.
     } else {
         // Re-instantiate the item to ensure proper class methods are maintained
         let newItemInstance: Item;
 
         if (itemToAdd instanceof Weapon) {
-            // Ensure proper constructor arguments for Weapon
-            newItemInstance = new Weapon(itemToAdd.name, 1, itemToAdd.power, itemToAdd.cost);
+            newItemInstance = new Weapon(itemToAdd.name, 1, itemToAdd.cost, itemToAdd.power);
         } else if (itemToAdd instanceof ChestArmor) {
-            // Ensure proper constructor arguments for ChestArmor
-            newItemInstance = new ChestArmor(itemToAdd.name, 1, itemToAdd.protection, itemToAdd.cost);
+            newItemInstance = new ChestArmor(itemToAdd.name, 1, itemToAdd.cost, itemToAdd.protection);
         } else if (itemToAdd instanceof Equipable) {
-            // Ensure proper constructor arguments for Equipable
             newItemInstance = new Equipable(itemToAdd.name, 1, itemToAdd.cost, itemToAdd.slot);
         } else if (itemToAdd instanceof Potion) {
-            // Ensure proper constructor arguments for Potion
             newItemInstance = new Potion(itemToAdd.name, 1, itemToAdd.consumedValue, itemToAdd.cost);
+        } else if (itemToAdd instanceof Consumable) { // General consumable
+            newItemInstance = new Consumable(itemToAdd.name, 1, itemToAdd.consumedValue, itemToAdd.cost);
         }
-        // Add more specific types here as needed
+        // Add more specific types here as needed.
+        // Make sure to order them from most specific to least specific.
         else {
             newItemInstance = new Item(itemToAdd.name, 1, itemToAdd.cost);
         }
 
-        if (itemToAdd.description) {
-            newItemInstance.description = itemToAdd.description;
-        }
+        // CRITICAL FIX: Copy the description *after* the instance is created
+        // This ensures the original description from 'itemToAdd' is preserved,
+        // overriding any default set by the constructor.
+        console.log(itemToAdd.description)
+        newItemInstance.description = itemToAdd.description;
+        console.log(newItemInstance.description)
+
         inventory.push(newItemInstance);
     }
 }
@@ -99,15 +104,24 @@ export class Potion extends Consumable {
 export class HealthPotion extends Potion {
     constructor(name: string, quantity: number, consumedValue: number, cost: number) {
         super(name, quantity, consumedValue, cost);
+        this.description = `A ${this.name} that provides ${this.consumedValue} points of healing`
     }
     override use(user: Character): Character {
-        console.log(`${user.name} drinks ${this.name}`);
         user.currentHP += this.consumedValue;
         if (user.currentHP > user.maxHP) {
             user.currentHP = user.maxHP;
         }
         // After affecting HP, remove from inventory
         return super.use(user);
+    }
+}
+export class BasicHealthPotion extends HealthPotion {
+    constructor() {
+        const name = "Basic Health Potion"
+        const quantity = 1;
+        const consumedValue = 5;
+        const cost = 10;
+        super(name, quantity, consumedValue, cost);
     }
 }
 
@@ -163,14 +177,13 @@ export class Armor extends Equipable {
     constructor(name: string, quantity: number, cost: number, slot: string, protection: number) {
         super(name, quantity, cost, slot);
         this.protection = protection;
-        this.description = `A ${this.name} with ${this.protection} protection.`;
+        this.description = `A ${this.name} that provides ${this.protection} protection.`;
     }
 }
 
 export class ChestArmor extends Armor {
     constructor(name: string, quantity: number, cost: number, protection: number) {
         super(name, quantity, cost, "Chest", protection);
-        this.description = `A ${this.name} with ${this.protection} protection.`;
     }
 }
 
@@ -193,7 +206,7 @@ export class Weapon extends Equipable {
     constructor(name: string, quantity: number, cost: number, power: number) {
         super(name, quantity, cost, "Weapon"); // Weapons always go into the "Weapon" slot
         this.power = power;
-        this.description = `A ${this.name} with ${this.power} DMG.`;
+        this.description = `A ${this.name} that deals ${this.power} DMG.`;
     }
     // No need to override 'use' unless there's *unique* weapon-specific use logic beyond equipping
 }
@@ -208,7 +221,7 @@ export class BluntWeapon extends Weapon {
 export class Club extends BluntWeapon {
     constructor() {
         super("Club", 1, 2, 2);
-        this.description = `A crude wooden club. Deals ${this.power} DMG.`;
+        this.description = `A crude wooden club that deals ${this.power} DMG.`;
     }
 }
 

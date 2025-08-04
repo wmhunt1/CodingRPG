@@ -49,12 +49,13 @@ function Inventory({ hero, back, onUpdateHero, addGameLog }: InventoryProps) {
                         <div className="inventory-items">
                             {
                                 currentHero.inventory.map((item, index) => (
-                                    <p key={index}>
-                                        {item.name} ({item.description})
+                                    <div key={index}>
+                                    <p>{item.name}</p>
+                                     <p>{item.description}</p>
                                         <button className="use-equip-button" onClick={() => handleUseItem(item)}>
                                             {item instanceof Equipable ? "Equip" : "Use"} x {item.quantity}
                                         </button>
-                                    </p>
+                                    </div>
                                 ))
                             }
                         </div>

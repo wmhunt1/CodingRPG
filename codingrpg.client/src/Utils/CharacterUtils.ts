@@ -2,83 +2,92 @@
 // Models/CharacterModel.ts (or a new Utilities.ts file)
 
 import { Character } from "../Models/CharacterModel"; // Assuming Character is defined here
-import { Item, Equipable, Weapon, ChestArmor, Consumable, Potion, HealthPotion,BareFist, BareChest,} from "../Models/ItemModel";
+import { Armor, Item, Equipable, Weapon, ChestArmor, Consumable, Potion, HealthPotion, BareFist, BareChest } from "../Models/ItemModel";
 
-// This function takes a plain JS object (likely from JSON.parse)
-// and reinstantiates its item properties into proper class instances.
 export function instantiateItem(plainItem: any): Item {
+    let newItemInstance: Item; // Declare once to be assigned in the blocks below
+
     if (!plainItem || !plainItem.name) {
-        // Handle cases for BareFist/BareChest or genuinely empty slots
-        // You might want to return new BareFist() or new BareChest() based on context
-        // or just a generic new Item() if it's meant to be an empty slot placeholder.
-        if (plainItem && plainItem.name === "Bare Fist") return new BareFist();
-        if (plainItem && plainItem.name === "Bare Chest") return new BareChest();
-        return new Item("Unknown Item", 0, 0); // Default or throw error
-    }
-
-    // Determine the specific class based on properties or a type field
-    // It's often helpful to add a 'type' string property to your classes
-    // (e.g., type: "Weapon", type: "HealthPotion") for easier deserialization.
-    // For now, we'll rely on instanceof checks or property existence.
-
-    // Equipables first, then consumables, then generic items
-    if (plainItem.slot) { // It's an Equipable
+        if (plainItem && plainItem.name === "Bare Fist") {
+            newItemInstance = new BareFist();
+        } else if (plainItem && plainItem.name === "Bare Chest") {
+            newItemInstance = new BareChest();
+        } else {
+            newItemInstance = new Item("Unknown Item", 0, 0);
+        }
+    } else if (plainItem.slot) { // It's an Equipable
         if (plainItem.power !== undefined) {
-            return new Weapon(plainItem.name, plainItem.quantity, plainItem.cost, plainItem.power);
-        }
-        if (plainItem.protection !== undefined) {
-            // Need to differentiate ChestArmor from generic Armor if Armor can be equipped directly
+            // Ensure constructor arguments match your Weapon class: name, quantity, cost, power
+            newItemInstance = new Weapon(plainItem.name, plainItem.quantity, plainItem.cost, plainItem.power);
+        } else if (plainItem.protection !== undefined) {
             if (plainItem.slot === "Chest") {
-                return new ChestArmor(plainItem.name, plainItem.quantity, plainItem.cost, plainItem.protection);
+                // Ensure constructor arguments match your ChestArmor class: name, quantity, cost, protection
+                newItemInstance = new ChestArmor(plainItem.name, plainItem.quantity, plainItem.cost, plainItem.protection);
+            } else {
+                // Generic Armor (if you have other armor slots beyond chest)
+                // Ensure constructor arguments match your Armor class: name, quantity, cost, slot, protection
+                newItemInstance = new Armor(plainItem.name, plainItem.quantity, plainItem.cost, plainItem.slot, plainItem.protection);
             }
-            // else if (plainItem.slot === "Head") { return new Helmet(...) }
-            // return new Armor(plainItem.name, plainItem.quantity, plainItem.cost, plainItem.slot, plainItem.protection);
+        } else {
+            // Fallback for generic Equipable if no specific subclass matches
+            // Ensure constructor arguments match your Equipable class: name, quantity, cost, slot
+            newItemInstance = new Equipable(plainItem.name, plainItem.quantity, plainItem.cost, plainItem.slot);
         }
-        // Fallback for generic Equipable if no specific subclass matches
-        return new Equipable(plainItem.name, plainItem.quantity, plainItem.cost, plainItem.slot);
-    }
-
-    if (plainItem.consumedValue !== undefined) { // It's a Consumable
+    } else if (plainItem.consumedValue !== undefined) { // It's a Consumable
         if (plainItem.name.toLowerCase().includes("potion")) {
             if (plainItem.name.toLowerCase().includes("health")) {
-                return new HealthPotion(plainItem.name, plainItem.quantity, plainItem.consumedValue, plainItem.cost);
+                // Ensure constructor arguments match your HealthPotion class: name, quantity, consumedValue, cost
+                newItemInstance = new HealthPotion(plainItem.name, plainItem.quantity, plainItem.consumedValue, plainItem.cost);
+            } else {
+                // Generic Potion
+                // Ensure constructor arguments match your Potion class: name, quantity, consumedValue, cost
+                newItemInstance = new Potion(plainItem.name, plainItem.quantity, plainItem.consumedValue, plainItem.cost);
             }
-            return new Potion(plainItem.name, plainItem.quantity, plainItem.consumedValue, plainItem.cost);
+        } else {
+            // Generic Consumable
+            // Ensure constructor arguments match your Consumable class: name, quantity, consumedValue, cost
+            newItemInstance = new Consumable(plainItem.name, plainItem.quantity, plainItem.consumedValue, plainItem.cost);
         }
-        return new Consumable(plainItem.name, plainItem.quantity, plainItem.consumedValue, plainItem.cost);
+    } else {
+        // Default to a generic Item if no other type matches
+        // Ensure constructor arguments match your Item class: name, quantity, cost
+        newItemInstance = new Item(plainItem.name, plainItem.quantity, plainItem.cost);
     }
 
-    // Default to a generic Item
-    return new Item(plainItem.name, plainItem.quantity, plainItem.cost);
+    // CRITICAL: Copy the description *after* the specific instance has been created
+    // This ensures that even if a constructor sets a default description,
+    // it's immediately overridden by the original description from plainItem.
+    if (plainItem.description !== undefined) {
+        newItemInstance.description = plainItem.description;
+    }
+
+    return newItemInstance; // Return the fully constructed and described item instance
 }
 
-
-export function instantiateCharacterItems(plainCharacter: Character): Character {
-    const newCharacter = new Character()
-    newCharacter.name = plainCharacter.name;
-    newCharacter.currentHP = plainCharacter.currentHP;
-    newCharacter.maxHP = plainCharacter.maxHP;
-    newCharacter.currentMP = plainCharacter.currentMP;
-    newCharacter.maxMP = plainCharacter.maxMP;
-    newCharacter.currentSP = plainCharacter.currentSP;
-    newCharacter.maxSP = plainCharacter.maxSP;
-    newCharacter.level = plainCharacter.level
-    newCharacter.gold = plainCharacter.gold
-    newCharacter.currentXP = plainCharacter.currentXP
-    newCharacter.maxXP = plainCharacter.maxXP
-
-  
-
+// Your instantiateCharacterItems function remains correct as you provided it:
+export function instantiateCharacterItems(plainCharacter: any): Character { // Changed to any for flexibility
+    const newCharacter = new Character(
+        plainCharacter.name,
+        plainCharacter.maxHP,
+        plainCharacter.currentHP,
+        plainCharacter.maxMP,
+        plainCharacter.currentMP,
+        plainCharacter.maxSP,
+        plainCharacter.currentSP,
+        plainCharacter.level,
+        plainCharacter.currentXP,
+        plainCharacter.maxXP,
+        plainCharacter.gold
         // ... copy other simple properties
+    );
 
-
-    // Re-instantiate equipped items
-    newCharacter.weapon = instantiateItem(plainCharacter.weapon) as Weapon;
-    newCharacter.chest = instantiateItem(plainCharacter.chest) as ChestArmor;
+    newCharacter.weapon = plainCharacter.weapon ? instantiateItem(plainCharacter.weapon) as Weapon : new BareFist();
+    newCharacter.chest = plainCharacter.chest ? instantiateItem(plainCharacter.chest) as ChestArmor : new BareChest();
     // ... do this for all other equipped slots
 
-    // Re-instantiate inventory items
-    newCharacter.inventory = plainCharacter.inventory.map((item: any) => instantiateItem(item));
+    newCharacter.inventory = plainCharacter.inventory && Array.isArray(plainCharacter.inventory)
+        ? plainCharacter.inventory.map((item: any) => instantiateItem(item))
+        : [];
 
     return newCharacter;
 }

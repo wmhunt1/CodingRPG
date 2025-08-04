@@ -1,6 +1,6 @@
 import '../StyleSheets/GameStyle.css';
 import { Character } from "../Models/CharacterModel";
-import { Item } from "../Models/ItemModel"
+import { addItemToInventory, Item } from "../Models/ItemModel"
 import { ShopModel } from "../Models/ShopModel"
 
 import { useState, useEffect } from "react";
@@ -40,8 +40,8 @@ function Shop({ hero, back, shop, onUpdateHero, addGameLog }: ShopProps) {
                 updatedHero.inventory[existingItemIndex].quantity += 1;
             } else {
                 // If the item is new, add it to the inventory with a quantity of 1
-                updatedHero.inventory.push(itemToBuy);
-                console.log(updatedHero.inventory)
+                //updatedHero.inventory.push(itemToBuy);
+                addItemToInventory(updatedHero.inventory,itemToBuy)
             }
 
             // Deduct the cost
@@ -96,9 +96,11 @@ function Shop({ hero, back, shop, onUpdateHero, addGameLog }: ShopProps) {
                     <div className="shop-items">
                         {
                             shopInventory.map((item, index) => (
-                                <p key={index}>
-                                    <button className="buy-sell-button" onClick={() => handleBuyItem(item)}>Buy {item.name} ({item.description}) ({item.cost} GP)</button>
-                                </p>
+                                <div key={index}>
+                                    <p>{item.name}</p>
+                                    <p>{item.description}</p>
+                                    <button className="buy-sell-button" onClick={() => handleBuyItem(item)}>Buy ({item.cost} GP)</button>
+                                </div>
                             ))
                         }
                     </div>
@@ -110,9 +112,10 @@ function Shop({ hero, back, shop, onUpdateHero, addGameLog }: ShopProps) {
                         <div className = "shop-items">
                             {
                                 currentHero.inventory.map((item, index) => (
-                                    <p key={index}>
-                                        <button className="buy-sell-button" onClick={() => handleSellItem(item)}>Sell {item.name} x {item.quantity}{' '} ({Math.floor(item.cost / 2)} GP)</button>
-                                    </p>
+                                    <div key={index}>
+                                        <p>{item.name} x {item.quantity}</p>
+                                        <button className="buy-sell-button" onClick={() => handleSellItem(item)}>Sell ({Math.floor(item.cost / 2)} GP)</button>
+                                    </div>
                                 ))
                             }
                         </div>
