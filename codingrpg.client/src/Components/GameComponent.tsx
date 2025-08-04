@@ -208,8 +208,8 @@ function Game() {
                             ))}
                         </div>
                         <div className="game-content-main">
-                            <p>Placeholder for Main Game Content</p>
-                            {/* Map */}
+                     {/* maybe add the grid here with the basic area and a highlight for current location*/}
+                            <img className="area-image" src={area.imageSrc} alt={area.imageAlt}/>
                         </div>
                         <div className="area-options">
                             <h3>Area Options</h3>

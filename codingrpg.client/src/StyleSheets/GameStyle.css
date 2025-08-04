@@ -293,3 +293,7 @@ body, html, #root {
         max-height: 150px;
     }
 }
+.area-image{
+    width:250px;
+    height:250px;
+}

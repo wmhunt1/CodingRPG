@@ -2,20 +2,34 @@ import { Character, Hero } from "../Models/CharacterModel"; // Assuming Characte
 
 /**
  * Applies an attack from an attacker to a target.
+ * Now includes a chance for the attack to miss.
  * @param attacker The attacking character.
  * @param target The target character.
  * @param addGameLog Function to add messages to the game log.
  * @returns The updated target character.
  */
 export const applyAttack = (attacker: Character, target: Character, addGameLog: (message: string) => void): Character => {
-    const damage = attacker.mainHand.power;
-    const updatedTarget = { ...target, currentHP: target.currentHP - damage };
-    addGameLog(`${attacker.name} attacks ${target.name} for ${damage} damage!`);
+    // Define the base hit chance as a decimal (e.g., 85% chance to hit)
+    // This could be a stat on the character object in the future.
+    const hitChance = 0.85;
+    const hitRoll = Math.random();
 
-    if (updatedTarget.currentHP <= 0) {
-        addGameLog(`${updatedTarget.name} has been defeated!`);
+    if (hitRoll <= hitChance) {
+        // The attack is a hit
+        const damage = attacker.mainHand.power;
+        const updatedTarget = { ...target, currentHP: target.currentHP - damage };
+        addGameLog(`${attacker.name} attacks ${target.name} for ${damage} damage!`);
+
+        if (updatedTarget.currentHP <= 0) {
+            addGameLog(`${updatedTarget.name} has been defeated!`);
+        }
+        return updatedTarget;
+    } else {
+        // The attack is a miss
+        addGameLog(`${attacker.name} misses ${target.name}!`);
+        // Return the target unchanged since the attack missed
+        return target;
     }
-    return updatedTarget;
 };
 
 /**
@@ -75,7 +89,7 @@ export const executeCombatRound = (
         turns[0](); // Heroes' turn
         turns[1](); // Enemies' turn
     } else {
-        //fiaddGameLog("Enemies ambush the heroes and get to go first!");
+        //addGameLog("Enemies ambush the heroes and get to go first!");
         turns[1](); // Enemies' turn
         turns[0](); // Heroes' turn
     }

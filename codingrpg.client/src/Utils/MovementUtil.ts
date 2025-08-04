@@ -1,7 +1,7 @@
 // MovementUtil.ts
 
-import { MapModel } from '../Models/MapModel'; 
-import { AreaModel,Forest, StartingVillage } from '../Models/AreaModel'; 
+import { MapModel } from '../Models/MapModel';
+import { AreaModel, Farm, Forest, StartingVillage } from '../Models/AreaModel';
 
 interface MovementResult {
     newArea: AreaModel | null;
@@ -57,7 +57,12 @@ export function calculateNewLocation(currentX: number, currentY: number, directi
 
     // This part should probably be passed in or derived from a global game state
     // For now, let's keep it here for demonstration, but consider passing the map
-    const map = new MapModel("Map", [new StartingVillage(), new Forest("North Forest", [], 0, 1)]);
+    const map = new MapModel("Map", [
+        new Forest("North Forest", [], 0, 2),
+        new Farm("Farm", [], 0, 1),
+        new StartingVillage(),
+        new Farm("Farm", [], 0, -1),
+    ]);
 
     const locationIndex = map.areas.findIndex((area: AreaModel) => area.xCoord === newX && area.yCoord === newY);
 

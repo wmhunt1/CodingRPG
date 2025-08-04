@@ -443,3 +443,20 @@ export class RatBite extends NaturalWeapon {
         this.description = `${this.name}: Deals ${this.power} DMG.`;
     }
 }
+export class Resource extends Item {
+    constructor(name: string, quantity: number, cost: number) {
+        super(name, quantity, cost);
+    }
+    override use(user: Character): Character {
+        return super.use(user); 
+    }
+}
+//cookedFish
+//herb
+//hide
+//ingot
+//leather
+//logs
+//ore
+//rawfish
+
