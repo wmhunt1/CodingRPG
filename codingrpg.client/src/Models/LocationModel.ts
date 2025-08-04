@@ -27,3 +27,11 @@ export class ShopLocation extends Location {
         this.shop = shop;
     }
 }
+export class InnLocation extends ShopLocation {
+    innStay: number;
+    constructor(name: string, shop: ShopModel,innStay:number) {
+        super(name,shop)
+        this.shop = shop;
+        this.innStay = innStay;
+    }
+}

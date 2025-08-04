@@ -1,4 +1,4 @@
-import { Back, ChestArmor, Consumable, Equipable, FootArmor, HandArmor, HeadArmor, Item, LegArmor, Neck,OffHandWeapon, Potion, Ring,Shield, ShoulderArmor, WaistArmor, Weapon, WristArmor } from "../Models/ItemModel";
+import { Back, ChestArmor, Consumable, Drink,Equipable,Food, FootArmor, HandArmor, HeadArmor, Item, LegArmor, Neck,OffHandWeapon, Potion, Ring,Shield, ShoulderArmor, WaistArmor, Weapon, WristArmor } from "../Models/ItemModel";
 export function addItemToInventory(inventory: Item[], itemToAdd: Item): void {
     const existingItem = inventory.find(item => item.name === itemToAdd.name);
 
@@ -38,6 +38,10 @@ export function addItemToInventory(inventory: Item[], itemToAdd: Item): void {
             newItemInstance = new Ring(itemToAdd.name, 1, itemToAdd.cost);
         } else if (itemToAdd instanceof Equipable) {
             newItemInstance = new Equipable(itemToAdd.name, 1, itemToAdd.cost, itemToAdd.slot);
+        } else if (itemToAdd instanceof Food) {
+            newItemInstance = new Food(itemToAdd.name, 1, itemToAdd.consumedValue, itemToAdd.cost);
+        } else if (itemToAdd instanceof Drink) {
+            newItemInstance = new Drink(itemToAdd.name, 1, itemToAdd.consumedValue, itemToAdd.cost);
         } else if (itemToAdd instanceof Potion) {
             newItemInstance = new Potion(itemToAdd.name, 1, itemToAdd.consumedValue, itemToAdd.cost);
         } else if (itemToAdd instanceof Consumable) { // General consumable

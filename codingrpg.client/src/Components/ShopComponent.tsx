@@ -2,9 +2,9 @@ import '../StyleSheets/GameStyle.css';
 import { Character } from "../Models/CharacterModel";
 import { Item } from "../Models/ItemModel"
 import {addItemToInventory, removeItemFromInventory } from "../Utils/InventoryUtils"; // Assuming you put it there
-import { ShopModel } from "../Models/ShopModel"
+import {InnShop, ShopModel } from "../Models/ShopModel"
 
-import { useState, useEffect } from "react";
+import {useState, useEffect } from "react";
 //import Inventory from './InventoryComponent';
 
 interface ShopProps {
@@ -38,6 +38,21 @@ function Shop({ hero, back, shop, onUpdateHero, addGameLog }: ShopProps) {
         } else {
             // Log an error if the hero cannot afford the item
             addGameLog(`${hero.name} cannot afford ${itemToBuy.name}.`);
+        }
+    }
+    function handleInnStay(cost: number) {
+        const updatedHero: Character = JSON.parse(JSON.stringify(currentHero));
+        if (updatedHero.gold >= cost) {
+            updatedHero.gold -= cost;
+            updatedHero.currentHP = updatedHero.maxHP
+            updatedHero.currentMP = updatedHero.maxMP
+            updatedHero.currentSP = updatedHero.maxSP
+            setCurrentHero(updatedHero);
+            onUpdateHero(updatedHero);
+            addGameLog(`${hero.name} stays the night for ${cost} GP.`);
+        } else {
+            // Log an error if the hero cannot afford the item
+            addGameLog(`${hero.name} cannot afford a bed.`);
         }
     }
     function handleSellItem(itemToSell: Item) {
@@ -99,6 +114,7 @@ function Shop({ hero, back, shop, onUpdateHero, addGameLog }: ShopProps) {
             <div className="area-options">
                 <h3>Options</h3>
                 {/*If inn etc put stay night have other options array*/}
+                {shop instanceof InnShop ? <button className='area-button' onClick={() => handleInnStay(shop.innStay)}>Rest ({shop.innStay} GP)</button> :<></>}
                 <button className='area-button' onClick={() => back()}>Leave</button>
             </div>
             <div className="game-content-bottom">

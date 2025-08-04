@@ -1,7 +1,7 @@
 // Equipment.tsx
 import '../StyleSheets/GameStyle.css';
 import { Character } from "../Models/CharacterModel";
-import {BareBack, BareChest, BareHands, BareHead,BareFeet,BareFinger, BareFist,BareLegs, BareNeck,BareShoulders,BareWaist,BareWrists,Equipable,OffHandWeapon,Shield, EmptyHand } from "../Models/ItemModel"; // Import Item for addItemToInventory
+import { BareBack, BareChest, BareHands, BareHead, BareFeet, BareFinger, BareFist, BareLegs, BareNeck, BareShoulders, BareWaist, BareWrists, Equipable, OffHandWeapon, Shield, EmptyHand } from "../Models/ItemModel"; // Import Item for addItemToInventory
 import { useState, useEffect } from "react";
 import { instantiateCharacterItems } from "../Utils/CharacterUtils"
 

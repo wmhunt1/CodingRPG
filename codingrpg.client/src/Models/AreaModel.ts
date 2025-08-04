@@ -1,5 +1,5 @@
-import { Location, RatCellar, ShopLocation } from './LocationModel.ts';
-import { GeneralShop} from "./ShopModel.ts"
+import {InnLocation, Location, RatCellar, ShopLocation } from './LocationModel.ts';
+import { GeneralShop,InnShop} from "./ShopModel.ts"
 export class AreaModel {
     name: string;
     locations: Location[]
@@ -35,7 +35,7 @@ export class Village extends Settlement {
 export class StartingVillage extends Village {
     constructor() {
         const name = "Starting Village"
-        const locations: Location[] = [new RatCellar(), new ShopLocation("General Shop", new GeneralShop()), new Location("Test Heal")]
+        const locations: Location[] = [new InnLocation("Starting Inn",new InnShop(5),5),new RatCellar(), new ShopLocation("General Shop", new GeneralShop())]
         const x = 0;
         const y = 0;
         super(name,locations,x,y)

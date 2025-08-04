@@ -33,7 +33,44 @@ export class Consumable extends Item {
         return super.use(user); // Call parent to handle quantity decrement/removal
     }
 }
-
+export class Drink extends Consumable {
+    constructor(name: string, quantity: number, consumedValue: number, cost: number) {
+        super(name, quantity, consumedValue, cost);
+    }
+    override use(user: Character): Character {
+        // Potions also just remove themselves from inventory
+        return super.use(user);
+    }
+}
+export class Beer extends Drink {
+    constructor() {
+        const name = "Beer";
+        const quantity = 1;
+        const consumedValue = 0;
+        const cost = 5;
+        super(name, quantity, consumedValue, cost);
+        this.description = `A mug of ${this.name}`
+    }
+}
+export class Food extends Consumable {
+    constructor(name: string, quantity: number, consumedValue: number, cost: number) {
+        super(name, quantity, consumedValue, cost);
+    }
+    override use(user: Character): Character {
+        // Potions also just remove themselves from inventory
+        return super.use(user);
+    }
+}
+export class Bread extends Food {
+    constructor() {
+        const name = "Bread";
+        const quantity = 1;
+        const consumedValue = 0;
+        const cost = 5;
+        super(name, quantity, consumedValue, cost);
+        this.description = `A loaf of ${this.name}`
+    }
+}
 export class Potion extends Consumable {
     constructor(name: string, quantity: number, consumedValue: number, cost: number) {
         super(name, quantity, consumedValue, cost);
@@ -43,7 +80,6 @@ export class Potion extends Consumable {
         return super.use(user);
     }
 }
-
 export class HealthPotion extends Potion {
     constructor(name: string, quantity: number, consumedValue: number, cost: number) {
         super(name, quantity, consumedValue, cost);
@@ -67,6 +103,7 @@ export class BasicHealthPotion extends HealthPotion {
         super(name, quantity, consumedValue, cost);
     }
 }
+//mana potion
 
 export class Equipable extends Item {
     slot: string;

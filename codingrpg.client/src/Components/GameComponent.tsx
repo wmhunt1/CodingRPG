@@ -73,27 +73,6 @@ function Game() {
         console.log("Exiting Game");
     }, []);
 
-    const handleHeal = useCallback(() => {
-        setHero((prevHero) => {
-            if (prevHero.currentHP < prevHero.maxHP) {
-                const updatedHero = { ...prevHero, currentHP: prevHero.maxHP };
-
-                addGameLog(`${prevHero.name} fully healed!`);
-
-                setParty((prevParty) => {
-                    const newParty = [...prevParty];
-                    newParty[0] = updatedHero;
-                    return newParty;
-                });
-
-                // Return the updated hero for the `setHero` state
-                return updatedHero;
-            }
-            // If already at full health, just log a message and return the hero unchanged
-            addGameLog(`${prevHero.name} is already at full health.`);
-            return prevHero;
-        });
-    }, [addGameLog, setParty]); // Added setParty to the dependency array
     // --- END OF UPDATED FUNCTION ---
 
     const handleLoadGame = useCallback(() => {
@@ -135,10 +114,8 @@ function Game() {
         if ("shop" in location) {
             handleShop(location.shop);
         }
-        else {
-            handleHeal()
-        }
-    }, [handleCombat, handleHeal, handleShop]);
+        
+    }, [handleCombat, handleShop]);
 
     const handleCombatEnd = useCallback(
         (result: "victory" | "defeat" | "run" | "exit", updatedHeroes: Hero[]) => {

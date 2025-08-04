@@ -1,7 +1,6 @@
-// Inventory.tsx
 import '../StyleSheets/GameStyle.css';
 import { Character } from "../Models/CharacterModel";
-import { Item, Equipable } from "../Models/ItemModel"; // Import Equipable
+import { Drink, Equipable, Food, Item,Potion } from "../Models/ItemModel"; // Import Equipable
 import { useState, useEffect } from "react";
 import { instantiateCharacterItems } from "../Utils/CharacterUtils"
 import { removeItemFromInventory } from '../Utils/InventoryUtils';
@@ -26,13 +25,14 @@ function Inventory({ hero, back, onUpdateHero, addGameLog }: InventoryProps) {
         // Create a deep copy of currentHero to maintain immutability
         const updatedHero: Character = instantiateCharacterItems(JSON.parse(JSON.stringify(currentHero)));
 
-     
-        removeItemFromInventory(updatedHero.inventory,itemToDrop)
+
+        removeItemFromInventory(updatedHero.inventory, itemToDrop)
         setCurrentHero(updatedHero);
         // setInventory(newHeroState.inventory); // No longer needed
         onUpdateHero(updatedHero); // Notify parent of the updated hero state
         addGameLog(`${currentHero.name} dropped ${itemToDrop.name}.`);
     }
+
     function handleUseItem(itemToUse: Item) {
         // Create a deep copy of currentHero to maintain immutability
         const updatedHero: Character = instantiateCharacterItems(JSON.parse(JSON.stringify(currentHero)));
@@ -44,7 +44,20 @@ function Inventory({ hero, back, onUpdateHero, addGameLog }: InventoryProps) {
         setCurrentHero(newHeroState);
         // setInventory(newHeroState.inventory); // No longer needed
         onUpdateHero(newHeroState); // Notify parent of the updated hero state
-        addGameLog(`${currentHero.name} ${itemToUse instanceof Equipable ? "equipped" : "used"} ${itemToUse.name}.`);
+        let verb = ""
+        if (itemToUse instanceof Drink) {
+            verb = "drank"
+        }
+        else if (itemToUse instanceof Equipable) {
+            verb = "equipped"
+        }
+        else if (itemToUse instanceof Food) {
+            verb = "ate"
+        }
+        else {
+            verb = "used"
+        }
+        addGameLog(`${currentHero.name} ${verb} ${itemToUse.name}.`);
     }
 
     return (
@@ -60,16 +73,28 @@ function Inventory({ hero, back, onUpdateHero, addGameLog }: InventoryProps) {
                     {currentHero.inventory.length > 0 ? ( // Use currentHero.inventory directly
                         <div className="inventory-items">
                             {
-                                currentHero.inventory.map((item, index) => (
-                                    <div key={index}>
-                                    <p>{item.name}</p>
-                                     <p>{item.description}</p>
-                                        <button className="use-equip-button" onClick={() => handleUseItem(item)}>
-                                            {item instanceof Equipable ? "Equip" : "Use"} x {item.quantity}
-                                        </button>
-                                        <button className="use-equip-button" onClick={() => handleDropItem(item)} >Drop</button>
-                                    </div>
-                                ))
+                                currentHero.inventory.map((item, index) => {
+                                    // Determine the button text based on the item type
+                                    let buttonText = "Use";
+                                    if (item instanceof Food) {
+                                        buttonText = "Eat";
+                                    } else if (item instanceof Drink || item instanceof Potion) {
+                                        buttonText = "Drink";
+                                    } else if (item instanceof Equipable) {
+                                        buttonText = "Equip";
+                                    }
+
+                                    return (
+                                        <div key={index}>
+                                            <p>{item.name}</p>
+                                            <p>{item.description}</p>
+                                            <button className="use-equip-button" onClick={() => handleUseItem(item)}>
+                                                {buttonText} x {item.quantity}
+                                            </button>
+                                            <button className="use-equip-button" onClick={() => handleDropItem(item)} >Drop</button>
+                                        </div>
+                                    );
+                                })
                             }
                         </div>
                     ) : (

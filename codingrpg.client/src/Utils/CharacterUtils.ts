@@ -3,7 +3,8 @@ import { Character } from "../Models/CharacterModel"; // Assuming Character is d
 
 import {
     Armor, Back, BareBack, BareChest, BareFeet, BareFinger, BareFist, BareHands, BareHead, BareLegs, BareNeck, BareShoulders, BareWaist, BareWrists,
-    ChestArmor, Consumable, EmptyHand, Equipable, FootArmor, HandArmor, HeadArmor, HealthPotion, Item, LegArmor, Neck,OffHandWeapon, Potion, Ring,Shield, ShoulderArmor, WaistArmor, Weapon, WristArmor
+    ChestArmor, Consumable, EmptyHand, Equipable, FootArmor, HandArmor, HeadArmor, HealthPotion, Item, LegArmor, Neck, OffHandWeapon, Potion, Ring, Shield, ShoulderArmor, WaistArmor, Weapon, WristArmor,
+    Food, Drink // Import Food and Drink classes
 } from "../Models/ItemModel";
 
 export function instantiateItem(plainItem: any): Item {
@@ -83,7 +84,13 @@ export function instantiateItem(plainItem: any): Item {
             }
         }
     } else if (plainItem.consumedValue !== undefined) { // It's a Consumable
-        if (plainItem.name.toLowerCase().includes("potion")) {
+        // New logic to handle specific consumable types like Food and Drink
+        // A robust way would be to check a 'type' property on the serialized object.
+        if (plainItem.name.toLowerCase().includes("bread")) {
+            newItemInstance = new Food(plainItem.name, plainItem.quantity, plainItem.consumedValue, plainItem.cost);
+        } else if (plainItem.name.toLowerCase().includes("beer")) {
+            newItemInstance = new Drink(plainItem.name, plainItem.quantity, plainItem.consumedValue, plainItem.cost);
+        } else if (plainItem.name.toLowerCase().includes("potion")) {
             if (plainItem.name.toLowerCase().includes("health")) {
                 newItemInstance = new HealthPotion(plainItem.name, plainItem.quantity, plainItem.consumedValue, plainItem.cost);
             } else {
