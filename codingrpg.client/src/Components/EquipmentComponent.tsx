@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 import { instantiateCharacterItems } from "../Utils/CharacterUtils"
 
 // Import the helper function from ItemModel.ts or a separate utils file
-import { addItemToInventory } from "../Models/ItemModel"; // Assuming you put it there
+import { addItemToInventory } from "../Utils/InventoryUtils"; // Assuming you put it there
 
 interface EquipmentProps {
     hero: Character;

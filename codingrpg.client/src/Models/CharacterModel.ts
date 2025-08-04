@@ -83,7 +83,7 @@ export class Hero extends Humanoid {
         const level = 1;
         const currentXP = 0;
         const maxXP = 50;
-        const gold = 0;
+        const gold = 10;
         super(name, maxHP, currentHP, maxMP, currentMP, maxSP, currentSP, level, currentXP, maxXP, gold)
         this.weapon = new Stick();
         this.chest = new Tunic();
@@ -117,7 +117,7 @@ export class Rat extends Beast {
         const level = 1;
         const currentXP = 5;
         const maxXP = 50;
-        const gold = 0;
+        const gold = 5;
         super(name, maxHP, currentHP, maxMP, currentMP, maxSP, currentSP, level, currentXP, maxXP, gold)
         this.weapon = new RatBite();
     }

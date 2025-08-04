@@ -4,6 +4,7 @@ import { Character } from "../Models/CharacterModel";
 import { Item, Equipable } from "../Models/ItemModel"; // Import Equipable
 import { useState, useEffect } from "react";
 import { instantiateCharacterItems } from "../Utils/CharacterUtils"
+import { removeItemFromInventory } from '../Utils/InventoryUtils';
 
 interface InventoryProps {
     hero: Character;
@@ -21,6 +22,17 @@ function Inventory({ hero, back, onUpdateHero, addGameLog }: InventoryProps) {
         setCurrentHero(instantiateCharacterItems(hero));
     }, [hero]);
 
+    function handleDropItem(itemToDrop: Item) {
+        // Create a deep copy of currentHero to maintain immutability
+        const updatedHero: Character = instantiateCharacterItems(JSON.parse(JSON.stringify(currentHero)));
+
+     
+        removeItemFromInventory(updatedHero.inventory,itemToDrop)
+        setCurrentHero(updatedHero);
+        // setInventory(newHeroState.inventory); // No longer needed
+        onUpdateHero(updatedHero); // Notify parent of the updated hero state
+        addGameLog(`${currentHero.name} dropped ${itemToDrop.name}.`);
+    }
     function handleUseItem(itemToUse: Item) {
         // Create a deep copy of currentHero to maintain immutability
         const updatedHero: Character = instantiateCharacterItems(JSON.parse(JSON.stringify(currentHero)));
@@ -55,6 +67,7 @@ function Inventory({ hero, back, onUpdateHero, addGameLog }: InventoryProps) {
                                         <button className="use-equip-button" onClick={() => handleUseItem(item)}>
                                             {item instanceof Equipable ? "Equip" : "Use"} x {item.quantity}
                                         </button>
+                                        <button className="use-equip-button" onClick={() => handleDropItem(item)} >Drop</button>
                                     </div>
                                 ))
                             }

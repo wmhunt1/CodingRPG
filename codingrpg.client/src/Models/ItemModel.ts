@@ -1,61 +1,7 @@
 // Models/ItemModel.ts
 
 import { Character } from "./CharacterModel";
-
-// Helper function to add/increment an item in an inventory
-// This can be a standalone function or a static method on Character/Item
-export function addItemToInventory(inventory: Item[], itemToAdd: Item): void {
-    const existingItem = inventory.find(item => item.name === itemToAdd.name);
-
-    if (existingItem) {
-        existingItem.quantity++;
-        // If an item already exists, and we're just incrementing quantity,
-        // its description should already be correct.
-    } else {
-        // Re-instantiate the item to ensure proper class methods are maintained
-        let newItemInstance: Item;
-
-        if (itemToAdd instanceof Weapon) {
-            newItemInstance = new Weapon(itemToAdd.name, 1, itemToAdd.cost, itemToAdd.power);
-        } else if (itemToAdd instanceof ChestArmor) {
-            newItemInstance = new ChestArmor(itemToAdd.name, 1, itemToAdd.cost, itemToAdd.protection);
-        } else if (itemToAdd instanceof Equipable) {
-            newItemInstance = new Equipable(itemToAdd.name, 1, itemToAdd.cost, itemToAdd.slot);
-        } else if (itemToAdd instanceof Potion) {
-            newItemInstance = new Potion(itemToAdd.name, 1, itemToAdd.consumedValue, itemToAdd.cost);
-        } else if (itemToAdd instanceof Consumable) { // General consumable
-            newItemInstance = new Consumable(itemToAdd.name, 1, itemToAdd.consumedValue, itemToAdd.cost);
-        }
-        // Add more specific types here as needed.
-        // Make sure to order them from most specific to least specific.
-        else {
-            newItemInstance = new Item(itemToAdd.name, 1, itemToAdd.cost);
-        }
-
-        // CRITICAL FIX: Copy the description *after* the instance is created
-        // This ensures the original description from 'itemToAdd' is preserved,
-        // overriding any default set by the constructor.
-        console.log(itemToAdd.description)
-        newItemInstance.description = itemToAdd.description;
-        console.log(newItemInstance.description)
-
-        inventory.push(newItemInstance);
-    }
-}
-
-// Helper function to remove/decrement an item from an inventory
-// This can also be a standalone function or a static method
-function removeItemFromInventory(inventory: Item[], itemToRemove: Item): void {
-    const itemIndex = inventory.findIndex(item => item.name === itemToRemove.name);
-
-    if (itemIndex > -1) {
-        inventory[itemIndex].quantity--;
-        if (inventory[itemIndex].quantity <= 0) {
-            inventory.splice(itemIndex, 1);
-        }
-    }
-}
-
+import { addItemToInventory,removeItemFromInventory } from "..//Utils/InventoryUtils";
 export class Item {
     name: string;
     quantity: number;
@@ -70,7 +16,6 @@ export class Item {
 
     // The 'use' method now returns the updated Character to simplify component logic
     use(user: Character): Character {
-        console.log(`${user.name} uses ${this.name}.`);
         // By default, using an item removes one from inventory
         removeItemFromInventory(user.inventory, this);
         return user; // Return the modified character
@@ -84,7 +29,6 @@ export class Consumable extends Item {
         this.consumedValue = consumedValue;
     }
     override use(user: Character): Character {
-        console.log(`${user.name} consumes ${this.name}`);
         // Consumables typically just remove themselves from inventory
         return super.use(user); // Call parent to handle quantity decrement/removal
     }
@@ -95,7 +39,6 @@ export class Potion extends Consumable {
         super(name, quantity, consumedValue, cost);
     }
     override use(user: Character): Character {
-        console.log(`${user.name} drinks ${this.name}`);
         // Potions also just remove themselves from inventory
         return super.use(user);
     }
@@ -134,7 +77,6 @@ export class Equipable extends Item {
 
     // The use method now handles equipping and returning the old item
     override use(user: Character): Character {
-        console.log(`${user.name} attempts to equip ${this.name}.`);
 
         let oldEquippedItem: Equipable | Item | null = null;
         let bareItem: Item; // The default "bare" item for the slot

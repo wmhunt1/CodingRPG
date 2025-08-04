@@ -36,6 +36,7 @@ export const executeCombatRound = (
     let updatedEnemies = enemies.map((e) => ({ ...e }));
 
     // Heroes' Turn
+    //Make all heroes gain xp?.
     updatedHeroes.forEach((hero) => {
         if (hero.currentHP <= 0) return;
         const targetEnemy = updatedEnemies.find((enemy) => enemy.currentHP > 0);
@@ -44,6 +45,7 @@ export const executeCombatRound = (
             updatedEnemies[index] = applyAttack(hero, targetEnemy, addGameLog);
             if (updatedEnemies[index].currentHP <= 0) {
                 hero.currentXP += targetEnemy.currentXP;
+                hero.gold += targetEnemy.gold;
             }
         }
     });

@@ -22,7 +22,7 @@ interface CombatArenaProps {
     gameLog: string[];
     addGameLog: (message: string) => void;
 }
-
+//add target selection later
 function CombatArena({ heroes, enemies, onCombatEnd, onUpdateHeroes, addGameLog }: CombatArenaProps) {
     const [combatOngoing, setCombatOngoing] = useState(true);
     const [currentHeroes, setCurrentHeroes] = useState<Hero[]>(() =>

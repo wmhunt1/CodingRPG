@@ -1,9 +1,11 @@
 import '../StyleSheets/GameStyle.css';
 import { Character } from "../Models/CharacterModel";
-import { addItemToInventory, Item } from "../Models/ItemModel"
+import { Item } from "../Models/ItemModel"
+import { addItemToInventory,removeItemFromInventory } from "../Utils/InventoryUtils"; // Assuming you put it there
 import { ShopModel } from "../Models/ShopModel"
 
 import { useState, useEffect } from "react";
+//import Inventory from './InventoryComponent';
 
 interface ShopProps {
     hero: Character;
@@ -12,9 +14,6 @@ interface ShopProps {
     onUpdateHero: (updatedHero: Character) => void;
     addGameLog: (message: string) => void;
 }
-//type ShopState =
-//    | "Buy"
-//    | "Sell";
 function Shop({ hero, back, shop, onUpdateHero, addGameLog }: ShopProps) {
     //const [activeScreen, setActiveScreen] = useState<ShopState>("Buy");
     const [currentHero, setCurrentHero] = useState(hero);
@@ -30,24 +29,9 @@ function Shop({ hero, back, shop, onUpdateHero, addGameLog }: ShopProps) {
 
         // Check if the hero can afford the item
         if (updatedHero.gold >= itemToBuy.cost) {
-            // Find if the item already exists in the hero's inventory
-            const existingItemIndex = updatedHero.inventory.findIndex(
-                (item) => item.name === itemToBuy.name
-            );
-
-            if (existingItemIndex > -1) {
-                // If the item exists, increase its quantity
-                updatedHero.inventory[existingItemIndex].quantity += 1;
-            } else {
-                // If the item is new, add it to the inventory with a quantity of 1
-                //updatedHero.inventory.push(itemToBuy);
-                addItemToInventory(updatedHero.inventory,itemToBuy)
-            }
-
+            addItemToInventory(updatedHero.inventory, itemToBuy)
             // Deduct the cost
             updatedHero.gold -= itemToBuy.cost;
-
-            // Update the state and inform the parent component
             setCurrentHero(updatedHero);
             onUpdateHero(updatedHero);
             addGameLog(`${hero.name} has bought ${itemToBuy.name} for ${itemToBuy.cost} GP.`);
@@ -60,21 +44,7 @@ function Shop({ hero, back, shop, onUpdateHero, addGameLog }: ShopProps) {
         const updatedHero: Character = JSON.parse(JSON.stringify(currentHero));
         updatedHero.gold += Math.floor(itemToSell.cost / 2);
         // Find the index of the item in the updated hero's inventory
-        const itemIndex = updatedHero.inventory.findIndex((item: Item) => item.name === itemToSell.name);
-
-        if (itemIndex > -1) {
-            // Create a new array for the updated inventory to ensure immutability
-            const newInventory = [...updatedHero.inventory];
-
-
-            newInventory[itemIndex].quantity--;
-
-            if (newInventory[itemIndex].quantity <= 0) {
-                newInventory.splice(itemIndex, 1);
-            }
-
-            updatedHero.inventory = newInventory;
-        }
+        removeItemFromInventory(updatedHero.inventory,itemToSell)
         setCurrentHero(updatedHero);
         onUpdateHero(updatedHero);
         addGameLog(`${hero.name} has sold ${itemToSell.name} for ${Math.floor(itemToSell.cost / 2)}.`);
@@ -87,43 +57,43 @@ function Shop({ hero, back, shop, onUpdateHero, addGameLog }: ShopProps) {
             <div className="game-content-left">
                 <h3>Player Gold</h3>
                 <p>{currentHero.gold} GP</p>
-                {/*or put skilling and talking options*/ }
+                {/*or put skilling and talking options*/}
             </div>
             <div className="game-content-main">
-            <div className="inventory-display-area">
-           <div id="shop-inventory" className="inventory-items-container">
-           <h3>Buy</h3>
-                    <div className="shop-items">
-                        {
-                            shopInventory.map((item, index) => (
-                                <div key={index}>
-                                    <p>{item.name}</p>
-                                    <p>{item.description}</p>
-                                    <button className="buy-sell-button" onClick={() => handleBuyItem(item)}>Buy ({item.cost} GP)</button>
-                                </div>
-                            ))
-                        }
-                    </div>
-                </div>
-                    <div id="player-inventory" className="inventory-items-container">
-                <h3>Sell</h3>
-                <div>
-                    {currentHero.inventory.length > 0 ? (
-                        <div className = "shop-items">
+                <div className="inventory-display-area">
+                    <div id="shop-inventory" className="inventory-items-container">
+                        <h3>Buy</h3>
+                        <div className="shop-items">
                             {
-                                currentHero.inventory.map((item, index) => (
+                                shopInventory.map((item, index) => (
                                     <div key={index}>
-                                        <p>{item.name} x {item.quantity}</p>
-                                        <button className="buy-sell-button" onClick={() => handleSellItem(item)}>Sell ({Math.floor(item.cost / 2)} GP)</button>
+                                        <p>{item.name}</p>
+                                        <p>{item.description}</p>
+                                        <button className="buy-sell-button" onClick={() => handleBuyItem(item)}>Buy ({item.cost} GP)</button>
                                     </div>
                                 ))
                             }
                         </div>
-                    ) : (
-                        <div className="shop-items"><p>Your inventory is empty</p></div>
-                    )}
                     </div>
-                </div>
+                    <div id="player-inventory" className="inventory-items-container">
+                        <h3>Sell</h3>
+                        <div>
+                            {currentHero.inventory.length > 0 ? (
+                                <div className="shop-items">
+                                    {
+                                        currentHero.inventory.map((item, index) => (
+                                            <div key={index}>
+                                                <p>{item.name} x {item.quantity}</p>
+                                                <button className="buy-sell-button" onClick={() => handleSellItem(item)}>Sell ({Math.floor(item.cost / 2)} GP)</button>
+                                            </div>
+                                        ))
+                                    }
+                                </div>
+                            ) : (
+                                <div className="shop-items"><p>Your inventory is empty</p></div>
+                            )}
+                        </div>
+                    </div>
                 </div>
             </div>
             <div className="area-options">
