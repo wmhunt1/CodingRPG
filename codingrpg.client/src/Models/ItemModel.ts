@@ -447,9 +447,10 @@ export class Resource extends Item {
     constructor(name: string, quantity: number, cost: number) {
         super(name, quantity, cost);
     }
-    override use(user: Character): Character {
-        return super.use(user); 
-    }
+    //override use(user: Character): Character {
+    //    //
+    //    return super.use(user); 
+    //}
 }
 //cookedFish
 //herb
@@ -459,4 +460,14 @@ export class Resource extends Item {
 //logs
 //ore
 //rawfish
-
+export class Tool extends Item {
+    constructor(name: string, quantity: number, cost: number) {
+        super(name, quantity, cost);
+    }
+    //override use(user: Character): Character {
+    //    return super.use(user);
+    //}
+}
+//fishingRod
+//hatchet
+//pickaxe

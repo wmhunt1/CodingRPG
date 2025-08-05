@@ -35,3 +35,9 @@ export class InnLocation extends ShopLocation {
         this.innStay = innStay;
     }
 }
+export class SkillLocation extends Location {
+    //skillNode
+    constructor(name: string) {
+        super(name)
+    }
+}

@@ -14,15 +14,14 @@ import Shop from "./ShopComponent"
 import Toolbar from "./ToolbarComponent"
 
 // Model Imports
-//import { StartingVillage } from "../Models/AreaModel"
-import { AreaModel, StartingVillage } from "../Models/AreaModel"
+import { AreaModel, NotArea,StartingVillage } from "../Models/AreaModel"
 import { Character, Hero } from "../Models/CharacterModel";
 import { CombatLocation, Location, ShopLocation } from "../Models/LocationModel"
-//import { MapModel } from "../Models/MapModel"
+import { ValleyMap } from "../Models/MapModel"
 import { ShopModel } from "../Models/ShopModel"
 
 // React Imports
-import { useState, useCallback } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 // Stylesheet Imports
 import "../StyleSheets/GameStyle.css";
@@ -52,7 +51,29 @@ function Game() {
     const [gameLog, setGameLog] = useState<string[]>(["Welcome to Coding RPG"]);
     const [party, setParty] = useState<Character[]>(() => [hero, ...hero.party])
 
+    const areaMap = useMemo(() => {
+        return new ValleyMap();
+    }, [])
+
     const [area, setArea] = useState<AreaModel>(new StartingVillage());
+
+    // --- UPDATED CODE STARTS HERE ---
+
+    // Create a memoized array of surrounding areas for efficient rendering
+    const surroundingAreas = useMemo(() => {
+        const areas = [];
+        for (let y = area.yCoord + 2; y >= area.yCoord - 2; y--) {
+            for (let x = area.xCoord - 2; x <= area.xCoord + 2; x++) {
+                // Find the area by coordinates. If not found, create a new NotArea.
+                const foundArea = areaMap.areas.find(a => a.xCoord === x && a.yCoord === y) || new NotArea(x, y);
+                areas.push(foundArea);
+            }
+        }
+        return areas;
+    }, [area.xCoord, area.yCoord, areaMap.areas]); // Recalculate only when the current area changes
+
+    // --- UPDATED CODE ENDS HERE ---
+
     const [currentShop, setCurrentShop] = useState<ShopModel>(new ShopModel("", []))
 
     const addGameLog = useCallback((message: string) => {
@@ -79,7 +100,7 @@ function Game() {
         setActiveScreen("LoadGame");
     }, []);
     const handleMovement = useCallback((direction: string) => {
-        const { newArea, way, message } = calculateNewLocation(area.xCoord, area.yCoord, direction);
+        const { newArea, way, message } = calculateNewLocation(area.xCoord, area.yCoord, direction, areaMap);
 
         if (newArea) {
             setArea(newArea);
@@ -87,7 +108,8 @@ function Game() {
         } else {
             addGameLog(message || `You cannot go that way`); // Use the message from utility or a default
         }
-    }, [addGameLog, area, hero]);
+    }, [addGameLog, area, hero, areaMap]);
+
     const handleNewGame = useCallback(() => {
         setActiveScreen("NewGame");
     }, []);
@@ -114,7 +136,7 @@ function Game() {
         if ("shop" in location) {
             handleShop(location.shop);
         }
-        
+
     }, [handleCombat, handleShop]);
 
     const handleCombatEnd = useCallback(
@@ -208,8 +230,19 @@ function Game() {
                             ))}
                         </div>
                         <div className="game-content-main">
-                     {/* maybe add the grid here with the basic area and a highlight for current location*/}
-                            <img className="area-image" src={area.imageSrc} alt={area.imageAlt}/>
+                            <div className="area-map">
+                                {/* This is the updated code for rendering the map grid */}
+                                {surroundingAreas.map((surroundingArea, index) => {
+                                    // Determine if the current area in the loop is the player's current location
+                                    const isCurrentLocation = surroundingArea.xCoord === area.xCoord && surroundingArea.yCoord === area.yCoord;
+                                    const imageClassName = `area-image${isCurrentLocation ? ' current-location' : ''}`;
+
+                                    return (
+                                        // The 'area-image-row' divs are no longer needed
+                                        <img key={index} className={imageClassName} src={surroundingArea.imageSrc} alt={surroundingArea.imageAlt} />
+                                    );
+                                })}
+                            </div>
                         </div>
                         <div className="area-options">
                             <h3>Area Options</h3>
