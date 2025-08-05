@@ -120,6 +120,7 @@ function Shop({ hero, back, shop, onUpdateHero, addGameLog }: ShopProps) {
             <div className="game-content-bottom">
                 <h3>Interaction / Status</h3>
                 <p>Placeholder for Bottom Panel</p>
+                <p>Maybe put rest here or cooking etc</p>
             </div>
         </div>
     );

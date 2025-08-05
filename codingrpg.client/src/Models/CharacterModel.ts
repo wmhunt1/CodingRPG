@@ -1,7 +1,7 @@
 import {
-    Back, BareBack, BareChest, BareFeet, BareFinger, BareFist, BareHands, BareHead, BareLegs, BareNeck, BareShoulders, BareWaist, BareWrists, ChestArmor,
-    EmptyHand,
-    FootArmor, HandArmor, HeadArmor, Item, LegArmor, Neck,OffHand,Pants, RatBite, Ring,Shoes, ShoulderArmor, Stick, Tunic, WaistArmor, Weapon, WristArmor
+    Back, bareBack, bareChest, bareFeet, bareFinger, bareFist, bareHands, bareHead, bareLegs, bareNeck, bareShoulders, bareWaist, bareWrists, ChestArmor,
+    emptyHand,
+    FootArmor, HandArmor, HeadArmor, Item, LegArmor, Neck,OffHand,pants, ratBite, Ring,shoes, ShoulderArmor, tunic, WaistArmor, Weapon, WristArmor
 } from './ItemModel.ts';
 
 export class Character {
@@ -16,34 +16,35 @@ export class Character {
     maxMP: number = 10;
     currentSP: number = 10;
     maxSP: number = 10;
-    gold: number = 0;
+
     //attributes
-    //attractiveness: number = 10;
-    //charisma: number = 10;
-    //constitution: number = 10;
-    //dexterity: number = 10;
-    //intelligence: number = 10;
-    //luck: number = 10;
-    //perception: number = 10;
-    //speed: number = 10;
-    //strength: number = 10;
-    //willPower: number = 10;
-    //wisdom: number = 10;
+    //physical
+    strength: number = 10;
+    //agility,constitution,dexterity,endurance
+    //mental
+    //intelligence wisdom willpower charisma or personality perception
+    //misc
+    //beauty/attractiveness
+    //luck
+
+    //inventory
+    gold: number = 0;
     inventory: Item[] = []
-    mainHand: Weapon = new BareFist();
-    offHand: OffHand = new EmptyHand();
+    //weapons
+    mainHand: Weapon = bareFist;
+    offHand: OffHand = emptyHand;
     //ammo:
-    head: HeadArmor = new BareHead();
-    shoulders: ShoulderArmor = new BareShoulders()
-    chest: ChestArmor = new BareChest();
-    hands: HandArmor = new BareHands();
-    wrists: WristArmor = new BareWrists();
-    waist: WaistArmor = new BareWaist();
-    legs: LegArmor = new BareLegs();
-    feet: FootArmor = new BareFeet();
-    neck: Neck = new BareNeck();
-    back: Back = new BareBack();
-    finger: Ring = new BareFinger();
+    head: HeadArmor = bareHead;
+    shoulders: ShoulderArmor = bareShoulders;
+    chest: ChestArmor = bareChest;
+    hands: HandArmor = bareHands;
+    waist: WaistArmor = bareWaist;
+    wrists: WristArmor = bareWrists;
+    legs: LegArmor = bareLegs;
+    feet: FootArmor = bareFeet;
+    neck: Neck = bareNeck;
+    back: Back = bareBack;
+    finger: Ring = bareFinger;
     //other
     //spellbook:
     //abilities:
@@ -60,7 +61,8 @@ export class Character {
         level: number,
         currentXP: number, // Using 'experience' to map to plainCharacter.currentXP
         maxXP: number,
-        gold: number
+        strength: number,
+        gold: number,
         // No need to pass weapon, chest, inventory to constructor if they are initialized after
     ) {
         this.name = name;
@@ -74,6 +76,7 @@ export class Character {
         this.currentXP = currentXP;
         this.maxXP = maxXP;
         this.gold = gold;
+        this.strength = strength;
         // Do NOT initialize weapon, chest, inventory here if they're coming from plainCharacter,
         // as they will be overwritten anyway. Or initialize with minimal defaults.
     }
@@ -87,13 +90,13 @@ export class Humanoid extends Character {
         maxSP: number,
         currentSP: number,
         level: number,
-        currentXP: number, // Using 'experience' to map to plainCharacter.currentXP
-        maxXP: number,
+        currentXP: number,
+        maxXP: number, strength:number,
         gold: number) {
-        super(name, maxHP, currentHP, maxMP, currentMP, maxSP, currentSP, level, currentXP, maxXP, gold)
-        this.chest = new Tunic();
-        this.legs = new Pants();
-        this.feet = new Shoes();
+        super(name, maxHP, currentHP, maxMP, currentMP, maxSP, currentSP, level, currentXP, maxXP, strength,gold)
+        this.chest = tunic;
+        this.legs = pants;
+        this.feet = shoes;
     }
 }
 export class Hero extends Humanoid {
@@ -107,9 +110,10 @@ export class Hero extends Humanoid {
         const level = 1;
         const currentXP = 0;
         const maxXP = 50;
+        const strength = 10;
         const gold = 10;
-        super(name, maxHP, currentHP, maxMP, currentMP, maxSP, currentSP, level, currentXP, maxXP, gold)
-        this.mainHand = new Stick();
+        super(name, maxHP, currentHP, maxMP, currentMP, maxSP, currentSP, level, currentXP, maxXP,strength, gold)
+        //this.mainHand = new Stick();
         this.inventory = []
     }
 }
@@ -120,9 +124,9 @@ export class Beast extends Character {
         currentSP: number,
         level: number,
         currentXP: number, // Using 'experience' to map to plainCharacter.currentXP
-        maxXP: number,
+        maxXP: number, strength:number,
         gold: number) {
-        super(name, maxHP, currentHP, maxMP, currentMP, maxSP, currentSP, level, currentXP, maxXP, gold)
+        super(name, maxHP, currentHP, maxMP, currentMP, maxSP, currentSP, level, currentXP, maxXP,strength, gold)
         this.name = name;
         this.currentMP = 0;
         this.maxMP = 0;
@@ -140,9 +144,10 @@ export class Rat extends Beast {
         const level = 1;
         const currentXP = 5;
         const maxXP = 50;
+        const strength = 5;
         const gold = 5;
-        super(name, maxHP, currentHP, maxMP, currentMP, maxSP, currentSP, level, currentXP, maxXP, gold)
-        this.mainHand = new RatBite();
+        super(name, maxHP, currentHP, maxMP, currentMP, maxSP, currentSP, level, currentXP, maxXP,strength, gold)
+        this.mainHand = ratBite;
     }
 }
 

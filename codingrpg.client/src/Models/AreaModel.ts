@@ -12,7 +12,7 @@ export class AreaModel {
     xCoord: number = 0; 
     yCoord: number = 0;
     imageSrc: string = ""
-    imageAlt:string = ""
+    imageAlt: string = ""
 
     constructor(name: string,locations: Location[],x:number,y:number) {
         this.name = name;
@@ -82,6 +82,7 @@ export class Village extends Settlement {
 export class StartingVillage extends Village {
     constructor() {
         const name = "Starting Village"
+        //maybe move cellar to inn location
         const locations: Location[] = [new InnLocation("Dreaming Worker Inn",new InnShop(5),5),new RatCellar(), new ShopLocation("Joe the Trader's", new GeneralShop())]
         const x = 0;
         const y = 0;

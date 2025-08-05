@@ -8,6 +8,7 @@ import { Character, Hero } from "../Models/CharacterModel"; // Assuming Characte
  * @param addGameLog Function to add messages to the game log.
  * @returns The updated target character.
  */
+
 export const applyAttack = (attacker: Character, target: Character, addGameLog: (message: string) => void): Character => {
     // Define the base hit chance as a decimal (e.g., 85% chance to hit)
     // This could be a stat on the character object in the future.
@@ -16,9 +17,19 @@ export const applyAttack = (attacker: Character, target: Character, addGameLog: 
 
     if (hitRoll <= hitChance) {
         // The attack is a hit
-        const damage = attacker.mainHand.power;
+        const totalProtection = Math.floor((target.head.protection + target.shoulders.protection + target.chest.protection + target.hands.protection + target.wrists.protection + target.waist.protection + target.legs.protection + target.feet.protection) / 8)
+        const strengthBonus = Math.floor(attacker.strength / 10);
+        const totalAttack = attacker.mainHand.power + strengthBonus;
+        let damage =  totalAttack - totalProtection;
+        if (damage < 0) { damage = 0 }
         const updatedTarget = { ...target, currentHP: target.currentHP - damage };
-        addGameLog(`${attacker.name} attacks ${target.name} for ${damage} damage!`);
+
+        if (damage != 0) {
+            addGameLog(`${attacker.name} attacks ${target.name} for ${damage} damage!`);
+        }
+        else {
+            addGameLog(`${attacker.name} attacks ${target.name} but does no damage!`);
+        }
 
         if (updatedTarget.currentHP <= 0) {
             addGameLog(`${updatedTarget.name} has been defeated!`);

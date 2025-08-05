@@ -1,113 +1,101 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Character } from "../Models/CharacterModel"; // Assuming Character is defined here
+import { Character } from "../Models/CharacterModel";
 
 import {
-    Armor, Back, BareBack, BareChest, BareFeet, BareFinger, BareFist, BareHands, BareHead, BareLegs, BareNeck, BareShoulders, BareWaist, BareWrists,
-    ChestArmor, Consumable, EmptyHand, Equipable, FootArmor, HandArmor, HeadArmor, HealthPotion, Item, LegArmor, Neck, OffHandWeapon, Potion, Ring, Shield, ShoulderArmor, WaistArmor, Weapon, WristArmor,
-    Food, Drink // Import Food and Drink classes
+    Armor, Back, bareBack, bareChest, bareFeet, bareFinger, bareFist, bareHands, bareHead, bareLegs, bareNeck, bareShoulders, bareWaist, bareWrists,
+    ChestArmor, Consumable, emptyHand, Equipable, FootArmor, HandArmor, HeadArmor, HealthPotion, Item, LegArmor, Neck, OffHandWeapon, Potion, Ring, Shield, ShoulderArmor, WaistArmor, Weapon, WristArmor,
+    Food, Drink, AlcoholicDrink, ManaPotion, StaminaPotion, BluntWeapon, NaturalWeapon, Resource, RawFish
 } from "../Models/ItemModel";
 
+
+/**
+ * Creates an instance of an Item subclass from a plain JavaScript object.
+ * @param plainItem The plain object to instantiate.
+ * @returns A new instance of the corresponding Item class.
+ */
 export function instantiateItem(plainItem: any): Item {
-    let newItemInstance: Item;
-
     if (!plainItem || !plainItem.name) {
-        if (plainItem && plainItem.name === "Bare Fist") {
-            newItemInstance = new BareFist();
-        } else if (plainItem && plainItem.name === "Empty Hand") {
-            newItemInstance = new EmptyHand();
-        } else if (plainItem && plainItem.name === "Bare Head") {
-            newItemInstance = new BareHead();
-        } else if (plainItem && plainItem.name === "Bare Shoulders") {
-            newItemInstance = new BareShoulders();
-        } else if (plainItem && plainItem.name === "Bare Chest") {
-            newItemInstance = new BareChest();
-        } else if (plainItem && plainItem.name === "Bare Hands") {
-            newItemInstance = new BareHands();
-        } else if (plainItem && plainItem.name === "Bare Wrists") {
-            newItemInstance = new BareWrists();
-        } else if (plainItem && plainItem.name === "Bare Waist") {
-            newItemInstance = new BareWaist();
-        } else if (plainItem && plainItem.name === "Bare Legs") {
-            newItemInstance = new BareLegs();
-        } else if (plainItem && plainItem.name === "Bare Feet") {
-            newItemInstance = new BareFeet();
-        } else if (plainItem && plainItem.name === "Bare Back") {
-            newItemInstance = new BareBack();
-        } else if (plainItem && plainItem.name === "Bare Neck") {
-            newItemInstance = new BareNeck();
-        } else if (plainItem && plainItem.name === "Bare Finger") {
-            newItemInstance = new BareFinger();
-        } else {
-            newItemInstance = new Item("Unknown Item", 0, 0);
+        // Handle "bare" items which are predefined constants, not classes
+        switch (plainItem?.name) {
+            case "Bare Fist": return bareFist;
+            case "Empty Hand": return emptyHand;
+            case "Bare Head": return bareHead;
+            case "Bare Shoulders": return bareShoulders;
+            case "Bare Chest": return bareChest;
+            case "Bare Hands": return bareHands;
+            case "Bare Wrists": return bareWrists;
+            case "Bare Waist": return bareWaist;
+            case "Bare Legs": return bareLegs;
+            case "Bare Feet": return bareFeet;
+            case "Bare Back": return bareBack;
+            case "Bare Neck": return bareNeck;
+            case "Bare Finger": return bareFinger;
+            default: return new Item("Unknown Item", "N/A", "N/A", 1, 0, "Unknown Item");
         }
-    } else if (plainItem.slot) { // It's an Equipable
-        if (plainItem.power !== undefined) {
-            if (plainItem.slot === "Weapon") {
-                newItemInstance = new Weapon(plainItem.name, plainItem.quantity, plainItem.cost, plainItem.power);
-            }
-            else {
-                newItemInstance = new OffHandWeapon(plainItem.name, plainItem.quantity, plainItem.cost, plainItem.power);
-            }
-        } else if (plainItem.protection !== undefined) {
-            if (plainItem.slot === "Head") {
-                newItemInstance = new HeadArmor(plainItem.name, plainItem.quantity, plainItem.cost, plainItem.protection);
-            } else if (plainItem.slot === "Shoulders") {
-                newItemInstance = new ShoulderArmor(plainItem.name, plainItem.quantity, plainItem.cost, plainItem.protection);
-            } else if (plainItem.slot === "Chest") {
-                newItemInstance = new ChestArmor(plainItem.name, plainItem.quantity, plainItem.cost, plainItem.protection);
-            } else if (plainItem.slot === "Hands") {
-                newItemInstance = new HandArmor(plainItem.name, plainItem.quantity, plainItem.cost, plainItem.protection);
-            } else if (plainItem.slot === "Wrists") {
-                newItemInstance = new WristArmor(plainItem.name, plainItem.quantity, plainItem.cost, plainItem.protection);
-            } else if (plainItem.slot === "Waist") {
-                newItemInstance = new WaistArmor(plainItem.name, plainItem.quantity, plainItem.cost, plainItem.protection);
-            } else if (plainItem.slot === "Legs") {
-                newItemInstance = new LegArmor(plainItem.name, plainItem.quantity, plainItem.cost, plainItem.protection);
-            } else if (plainItem.slot === "Feet") {
-                newItemInstance = new FootArmor(plainItem.name, plainItem.quantity, plainItem.cost, plainItem.protection);
-            } else if (plainItem.slot === "OffHand") {
-                newItemInstance = new Shield(plainItem.name, plainItem.quantity, plainItem.cost, plainItem.protection);
-            } else {
-                newItemInstance = new Armor(plainItem.name, plainItem.quantity, plainItem.cost, plainItem.slot, plainItem.protection);
-            }
-        } else { // This is the new else block for Equipables without power or protection
-            // Handle specific Equipable types that might not have power or protection but still have a slot
-            if (plainItem.slot === "Back") {
-                newItemInstance = new Back(plainItem.name, plainItem.quantity, plainItem.cost); // Assuming 0 protection if not defined
-            } else if (plainItem.slot === "Neck") {
-                newItemInstance = new Neck(plainItem.name, plainItem.quantity, plainItem.cost); // Assuming 0 protection if not defined
-            } else if (plainItem.slot === "Finger") {
-                newItemInstance = new Ring(plainItem.name, plainItem.quantity, plainItem.cost); // Assuming 0 protection if not defined
-            } else {
-                // Fallback for generic Equipable if no specific subclass matches and no power/protection
-                newItemInstance = new Equipable(plainItem.name, plainItem.quantity, plainItem.cost, plainItem.slot);
-            }
-        }
-    } else if (plainItem.consumedValue !== undefined) { // It's a Consumable
-        // New logic to handle specific consumable types like Food and Drink
-        // A robust way would be to check a 'type' property on the serialized object.
-        if (plainItem.name.toLowerCase().includes("bread")) {
-            newItemInstance = new Food(plainItem.name, plainItem.quantity, plainItem.consumedValue, plainItem.cost);
-        } else if (plainItem.name.toLowerCase().includes("beer")) {
-            newItemInstance = new Drink(plainItem.name, plainItem.quantity, plainItem.consumedValue, plainItem.cost);
-        } else if (plainItem.name.toLowerCase().includes("potion")) {
-            if (plainItem.name.toLowerCase().includes("health")) {
-                newItemInstance = new HealthPotion(plainItem.name, plainItem.quantity, plainItem.consumedValue, plainItem.cost);
-            } else {
-                newItemInstance = new Potion(plainItem.name, plainItem.quantity, plainItem.consumedValue, plainItem.cost);
-            }
-        } else {
-            newItemInstance = new Consumable(plainItem.name, plainItem.quantity, plainItem.consumedValue, plainItem.cost);
-        }
-    } else {
-        newItemInstance = new Item(plainItem.name, plainItem.quantity, plainItem.cost);
     }
 
-    if (plainItem.description !== undefined) {
-        newItemInstance.description = plainItem.description;
-    }
+    // Use a switch statement on the item's `type` and `subType` for robust instantiation
+    switch (plainItem.type) {
+        case "Weapon":
+            if (plainItem.subType === "Blunt") {
+                return new BluntWeapon(plainItem.name, plainItem.type, plainItem.subType, plainItem.quantity, plainItem.cost, plainItem.description, plainItem.slot, plainItem.power);
+            }
+            if (plainItem.subType === "Natural") {
+                return new NaturalWeapon(plainItem.name, plainItem.type, plainItem.subType, plainItem.quantity, plainItem.cost, plainItem.description, plainItem.slot, plainItem.power);
+            }
+            return new Weapon(plainItem.name, plainItem.type, plainItem.subType, plainItem.quantity, plainItem.cost, plainItem.description, plainItem.slot, plainItem.power);
 
-    return newItemInstance;
+        case "OffHand":
+            if (plainItem.subType === "Shield") {
+                return new Shield(plainItem.name, plainItem.type, plainItem.subType, plainItem.quantity, plainItem.cost, plainItem.description, plainItem.slot, plainItem.protection);
+            }
+            if (plainItem.subType === "OffHandWeapon") {
+                return new OffHandWeapon(plainItem.name, plainItem.type, plainItem.subType, plainItem.quantity, plainItem.cost, plainItem.description, plainItem.slot, plainItem.power);
+            }
+            return new OffHandWeapon(plainItem.name, plainItem.type, plainItem.subType, plainItem.quantity, plainItem.cost, plainItem.description, plainItem.slot, plainItem.power);
+
+        case "Armor":
+            switch (plainItem.subType) {
+                case "Head": return new HeadArmor(plainItem.name, plainItem.type, plainItem.subType, plainItem.quantity, plainItem.cost, plainItem.description, plainItem.slot, plainItem.protection);
+                case "Shoulder": return new ShoulderArmor(plainItem.name, plainItem.type, plainItem.subType, plainItem.quantity, plainItem.cost, plainItem.description, plainItem.slot, plainItem.protection);
+                case "Chest": return new ChestArmor(plainItem.name, plainItem.type, plainItem.subType, plainItem.quantity, plainItem.cost, plainItem.description, plainItem.slot, plainItem.protection);
+                case "Hand": return new HandArmor(plainItem.name, plainItem.type, plainItem.subType, plainItem.quantity, plainItem.cost, plainItem.description, plainItem.slot, plainItem.protection);
+                case "Wrist": return new WristArmor(plainItem.name, plainItem.type, plainItem.subType, plainItem.quantity, plainItem.cost, plainItem.description, plainItem.slot, plainItem.protection);
+                case "Waist": return new WaistArmor(plainItem.name, plainItem.type, plainItem.subType, plainItem.quantity, plainItem.cost, plainItem.description, plainItem.slot, plainItem.protection);
+                case "Leg": return new LegArmor(plainItem.name, plainItem.type, plainItem.subType, plainItem.quantity, plainItem.cost, plainItem.description, plainItem.slot, plainItem.protection);
+                case "Foot": return new FootArmor(plainItem.name, plainItem.type, plainItem.subType, plainItem.quantity, plainItem.cost, plainItem.description, plainItem.slot, plainItem.protection);
+                default: return new Armor(plainItem.name, plainItem.type, plainItem.subType, plainItem.quantity, plainItem.cost, plainItem.description, plainItem.slot, plainItem.protection);
+            }
+
+        case "Accessory":
+            switch (plainItem.subType) {
+                case "Back": return new Back(plainItem.name, plainItem.type, plainItem.subType, plainItem.quantity, plainItem.cost, plainItem.description, plainItem.slot);
+                case "Neck": return new Neck(plainItem.name, plainItem.type, plainItem.subType, plainItem.quantity, plainItem.cost, plainItem.description, plainItem.slot);
+                case "Ring": return new Ring(plainItem.name, plainItem.type, plainItem.subType, plainItem.quantity, plainItem.cost, plainItem.description, plainItem.slot);
+                default: return new Equipable(plainItem.name, plainItem.type, plainItem.subType, plainItem.quantity, plainItem.cost, plainItem.description, plainItem.slot);
+            }
+
+        case "Consumable":
+            switch (plainItem.subType) {
+                case "Food": return new Food(plainItem.name, plainItem.type, plainItem.subType, plainItem.quantity, plainItem.cost, plainItem.description, plainItem.consumedValue);
+                case "Drink": return new Drink(plainItem.name, plainItem.type, plainItem.subType, plainItem.quantity, plainItem.cost, plainItem.description, plainItem.consumedValue);
+                case "Alcohol": return new AlcoholicDrink(plainItem.name, plainItem.type, plainItem.subType, plainItem.quantity, plainItem.cost, plainItem.description, plainItem.consumedValue);
+                case "Health Potion": return new HealthPotion(plainItem.name, plainItem.type, plainItem.subType, plainItem.quantity, plainItem.cost, plainItem.description, plainItem.consumedValue);
+                case "Mana Potion": return new ManaPotion(plainItem.name, plainItem.type, plainItem.subType, plainItem.quantity, plainItem.cost, plainItem.description, plainItem.consumedValue);
+                case "Stamina Potion": return new StaminaPotion(plainItem.name, plainItem.type, plainItem.subType, plainItem.quantity, plainItem.cost, plainItem.description, plainItem.consumedValue);
+                case "N/A": return new Potion(plainItem.name, plainItem.type, plainItem.subType, plainItem.quantity, plainItem.cost, plainItem.description, plainItem.consumedValue);
+                default: return new Consumable(plainItem.name, plainItem.type, plainItem.subType, plainItem.quantity, plainItem.cost, plainItem.description, plainItem.consumedValue);
+            }
+
+        case "Resource":
+            if (plainItem.subType === "RawFish") {
+                return new RawFish(plainItem.name, plainItem.type, plainItem.subType, plainItem.quantity, plainItem.cost, plainItem.description);
+            }
+            return new Resource(plainItem.name, plainItem.type, plainItem.subType, plainItem.quantity, plainItem.cost, plainItem.description);
+
+        default:
+            return new Item(plainItem.name, plainItem.type, plainItem.subType, plainItem.quantity, plainItem.cost, plainItem.description);
+    }
 }
 
 export function instantiateCharacterItems(plainCharacter: any): Character {
@@ -122,27 +110,28 @@ export function instantiateCharacterItems(plainCharacter: any): Character {
         plainCharacter.level,
         plainCharacter.currentXP,
         plainCharacter.maxXP,
+        plainCharacter.strength,
         plainCharacter.gold
     );
 
-    newCharacter.mainHand = plainCharacter.mainHand ? instantiateItem(plainCharacter.mainHand) as Weapon : new BareFist();
+    newCharacter.mainHand = plainCharacter.mainHand ? instantiateItem(plainCharacter.mainHand) as Weapon : bareFist;
     if (plainCharacter.offHand.power !== undefined) {
-        newCharacter.offHand = plainCharacter.offHand ? instantiateItem(plainCharacter.offHand) as OffHandWeapon : new EmptyHand();
+        newCharacter.offHand = plainCharacter.offHand ? instantiateItem(plainCharacter.offHand) as OffHandWeapon : emptyHand;
     }
     if (plainCharacter.offHand.protection !== undefined) {
-        newCharacter.offHand = plainCharacter.offHand ? instantiateItem(plainCharacter.offHand) as Shield : new EmptyHand();
+        newCharacter.offHand = plainCharacter.offHand ? instantiateItem(plainCharacter.offHand) as Shield : emptyHand;
     }
-    newCharacter.head = plainCharacter.head ? instantiateItem(plainCharacter.head) as HeadArmor : new BareHead();
-    newCharacter.shoulders = plainCharacter.shoulders ? instantiateItem(plainCharacter.shoulders) as ShoulderArmor : new BareShoulders();
-    newCharacter.chest = plainCharacter.chest ? instantiateItem(plainCharacter.chest) as ChestArmor : new BareChest();
-    newCharacter.hands = plainCharacter.hands ? instantiateItem(plainCharacter.hands) as HandArmor : new BareHands();
-    newCharacter.wrists = plainCharacter.wrists ? instantiateItem(plainCharacter.wrists) as WristArmor : new BareWrists();
-    newCharacter.waist = plainCharacter.waist ? instantiateItem(plainCharacter.waist) as WaistArmor : new BareWaist();
-    newCharacter.legs = plainCharacter.legs ? instantiateItem(plainCharacter.legs) as LegArmor : new BareLegs();
-    newCharacter.feet = plainCharacter.feet ? instantiateItem(plainCharacter.feet) as FootArmor : new BareFeet();
-    newCharacter.back = plainCharacter.back ? instantiateItem(plainCharacter.back) as Back : new BareBack();
-    newCharacter.neck = plainCharacter.neck ? instantiateItem(plainCharacter.neck) as Neck : new BareNeck();
-    newCharacter.finger = plainCharacter.finger ? instantiateItem(plainCharacter.finger) as Ring : new BareFinger();
+    newCharacter.head = plainCharacter.head ? instantiateItem(plainCharacter.head) as HeadArmor : bareHead;
+    newCharacter.shoulders = plainCharacter.shoulders ? instantiateItem(plainCharacter.shoulders) as ShoulderArmor : bareShoulders;
+    newCharacter.chest = plainCharacter.chest ? instantiateItem(plainCharacter.chest) as ChestArmor : bareChest;
+    newCharacter.hands = plainCharacter.hands ? instantiateItem(plainCharacter.hands) as HandArmor : bareHands;
+    newCharacter.wrists = plainCharacter.wrists ? instantiateItem(plainCharacter.wrists) as WristArmor : bareWrists;
+    newCharacter.waist = plainCharacter.waist ? instantiateItem(plainCharacter.waist) as WaistArmor : bareWaist;
+    newCharacter.legs = plainCharacter.legs ? instantiateItem(plainCharacter.legs) as LegArmor : bareLegs;
+    newCharacter.feet = plainCharacter.feet ? instantiateItem(plainCharacter.feet) as FootArmor : bareFeet;
+    newCharacter.back = plainCharacter.back ? instantiateItem(plainCharacter.back) as Back : bareBack;
+    newCharacter.neck = plainCharacter.neck ? instantiateItem(plainCharacter.neck) as Neck : bareNeck;
+    newCharacter.finger = plainCharacter.finger ? instantiateItem(plainCharacter.finger) as Ring : bareFinger;
 
     newCharacter.inventory = plainCharacter.inventory && Array.isArray(plainCharacter.inventory)
         ? plainCharacter.inventory.map((item: any) => instantiateItem(item))

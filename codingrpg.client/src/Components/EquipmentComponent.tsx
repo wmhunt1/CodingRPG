@@ -1,7 +1,7 @@
 // Equipment.tsx
 import '../StyleSheets/GameStyle.css';
 import { Character } from "../Models/CharacterModel";
-import { BareBack, BareChest, BareHands, BareHead, BareFeet, BareFinger, BareFist, BareLegs, BareNeck, BareShoulders, BareWaist, BareWrists, Equipable, OffHandWeapon, Shield, EmptyHand } from "../Models/ItemModel"; // Import Item for addItemToInventory
+import { bareBack, bareChest, bareHands, bareHead, bareFeet, bareFinger, bareFist, bareLegs, bareNeck, bareShoulders, bareWaist, bareWrists, Equipable, OffHandWeapon, Shield, emptyHand } from "../Models/ItemModel"; // Import Item for addItemToInventory
 import { useState, useEffect } from "react";
 import { instantiateCharacterItems } from "../Utils/CharacterUtils"
 
@@ -26,31 +26,31 @@ function Equipment({ hero, back, onUpdateHero, addGameLog }: EquipmentProps) {
 
         // Remove the item from its equipped slot
         if (itemToUnEquip.slot === "Chest") {
-            updatedHero.chest = new BareChest();
+            updatedHero.chest = bareChest;
         } else if (itemToUnEquip.slot === "Weapon") {
-            updatedHero.mainHand = new BareFist(); // Assuming 'Weapon' unequips to a bare fist in the main hand
+            updatedHero.mainHand = bareFist; // Assuming 'Weapon' unequips to a bare fist in the main hand
         } else if (itemToUnEquip.slot === "OffHand") {
-            updatedHero.offHand = new EmptyHand(); // Assuming 'Weapon' unequips to a bare fist in the main hand
+            updatedHero.offHand = emptyHand; // Assuming 'Weapon' unequips to a bare fist in the main hand
         } else if (itemToUnEquip.slot === "Head") {
-            updatedHero.head = new BareHead();
+            updatedHero.head = bareHead;
         } else if (itemToUnEquip.slot === "Shoulders") {
-            updatedHero.shoulders = new BareShoulders();
+            updatedHero.shoulders = bareShoulders;
         } else if (itemToUnEquip.slot === "Hands") {
-            updatedHero.hands = new BareHands();
+            updatedHero.hands = bareHands;
         } else if (itemToUnEquip.slot === "Wrists") {
-            updatedHero.wrists = new BareWrists();
+            updatedHero.wrists = bareWrists;
         } else if (itemToUnEquip.slot === "Waist") {
-            updatedHero.waist = new BareWaist();
+            updatedHero.waist = bareWaist;
         } else if (itemToUnEquip.slot === "Legs") {
-            updatedHero.legs = new BareLegs();
+            updatedHero.legs = bareLegs;
         } else if (itemToUnEquip.slot === "Feet") {
-            updatedHero.feet = new BareFeet();
+            updatedHero.feet = bareFeet;
         } else if (itemToUnEquip.slot === "Neck") {
-            updatedHero.neck = new BareNeck();
+            updatedHero.neck = bareNeck;
         } else if (itemToUnEquip.slot === "Back") {
-            updatedHero.back = new BareBack();
+            updatedHero.back = bareBack;
         } else if (itemToUnEquip.slot === "Finger") {
-            updatedHero.finger = new BareFinger();
+            updatedHero.finger = bareFinger;
         }
         // Add more slots as needed
 

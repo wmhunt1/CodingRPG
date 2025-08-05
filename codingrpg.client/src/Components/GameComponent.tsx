@@ -11,14 +11,16 @@ import Log from "./LogComponent";
 import { MainMenu } from "./MenuComponent";
 import Settings from "./SettingsComponent";
 import Shop from "./ShopComponent"
+import SkillNode from "./SkillNodeComponent";
 import Toolbar from "./ToolbarComponent"
 
 // Model Imports
-import { AreaModel, NotArea,StartingVillage } from "../Models/AreaModel"
+import { AreaModel, NotArea, StartingVillage } from "../Models/AreaModel"
 import { Character, Hero } from "../Models/CharacterModel";
-import { CombatLocation, Location, ShopLocation } from "../Models/LocationModel"
+import { CombatLocation, Location, ShopLocation, SkillLocation } from "../Models/LocationModel"
 import { ValleyMap } from "../Models/MapModel"
 import { ShopModel } from "../Models/ShopModel"
+import { SkillNodeModel } from "../Models/SkillNodeModel"
 
 // React Imports
 import { useCallback, useMemo, useState } from "react";
@@ -40,12 +42,16 @@ type GameState =
     | "LoadGame"
     | "NewGame"
     | "Settings"
-    | "Shop";
+    | "Shop"
+    | "SkillNode";
 
-type AppLocation = CombatLocation | ShopLocation | Location;
+type AppLocation = CombatLocation | ShopLocation | SkillLocation | Location;
 
 function Game() {
     const [activeScreen, setActiveScreen] = useState<GameState>("MainMenu");
+    const [area, setArea] = useState<AreaModel>(new StartingVillage());
+    const [currentShop, setCurrentShop] = useState<ShopModel>(new ShopModel("", []))
+    const [currentSkillNode,setCurrentSkillNode] = useState<SkillNodeModel>(new SkillNodeModel("Empty",[]))
     const [hero, setHero] = useState<Hero>(new Hero("Hero"));
     const [enemies, setEnemies] = useState<Character[]>(() => []);
     const [gameLog, setGameLog] = useState<string[]>(["Welcome to Coding RPG"]);
@@ -55,7 +61,6 @@ function Game() {
         return new ValleyMap();
     }, [])
 
-    const [area, setArea] = useState<AreaModel>(new StartingVillage());
 
     // --- UPDATED CODE STARTS HERE ---
 
@@ -74,8 +79,6 @@ function Game() {
 
     // --- UPDATED CODE ENDS HERE ---
 
-    const [currentShop, setCurrentShop] = useState<ShopModel>(new ShopModel("", []))
-
     const addGameLog = useCallback((message: string) => {
         setGameLog((prevLog) => [...prevLog, message]);
     }, []);
@@ -85,7 +88,6 @@ function Game() {
     }, []);
 
     const handleCombat = useCallback((enemies: Character[]) => {
-        console.log("handling combat")
         setActiveScreen("Combat");
         setEnemies(enemies)
     }, [setEnemies]);
@@ -128,7 +130,11 @@ function Game() {
         setCurrentShop(shop)
         setActiveScreen("Shop")
     }, []);
-
+    const handleSkillNode = useCallback((skillNode: SkillNodeModel) => {
+        setCurrentSkillNode(skillNode)
+        console.log(skillNode.name)
+        setActiveScreen("SkillNode")
+    }, []);
     const handleLocation = useCallback((location: AppLocation) => {
         if ("combatants" in location) {
             handleCombat(location.combatants);
@@ -136,8 +142,11 @@ function Game() {
         if ("shop" in location) {
             handleShop(location.shop);
         }
+        if ("skillNode" in location) {
+            handleSkillNode(location.skillNode)
+        }
 
-    }, [handleCombat, handleShop]);
+    }, [handleCombat, handleShop, handleSkillNode]);
 
     const handleCombatEnd = useCallback(
         (result: "victory" | "defeat" | "run" | "exit", updatedHeroes: Hero[]) => {
@@ -295,6 +304,11 @@ function Game() {
                 )}
                 {activeScreen === "Shop" && (
                     <Shop hero={hero} back={() => setActiveScreen("Game")} shop={currentShop} onUpdateHero={handleUpdateSingleHero}
+                        addGameLog={addGameLog} />
+                )}
+                {activeScreen === "SkillNode" && (
+
+                    <SkillNode hero={hero} back={() => setActiveScreen("Game")} skillNode={currentSkillNode} onUpdateHero={handleUpdateSingleHero}
                         addGameLog={addGameLog} />
                 )}
             </div>
