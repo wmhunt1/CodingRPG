@@ -212,7 +212,7 @@ body, html, #root {
 /* Other Game Screens */
 .character-sheet-container,
 .inventory-container,
-.shop-container,.skill-recipe-container,
+.shop-container,
 .char-creation,
 .menu {
     width: 100%;
@@ -251,7 +251,7 @@ body, html, #root {
 
 .heroes-container,
 .enemies-container,
-.inventory-items-container,
+.inventory-items-container, .skill-recipe-container,
 .stats-container {
     display: flex;
     flex-direction: column;
