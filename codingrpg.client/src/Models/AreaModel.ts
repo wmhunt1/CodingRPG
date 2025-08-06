@@ -1,4 +1,4 @@
-import { GeneralStoreLocation, InnLocation, Location, RatCellar} from './LocationModel.ts';
+import { GeneralStoreLocation, InnLocation, Location, SmithShopLocation } from './LocationModel.ts';
 //import { GeneralShop, InnShop } from "./ShopModel.ts"
 import bridgeImage from "../assets/stone-bridge.png"
 import farmImage from "../assets/wheat.png";
@@ -83,7 +83,7 @@ export class StartingVillage extends Village {
     constructor() {
         const name = "Starting Village"
         //maybe move cellar to inn location
-        const locations: Location[] = [new InnLocation("Dreaming Worker Inn", 5), new RatCellar(), new GeneralStoreLocation("Joe the Trader's")]
+        const locations: Location[] = [new GeneralStoreLocation("Joe the Trader's"), new InnLocation("Dreaming Worker Inn", 5),new SmithShopLocation("Forgeheart Smithy")]
         const x = 0;
         const y = 0;
         super(name, locations, x, y)

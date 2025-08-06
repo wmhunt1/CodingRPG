@@ -1,5 +1,6 @@
 import '../StyleSheets/GameStyle.css';
 import { Character } from "../Models/CharacterModel";
+import type { CombatEncounter } from '../Models/EncounterModel';
 import { Item } from "../Models/ItemModel"
 import { SkillNodeModel } from "../Models/SkillNodeModel"
 import { addItemToInventory, removeItemFromInventory } from "../Utils/InventoryUtils"; // Assuming you put it there
@@ -15,8 +16,9 @@ interface ShopProps {
     onUpdateHero: (updatedHero: Character) => void;
     addGameLog: (message: string) => void;
     shopSkillNode: (skillNode: SkillNodeModel) => void;
+    shopCombatEncounter: (combatEncounter: CombatEncounter) => void;
 }
-function Shop({ hero, back, shop, onUpdateHero, addGameLog, shopSkillNode }: ShopProps) {
+function Shop({ hero, back, shop, onUpdateHero, addGameLog, shopSkillNode, shopCombatEncounter }: ShopProps) {
     //const [activeScreen, setActiveScreen] = useState<ShopState>("Buy");
     const [currentHero, setCurrentHero] = useState(hero);
     const shopInventory = shop.inventory;
@@ -122,6 +124,9 @@ function Shop({ hero, back, shop, onUpdateHero, addGameLog, shopSkillNode }: Sho
                             <button className="area-button" onClick={() => shopSkillNode(item)}>Use {item.name}</button>
                         </div>
                     ))
+                }
+                {shop.combatEncounter.name !== "None" &&
+                    <button className='area-button' onClick={() => shopCombatEncounter(shop.combatEncounter)}>{shop.combatEncounter.name}</button>
                 }
                 <button className='area-button' onClick={() => back()}>Leave</button>
             </div>

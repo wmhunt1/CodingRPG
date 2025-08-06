@@ -17,6 +17,7 @@ import Toolbar from "./ToolbarComponent"
 // Model Imports
 import { AreaModel, NotArea, StartingVillage } from "../Models/AreaModel"
 import { Character, Hero } from "../Models/CharacterModel";
+import {CombatEncounter, NoCombatEncounter } from "../Models/EncounterModel"
 import { CombatLocation, Location, ShopLocation, SkillLocation } from "../Models/LocationModel"
 import { ValleyMap } from "../Models/MapModel"
 import { ShopModel } from "../Models/ShopModel"
@@ -50,12 +51,12 @@ type AppLocation = CombatLocation | ShopLocation | SkillLocation | Location;
 function Game() {
     const [activeScreen, setActiveScreen] = useState<GameState>("MainMenu");
     const [area, setArea] = useState<AreaModel>(new StartingVillage());
-    const [currentShop, setCurrentShop] = useState<ShopModel>(new ShopModel("", [],[]))
+    const [currentShop, setCurrentShop] = useState<ShopModel>(new ShopModel("", [],[],new NoCombatEncounter()))
     const [currentSkillNode, setCurrentSkillNode] = useState<SkillNodeModel>(new SkillNodeModel("Empty", []))
     const [hero, setHero] = useState<Hero>(new Hero("Hero"));
-    const [enemies, setEnemies] = useState<Character[]>(() => []);
+    const [enemies, setEnemies] = useState<CombatEncounter>(new CombatEncounter("",[]))
     const [gameLog, setGameLog] = useState<string[]>(["Welcome to Coding RPG"]);
-    const [lastScreen, setLastScreen] = useState<GameState>("MainMenu");
+    const [lastScreen, setLastScreen] = useState<GameState>("Game");
     const [party, setParty] = useState<Character[]>(() => [hero, ...hero.party])
 
     const areaMap = useMemo(() => {
@@ -63,7 +64,7 @@ function Game() {
     }, [])
 
 
-    // --- UPDATED CODE STARTS HERE ---
+    // --- UPDATED CODE STARTS HERE --
 
     // Create a memoized array of surrounding areas for efficient rendering
     const surroundingAreas = useMemo(() => {
@@ -88,7 +89,7 @@ function Game() {
         setActiveScreen("Game");
     }, []);
 
-    const handleCombat = useCallback((enemies: Character[]) => {
+    const handleCombat = useCallback((enemies: CombatEncounter) => {
         setActiveScreen("Combat");
         setEnemies(enemies)
     }, [setEnemies]);
@@ -138,8 +139,8 @@ function Game() {
         setActiveScreen("SkillNode")
     }, []);
     const handleLocation = useCallback((location: AppLocation) => {
-        if ("combatants" in location) {
-            handleCombat(location.combatants);
+        if ("combatEncounter" in location) {
+            handleCombat(location.combatEncounter);
         }
         if ("shop" in location) {
             handleShop(location.shop);
@@ -152,7 +153,7 @@ function Game() {
 
     const handleCombatEnd = useCallback(
         (result: "victory" | "defeat" | "run" | "exit", updatedHeroes: Hero[]) => {
-            setActiveScreen("Game");
+            setActiveScreen(lastScreen);
             setHero(updatedHeroes[0]);
             setParty(updatedHeroes);
 
@@ -173,7 +174,7 @@ function Game() {
 
             addGameLog(combatMessage);
         },
-        [hero.name, addGameLog]
+        [hero.name, addGameLog,lastScreen]
     );
     const handleUpdateHeroes = useCallback((updatedHeroes: Character[]) => {
         setParty(updatedHeroes);
@@ -210,7 +211,7 @@ function Game() {
                 {activeScreen === "Combat" && (
                     <CombatArena
                         heroes={party}
-                        enemies={enemies}
+                        enemies={enemies.combatants}
                         onCombatEnd={handleCombatEnd}
                         onUpdateHeroes={handleUpdateHeroes}
                         gameLog={gameLog}
@@ -307,9 +308,10 @@ function Game() {
                 {activeScreen === "Shop" && (
                     <Shop hero={hero} back={() => {
                         setActiveScreen("Game")
-                        setLastScreen("Game")}
+                        setLastScreen("Game")
+                    }
                     } shop={currentShop} onUpdateHero={handleUpdateSingleHero}
-                        addGameLog={addGameLog} shopSkillNode={handleSkillNode} />
+                        addGameLog={addGameLog} shopSkillNode={handleSkillNode} shopCombatEncounter={handleCombat} />
                 )}
                 {activeScreen === "SkillNode" && (
 

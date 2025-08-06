@@ -395,5 +395,36 @@ export class RawFish extends Resource {
 }
 export const rawMinnow = new RawFish("Raw Minnow", "Resource", "RawFish", 1, 1, "A raw minnow")
 
-
+export class Tool extends Item {
+    constructor(name: string, type: string = "Tool", subType: string = "N/A", quantity: number, cost: number, description: string) {
+        super(name, type, subType, quantity, cost, description);
+    }
+    override use(user: Character): Character {
+        return super.use(user);
+    }
+}
+export class FishingRod extends Tool {
+    constructor(name: string, type: string = "Tool", subType: string = "FishingRod", quantity: number, cost: number, description: string) {
+        super(name, type, subType, quantity, cost, description);
+    }
+    override use(user: Character): Character {
+        return super.use(user);
+    }
+}
+export class Hatchet extends Tool {
+    constructor(name: string, type: string = "Tool", subType: string = "Hatchet", quantity: number, cost: number, description: string) {
+        super(name, type, subType, quantity, cost, description);
+    }
+    override use(user: Character): Character {
+        return super.use(user);
+    }
+}
+export class Pickaxe extends Tool {
+    constructor(name: string, type: string = "Tool", subType: string = "Pickaxe", quantity: number, cost: number, description: string) {
+        super(name, type, subType, quantity, cost, description);
+    }
+    override use(user: Character): Character {
+        return super.use(user);
+    }
+}
 

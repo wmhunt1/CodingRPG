@@ -1,5 +1,5 @@
-import { Character, Rat } from './CharacterModel.ts';
-import {GeneralShop, InnShop,ShopModel } from "./ShopModel.ts"
+import {CombatEncounter,RatCellarCombatEncounter } from "./EncounterModel.ts"
+import { GeneralShop, InnShop, ShopModel, SmithShop } from "./ShopModel.ts"
 import { CookingRange, MinnowFishingSpot, SkillNodeModel } from "./SkillNodeModel.ts"
 export class Location {
     name: string;
@@ -8,17 +8,17 @@ export class Location {
     }
 }
 export class CombatLocation extends Location {
-    combatants: Character[];
-    constructor(name: string, combatants: Character[]) {
+    combatEncounter: CombatEncounter;
+    constructor(name: string, combatEncounter: CombatEncounter) {
         super(name)
-        this.combatants = combatants;
+        this.combatEncounter = combatEncounter;
     }
 }
 export class RatCellar extends CombatLocation {
     constructor() {
-        const name = "Rat Cellar"
-        const combatants: Character[] = [new Rat()]
-        super(name, combatants)
+        const name = "Cellar full of rats"
+        const combatEncounter: CombatEncounter = new RatCellarCombatEncounter();
+        super(name, combatEncounter)
     }
 }
 export class ShopLocation extends Location {
@@ -31,7 +31,7 @@ export class ShopLocation extends Location {
 export class GeneralStoreLocation extends ShopLocation {
     constructor(name: string) {
         const shop = new GeneralShop()
-        super(name,shop)
+        super(name, shop)
     }
 }
 export class InnLocation extends ShopLocation {
@@ -41,6 +41,12 @@ export class InnLocation extends ShopLocation {
         super(name, shop)
         this.shop = shop;
         this.innStay = innStay;
+    }
+}
+export class SmithShopLocation extends ShopLocation {
+    constructor(name: string) {
+        const shop = new SmithShop()
+        super(name, shop)
     }
 }
 export class SkillLocation extends Location {
@@ -82,5 +88,15 @@ export class MinnowFishingSpotLocation extends FishingSpotLocation {
         const name = "Fishing Spot";
         const skillNode = new MinnowFishingSpot()
         super(name, skillNode)
+    }
+}
+export class MiningSkillLocation extends GatheringSKillLocation {
+    constructor(name: string, skilLNode: SkillNodeModel) {
+        super(name, skilLNode)
+    }
+}
+export class MineLocation extends MiningSkillLocation {
+    constructor(name: string, skilLNode: SkillNodeModel) {
+        super(name, skilLNode)
     }
 }

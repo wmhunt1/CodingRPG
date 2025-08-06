@@ -1,31 +1,44 @@
+import { CombatEncounter, NoCombatEncounter, RatCellarCombatEncounter } from "./EncounterModel.ts";
 import { beer, bread, club, Item, woodenShield } from "./ItemModel"
 import { CookingRange, SkillNodeModel } from "./SkillNodeModel.ts"
 export class ShopModel {
     name: string;
     inventory: Item[];
     skillNodes: SkillNodeModel[];
-    //add encounter/dungeon to
-    constructor(name: string, inventory: Item[], skillNodes: SkillNodeModel[]) {
+    combatEncounter: CombatEncounter;
+    constructor(name: string, inventory: Item[], skillNodes: SkillNodeModel[], combatEncounter: CombatEncounter) {
         this.name = name
         this.inventory = inventory;
         this.skillNodes = skillNodes;
+        this.combatEncounter = combatEncounter;
     }
 }
 export class GeneralShop extends ShopModel {
     constructor() {
         const name = "General Shop";
-        const inventory = [club, woodenShield]
+        const inventory: Item[] = []
         const skillNodes: SkillNodeModel[] = []
-        super(name, inventory,skillNodes)
+        const combatEncounter = new NoCombatEncounter()
+        super(name, inventory, skillNodes, combatEncounter)
     }
 }
 export class InnShop extends ShopModel {
-    innStay:number
-    constructor(innStay:number) {
+    innStay: number
+    constructor(innStay: number) {
         const name = "Inn";
         const inventory = [beer, bread]
         const skillNodes: SkillNodeModel[] = [new CookingRange()];
-        super(name, inventory,skillNodes)
+        const combatEncounter = new RatCellarCombatEncounter();
+        super(name, inventory, skillNodes, combatEncounter)
         this.innStay = innStay;
+    }
+}
+export class SmithShop extends ShopModel {
+    constructor() {
+        const name = "Smithy";
+        const inventory: Item[] = [club, woodenShield]
+        const skillNodes: SkillNodeModel[] = [];
+        const combatEncounter = new NoCombatEncounter();
+        super(name, inventory, skillNodes, combatEncounter)
     }
 }

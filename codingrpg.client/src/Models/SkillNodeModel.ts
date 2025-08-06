@@ -1,4 +1,4 @@
-import {cookRawMinow, fishRawMinnow, SkillRecipe } from "./SkillRecipesModel"
+import { cookRawMinow, fishRawMinnow, SkillRecipe } from "./SkillRecipesModel"
 export class SkillNodeModel {
     name: string;
     recipes: SkillRecipe[];
@@ -24,8 +24,8 @@ export class CookingSKillNode extends CraftingSkillNode {
 export class CookingRange extends CookingSKillNode {
     constructor() {
         const name = "Range";
-        const recipes:SkillRecipe[] = [cookRawMinow]
-        super(name,recipes)
+        const recipes: SkillRecipe[] = [cookRawMinow]
+        super(name, recipes)
     }
 }
 export class GatheringSKillNode extends SkillNodeModel {
@@ -44,5 +44,15 @@ export class MinnowFishingSpot extends FishingSpot {
     constructor() {
         const recipes: SkillRecipe[] = [fishRawMinnow]
         super(recipes)
+    }
+}
+export class MiningSite extends GatheringSKillNode {
+    constructor(name: string, recipes: SkillRecipe[]) {
+        super(name, recipes)
+    }
+}
+export class OreVein extends MiningSite {
+    constructor(name: string, recipes: SkillRecipe[]) {
+        super(name, recipes)
     }
 }
