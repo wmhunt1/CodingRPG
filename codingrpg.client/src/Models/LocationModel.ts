@@ -1,6 +1,6 @@
 import { Character, Rat } from './CharacterModel.ts';
 import { ShopModel } from "./ShopModel.ts"
-import { MinnowFishingSpot, SkillNodeModel } from "./SkillNodeModel.ts"
+import { CookingRange, MinnowFishingSpot, SkillNodeModel } from "./SkillNodeModel.ts"
 export class Location {
     name: string;
     constructor(name: string) {
@@ -41,6 +41,23 @@ export class SkillLocation extends Location {
     constructor(name: string, skilLNode: SkillNodeModel) {
         super(name)
         this.skillNode = skilLNode;
+    }
+}
+export class CraftingSkillLocation extends SkillLocation {
+    constructor(name: string, skilLNode: SkillNodeModel) {
+        super(name, skilLNode)
+    }
+}
+export class CookingSKillLocation extends CraftingSkillLocation {
+    constructor(name: string, skilLNode: SkillNodeModel) {
+        super(name, skilLNode)
+    }
+}
+export class CookingRangeLocation extends CookingSKillLocation {
+    constructor() {
+        const name = "Range";
+        const skillNode = new CookingRange()
+        super(name, skillNode)
     }
 }
 export class GatheringSKillLocation extends SkillLocation {

@@ -1,4 +1,4 @@
-import { Item, rawMinnow } from "./ItemModel"
+import { burntFish, cookedMinnow, Item, rawMinnow } from "./ItemModel"
 export class SkillRecipe {
     name: string;
     //skill: string;
@@ -27,6 +27,7 @@ export class CookingSkillRecipe extends CraftingSkillRecipe {
         super(name, input, output, failureOutput, verb)
     }
 }
+export const cookRawMinow = new CookingSkillRecipe("Cook Minnow", [rawMinnow], [cookedMinnow], [burntFish], "Cook")
 export class GatheringSkillRecipe extends SkillRecipe {
     constructor(name: string, input: Item[], output: Item[], failureOutput: Item[], verb: string) {
         super(name, input, output, failureOutput, verb)
@@ -37,4 +38,4 @@ export class FishingSkillRecipe extends GatheringSkillRecipe {
         super(name, input, output, failureOutput, verb)
     }
 }
-export const rawMinnowSkillRecipe = new FishingSkillRecipe("Fish for Minnow", [], [rawMinnow], [], "Fish")
+export const fishRawMinnow = new FishingSkillRecipe("Fish for Minnow", [], [rawMinnow], [], "Fish")

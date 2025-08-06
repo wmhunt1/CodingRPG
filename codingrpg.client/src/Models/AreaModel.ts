@@ -1,4 +1,4 @@
-import {InnLocation, Location, RatCellar, ShopLocation } from './LocationModel.ts';
+import { CookingRangeLocation, InnLocation, Location, RatCellar, ShopLocation } from './LocationModel.ts';
 import { GeneralShop, InnShop } from "./ShopModel.ts"
 import bridgeImage from "../assets/stone-bridge.png"
 import farmImage from "../assets/wheat.png";
@@ -9,12 +9,12 @@ import villageImage from "../assets/village.png";
 export class AreaModel {
     name: string;
     locations: Location[]
-    xCoord: number = 0; 
+    xCoord: number = 0;
     yCoord: number = 0;
     imageSrc: string = ""
     imageAlt: string = ""
 
-    constructor(name: string,locations: Location[],x:number,y:number) {
+    constructor(name: string, locations: Location[], x: number, y: number) {
         this.name = name;
         this.locations = locations;
         this.xCoord = x;
@@ -42,7 +42,7 @@ export class Farm extends AreaModel {
         super(name, locations, x, y)
         this.imageSrc = farmImage;
         this.imageAlt = "Farm";
-        
+
     }
 }
 export class Forest extends AreaModel {
@@ -83,10 +83,10 @@ export class StartingVillage extends Village {
     constructor() {
         const name = "Starting Village"
         //maybe move cellar to inn location
-        const locations: Location[] = [new InnLocation("Dreaming Worker Inn",new InnShop(5),5),new RatCellar(), new ShopLocation("Joe the Trader's", new GeneralShop())]
+        const locations: Location[] = [new InnLocation("Dreaming Worker Inn", new InnShop(5), 5), new RatCellar(), new ShopLocation("Joe the Trader's", new GeneralShop()), new CookingRangeLocation()]
         const x = 0;
         const y = 0;
-        super(name,locations,x,y)
+        super(name, locations, x, y)
     }
 }
 export class WaterBody extends AreaModel {

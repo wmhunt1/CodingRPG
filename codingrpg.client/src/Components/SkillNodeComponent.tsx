@@ -33,9 +33,12 @@ function SkillNode({ hero, back, skillNode, onUpdateHero, addGameLog }: SkillNod
         const tempInventory: Item[] = [...updatedHero.inventory]; // Create a temporary copy to work with
 
         for (const inputItem of skill.input) {
-            if (!tempInventory.includes(inputItem)) {
+            // Use .some() to check if at least one item in the inventory has the same name
+            const hasItem = tempInventory.some(inventoryItem => inventoryItem.name === inputItem.name);
+
+            if (!hasItem) {
                 hasAllInputs = false;
-                addGameLog(`Failure: Missing required item: ${inputItem}`);
+                addGameLog(`Failure: Missing required item: ${inputItem.name}`);
                 break; // Stop checking as soon as one is missing
             }
         }
@@ -44,7 +47,7 @@ function SkillNode({ hero, back, skillNode, onUpdateHero, addGameLog }: SkillNod
             // If we have all the inputs, remove them from the inventory.
             for (const inputItem of skill.input) {
                 removeItemFromInventory(tempInventory, inputItem);
-                addGameLog(`Removed ${inputItem} from inventory.`);
+                addGameLog(`Removed ${inputItem.name} from inventory.`);
             }
             updatedHero.inventory = tempInventory;
 

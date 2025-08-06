@@ -1,6 +1,6 @@
 import '../StyleSheets/GameStyle.css';
 import { Character } from "../Models/CharacterModel";
-import { Drink, Equipable, Food, Item,Potion } from "../Models/ItemModel"; // Import Equipable
+import { Item } from "../Models/ItemModel"; // Import Equipable
 import { useState, useEffect } from "react";
 import { instantiateCharacterItems } from "../Utils/CharacterUtils"
 import { removeItemFromInventory } from '../Utils/InventoryUtils';
@@ -45,13 +45,13 @@ function Inventory({ hero, back, onUpdateHero, addGameLog }: InventoryProps) {
         // setInventory(newHeroState.inventory); // No longer needed
         onUpdateHero(newHeroState); // Notify parent of the updated hero state
         let verb = ""
-        if (itemToUse instanceof Drink) {
+        if (itemToUse.type === "Drink" || itemToUse.type === "Potion") {
             verb = "drank"
         }
-        else if (itemToUse instanceof Equipable) {
+        else if (itemToUse.type === "Armor" || itemToUse.type === "Weapon" || itemToUse.type === "Accessory" || itemToUse.type === "OffHand") {
             verb = "equipped"
         }
-        else if (itemToUse instanceof Food) {
+        else if (itemToUse.type === "Food") {
             verb = "ate"
         }
         else {
@@ -76,11 +76,11 @@ function Inventory({ hero, back, onUpdateHero, addGameLog }: InventoryProps) {
                                 currentHero.inventory.map((item, index) => {
                                     // Determine the button text based on the item type
                                     let buttonText = "Use";
-                                    if (item instanceof Food) {
+                                    if (item.type === "Food") {
                                         buttonText = "Eat";
-                                    } else if (item instanceof Drink || item instanceof Potion) {
+                                    } else if (item.type === "Drink" || item.type === "Potion") {
                                         buttonText = "Drink";
-                                    } else if (item instanceof Equipable) {
+                                    } else if (item.type === "Armor" || item.type === "Weapon" || item.type === "Accessory" || item.type === "OffHand") {
                                         buttonText = "Equip";
                                     }
 

@@ -26,6 +26,7 @@ export class Item {
         return user;
     }
 }
+export const burntFish = new Item("Burnt Fish", "Junk", "Burnt Fish", 1, 0, "A burnt fish")
 
 export class Consumable extends Item {
     consumedValue: number;
@@ -68,6 +69,7 @@ export class Food extends Consumable {
 }
 
 export const bread = new Food("Bread", "Food", "Bread", 1, 5, "A loaf of bread", 0)
+export const cookedMinnow = new Food("Cooked Minnow", "Food", "CookedFish", 1, 2, "A cooked minnow, not very filling", 0)
 
 export class Potion extends Consumable {
     constructor(name: string, type: string = "Potion", subType: string = "N/A", quantity: number, cost: number, description: string, consumedValue: number) {
@@ -336,7 +338,7 @@ export class OffHand extends Equipable {
         super(name, type, subType, quantity, cost, description, slot);
     }
 }
-export const emptyHand = new OffHand("Empty Hand","OffHand","N/A",1,0,"Your off-hand is empty","OffHand")
+export const emptyHand = new OffHand("Empty Hand", "OffHand", "N/A", 1, 0, "Your off-hand is empty", "OffHand")
 
 export class OffHandWeapon extends OffHand {
     power: number
@@ -347,7 +349,7 @@ export class OffHandWeapon extends OffHand {
 }
 export class Shield extends OffHand {
     protection: number
-    constructor(name: string, type: string = "OffHand", subType: string = "Shield", quantity: number, cost: number, description: string, slot: string ="OffHand", protection: number) {
+    constructor(name: string, type: string = "OffHand", subType: string = "Shield", quantity: number, cost: number, description: string, slot: string = "OffHand", protection: number) {
         super(name, type, subType, quantity, cost, description, slot);
         this.protection = protection;
     }
@@ -355,17 +357,17 @@ export class Shield extends OffHand {
 export const woodenShield = new Shield("Wooden Shield", "OffHand", "Shield", 1, 1, "A little splintery", "OffHand", 1)
 export class Weapon extends Equipable {
     power: number
-    constructor(name: string, type: string = "Weapon", subType: string = "N/A", quantity: number, cost: number, description: string, slot: string ="Weapon", power: number) {
+    constructor(name: string, type: string = "Weapon", subType: string = "N/A", quantity: number, cost: number, description: string, slot: string = "Weapon", power: number) {
         super(name, type, subType, quantity, cost, description, slot);
         this.power = power;
     }
 }
 export class BluntWeapon extends Weapon {
     constructor(name: string, type: string = "Weapon", subType: string = "Blunt", quantity: number, cost: number, description: string, slot: string = "Weapon", power: number) {
-        super(name, type, subType, quantity, cost, description, slot,power);
+        super(name, type, subType, quantity, cost, description, slot, power);
     }
 }
-export const club = new BluntWeapon("Club","Weapon","Blunt",1,1,"A crude wooden club","Weapon",1)
+export const club = new BluntWeapon("Club", "Weapon", "Blunt", 1, 1, "A crude wooden club", "Weapon", 1)
 
 export class NaturalWeapon extends Weapon {
     constructor(name: string, type: string = "Weapon", subType: string = "Natural", quantity: number, cost: number, description: string, slot: string = "Weapon", power: number) {
@@ -387,11 +389,11 @@ export class RawFish extends Resource {
     constructor(name: string, type: string = "Resource", subType: string = "RawFish", quantity: number, cost: number, description: string) {
         super(name, type, subType, quantity, cost, description);
     }
-     override use(user: Character): Character {
+    override use(user: Character): Character {
         return super.use(user);
     }
 }
-export const rawMinnow = new RawFish("Raw Minnow","Resource","RawFish",1,1,"A raw minnow")
+export const rawMinnow = new RawFish("Raw Minnow", "Resource", "RawFish", 1, 1, "A raw minnow")
 
 
 
