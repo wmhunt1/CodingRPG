@@ -1,30 +1,29 @@
-import { Item,rawMinnow } from "./ItemModel"
+import {rawMinnowSkillRecipe, SkillRecipe} from "./SkillRecipesModel"
 export class SkillNodeModel {
     name: string;
-    resources: Item[];
+    recipes: SkillRecipe[];
     //skill
     //level
-    constructor(name: string, resources: Item[]) {
+    constructor(name: string,recipes: SkillRecipe[]) {
         this.name = name
-        this.resources = resources;
+        this.recipes = recipes;
     }
 }
 export class GatheringSKillNode extends SkillNodeModel {
    
-    constructor(name: string, resources: Item[]) {
-        super(name,resources)
+    constructor(name: string, recipes: SkillRecipe[]) {
+        super(name,recipes)
     }
 }
 export class FishingSpot extends GatheringSKillNode {
-    constructor(resources: Item[]) {
+    constructor(recipes: SkillRecipe[]) {
         const name = "Fishing Spot"
-        super(name, resources)
+        super(name, recipes)
     }
 }
 export class MinnowFishingSpot extends FishingSpot {
     constructor() {
-        const resources: Item[] = [rawMinnow]
-        super(resources)
+        const recipes: SkillRecipe[] = [rawMinnowSkillRecipe]
+        super(recipes)
     }
 }
-//change to recipes
