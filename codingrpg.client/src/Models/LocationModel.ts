@@ -1,5 +1,5 @@
 import { Character, Rat } from './CharacterModel.ts';
-import { ShopModel } from "./ShopModel.ts"
+import {GeneralShop, InnShop,ShopModel } from "./ShopModel.ts"
 import { CookingRange, MinnowFishingSpot, SkillNodeModel } from "./SkillNodeModel.ts"
 export class Location {
     name: string;
@@ -28,9 +28,16 @@ export class ShopLocation extends Location {
         this.shop = shop;
     }
 }
+export class GeneralStoreLocation extends ShopLocation {
+    constructor(name: string) {
+        const shop = new GeneralShop()
+        super(name,shop)
+    }
+}
 export class InnLocation extends ShopLocation {
     innStay: number;
-    constructor(name: string, shop: ShopModel, innStay: number) {
+    constructor(name: string, innStay: number) {
+        const shop = new InnShop(innStay);
         super(name, shop)
         this.shop = shop;
         this.innStay = innStay;

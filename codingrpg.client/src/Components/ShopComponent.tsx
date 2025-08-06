@@ -1,10 +1,11 @@
 import '../StyleSheets/GameStyle.css';
 import { Character } from "../Models/CharacterModel";
 import { Item } from "../Models/ItemModel"
-import {addItemToInventory, removeItemFromInventory } from "../Utils/InventoryUtils"; // Assuming you put it there
-import {InnShop, ShopModel } from "../Models/ShopModel"
+import { SkillNodeModel } from "../Models/SkillNodeModel"
+import { addItemToInventory, removeItemFromInventory } from "../Utils/InventoryUtils"; // Assuming you put it there
+import { InnShop, ShopModel } from "../Models/ShopModel"
 
-import {useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 //import Inventory from './InventoryComponent';
 
 interface ShopProps {
@@ -13,8 +14,9 @@ interface ShopProps {
     shop: ShopModel
     onUpdateHero: (updatedHero: Character) => void;
     addGameLog: (message: string) => void;
+    shopSkillNode: (skillNode: SkillNodeModel) => void;
 }
-function Shop({ hero, back, shop, onUpdateHero, addGameLog }: ShopProps) {
+function Shop({ hero, back, shop, onUpdateHero, addGameLog, shopSkillNode }: ShopProps) {
     //const [activeScreen, setActiveScreen] = useState<ShopState>("Buy");
     const [currentHero, setCurrentHero] = useState(hero);
     const shopInventory = shop.inventory;
@@ -59,7 +61,7 @@ function Shop({ hero, back, shop, onUpdateHero, addGameLog }: ShopProps) {
         const updatedHero: Character = JSON.parse(JSON.stringify(currentHero));
         updatedHero.gold += Math.floor(itemToSell.cost / 2);
         // Find the index of the item in the updated hero's inventory
-        removeItemFromInventory(updatedHero.inventory,itemToSell)
+        removeItemFromInventory(updatedHero.inventory, itemToSell)
         setCurrentHero(updatedHero);
         onUpdateHero(updatedHero);
         addGameLog(`${hero.name} has sold ${itemToSell.name} for ${Math.floor(itemToSell.cost / 2)}.`);
@@ -113,8 +115,14 @@ function Shop({ hero, back, shop, onUpdateHero, addGameLog }: ShopProps) {
             </div>
             <div className="area-options">
                 <h3>Options</h3>
-                {/*If inn etc put stay night have other options array*/}
-                {shop instanceof InnShop ? <button className='area-button' onClick={() => handleInnStay(shop.innStay)}>Rest ({shop.innStay} GP)</button> :<></>}
+                {shop instanceof InnShop ? <button className='area-button' onClick={() => handleInnStay(shop.innStay)}>Rest ({shop.innStay} GP)</button> : <></>}
+                {
+                    shop.skillNodes.map((item, index) => (
+                        <div key={index}>
+                            <button className="area-button" onClick={() => shopSkillNode(item)}>Use {item.name}</button>
+                        </div>
+                    ))
+                }
                 <button className='area-button' onClick={() => back()}>Leave</button>
             </div>
             <div className="game-content-bottom">

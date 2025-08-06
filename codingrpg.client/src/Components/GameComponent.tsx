@@ -50,11 +50,12 @@ type AppLocation = CombatLocation | ShopLocation | SkillLocation | Location;
 function Game() {
     const [activeScreen, setActiveScreen] = useState<GameState>("MainMenu");
     const [area, setArea] = useState<AreaModel>(new StartingVillage());
-    const [currentShop, setCurrentShop] = useState<ShopModel>(new ShopModel("", []))
-    const [currentSkillNode,setCurrentSkillNode] = useState<SkillNodeModel>(new SkillNodeModel("Empty",[]))
+    const [currentShop, setCurrentShop] = useState<ShopModel>(new ShopModel("", [],[]))
+    const [currentSkillNode, setCurrentSkillNode] = useState<SkillNodeModel>(new SkillNodeModel("Empty", []))
     const [hero, setHero] = useState<Hero>(new Hero("Hero"));
     const [enemies, setEnemies] = useState<Character[]>(() => []);
     const [gameLog, setGameLog] = useState<string[]>(["Welcome to Coding RPG"]);
+    const [lastScreen, setLastScreen] = useState<GameState>("MainMenu");
     const [party, setParty] = useState<Character[]>(() => [hero, ...hero.party])
 
     const areaMap = useMemo(() => {
@@ -129,6 +130,7 @@ function Game() {
     const handleShop = useCallback((shop: ShopModel) => {
         setCurrentShop(shop)
         setActiveScreen("Shop")
+        setLastScreen("Shop")
     }, []);
     const handleSkillNode = useCallback((skillNode: SkillNodeModel) => {
         setCurrentSkillNode(skillNode)
@@ -303,12 +305,15 @@ function Game() {
                     <Settings back={() => setActiveScreen("MainMenu")} />
                 )}
                 {activeScreen === "Shop" && (
-                    <Shop hero={hero} back={() => setActiveScreen("Game")} shop={currentShop} onUpdateHero={handleUpdateSingleHero}
-                        addGameLog={addGameLog} />
+                    <Shop hero={hero} back={() => {
+                        setActiveScreen("Game")
+                        setLastScreen("Game")}
+                    } shop={currentShop} onUpdateHero={handleUpdateSingleHero}
+                        addGameLog={addGameLog} shopSkillNode={handleSkillNode} />
                 )}
                 {activeScreen === "SkillNode" && (
 
-                    <SkillNode hero={hero} back={() => setActiveScreen("Game")} skillNode={currentSkillNode} onUpdateHero={handleUpdateSingleHero}
+                    <SkillNode hero={hero} back={() => setActiveScreen(lastScreen)} skillNode={currentSkillNode} onUpdateHero={handleUpdateSingleHero}
                         addGameLog={addGameLog} />
                 )}
             </div>
