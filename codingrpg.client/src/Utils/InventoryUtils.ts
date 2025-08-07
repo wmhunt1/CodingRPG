@@ -1,10 +1,10 @@
 import { Back, ChestArmor, Consumable, Drink, Equipable, Food, FootArmor, HandArmor, HeadArmor, Item, LegArmor, Neck, OffHandWeapon, Potion, Ring, Shield, ShoulderArmor, WaistArmor, Weapon, WristArmor } from "../Models/ItemModel";
 
-export function addItemToInventory(inventory: Item[], itemToAdd: Item): void {
+export function addItemToInventory(inventory: Item[], itemToAdd: Item,quantity:number): void {
     const existingItem = inventory.find(item => item.name === itemToAdd.name);
 
     if (existingItem) {
-        existingItem.quantity++;
+        existingItem.quantity += quantity;
     } else {
         // Since we are creating a new item, we should use the full constructor
         // from the class that itemToAdd is an instance of.
@@ -51,18 +51,18 @@ export function addItemToInventory(inventory: Item[], itemToAdd: Item): void {
             newItemInstance = new Consumable(itemToAdd.name, itemToAdd.type, itemToAdd.subType, 1, itemToAdd.cost, itemToAdd.description, (itemToAdd as Consumable).consumedValue);
         }
         else {
-            newItemInstance = new Item(itemToAdd.name, itemToAdd.type, itemToAdd.subType, 1, itemToAdd.cost, itemToAdd.description);
+            newItemInstance = new Item(itemToAdd.name, itemToAdd.type, itemToAdd.subType, quantity, itemToAdd.cost, itemToAdd.description);
         }
 
         inventory.push(newItemInstance);
     }
 }
 
-export function removeItemFromInventory(inventory: Item[], itemToRemove: Item): void {
+export function removeItemFromInventory(inventory: Item[], itemToRemove: Item,quantity:number): void {
     const itemIndex = inventory.findIndex(item => item.name === itemToRemove.name);
 
     if (itemIndex > -1) {
-        inventory[itemIndex].quantity--;
+        inventory[itemIndex].quantity -= quantity;
         if (inventory[itemIndex].quantity <= 0) {
             inventory.splice(itemIndex, 1);
         }

@@ -26,7 +26,7 @@ function Inventory({ hero, back, onUpdateHero, addGameLog }: InventoryProps) {
         const updatedHero: Character = instantiateCharacterItems(JSON.parse(JSON.stringify(currentHero)));
 
 
-        removeItemFromInventory(updatedHero.inventory, itemToDrop)
+        removeItemFromInventory(updatedHero.inventory, itemToDrop,1)
         setCurrentHero(updatedHero);
         // setInventory(newHeroState.inventory); // No longer needed
         onUpdateHero(updatedHero); // Notify parent of the updated hero state

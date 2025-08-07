@@ -27,6 +27,12 @@ export class Quest {
         this.itemReward = itemReward;
     }
 }
+export class FetchQuest extends Quest {
+    constructor(id: string, name: string, status: string, type: string = "Fetch", description: string, objective: string, target: number, targetProgress: number, xpReward: number, goldReward: number, itemReward: Item[]) {
+        super(id, name, status, type, description, objective, target, targetProgress, xpReward, goldReward, itemReward)
+    }
+}
+export const fetchRawMinnowQuest1 = new FetchQuest("fetchRawMinnowQuest1", "Fish for Minnows", "Not Started", "Fish", "Bring 5 Raw Minnow(s) to the old fisherman", "Raw Minnow", 5, 0, 50, 10, [])
 export class SlayerQuest extends Quest {
     constructor(id: string, name: string, status: string, type: string = "Slay", description: string, objective: string, target: number, targetProgress: number, xpReward: number, goldReward: number, itemReward: Item[]) {
         super(id, name, status, type, description, objective, target, targetProgress, xpReward, goldReward, itemReward)

@@ -1,5 +1,5 @@
 import { CombatEncounter, NoCombatEncounter, RatCellarCombatEncounter } from "./EncounterModel.ts";
-import { beer, bread, club, Item, woodenShield } from "./ItemModel"
+import { basicFishingRod, beer, bread, club, Item, woodenShield } from "./ItemModel"
 import { CookingRange, SkillNodeModel } from "./SkillNodeModel.ts"
 export class ShopModel {
     name: string;
@@ -16,7 +16,7 @@ export class ShopModel {
 export class GeneralShop extends ShopModel {
     constructor() {
         const name = "General Shop";
-        const inventory: Item[] = []
+        const inventory: Item[] = [basicFishingRod]
         const skillNodes: SkillNodeModel[] = []
         const combatEncounter = new NoCombatEncounter()
         super(name, inventory, skillNodes, combatEncounter)

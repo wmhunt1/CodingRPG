@@ -22,7 +22,7 @@ export class Item {
     }
 
     use(user: Character): Character {
-        removeItemFromInventory(user.inventory, this);
+        removeItemFromInventory(user.inventory, this,1);
         return user;
     }
 }
@@ -210,16 +210,16 @@ export class Equipable extends Item {
         }
 
         // Remove the newly equipped item from the inventory.
-        removeItemFromInventory(user.inventory, this);
+        removeItemFromInventory(user.inventory, this,1);
         console.log(`${user.name} equipped ${this.name}.`);
 
         // If there was an old item, and it wasn't a "bare" item, add it back to the inventory.
         if (oldEquippedItem && bareItem && oldEquippedItem.name !== bareItem.name) {
-            addItemToInventory(user.inventory, oldEquippedItem);
+            addItemToInventory(user.inventory, oldEquippedItem,1);
             console.log(`${user.name} unequipped ${oldEquippedItem.name} and it was added to the inventory.`);
         } else if (oldEquippedItem && !bareItem) {
             // This case handles when an old item exists but no bare item was defined
-            addItemToInventory(user.inventory, oldEquippedItem);
+            addItemToInventory(user.inventory, oldEquippedItem,1);
             console.log(`${user.name} unequipped ${oldEquippedItem.name} and it was added to the inventory.`);
         }
 
@@ -404,13 +404,14 @@ export class Tool extends Item {
     }
 }
 export class FishingRod extends Tool {
-    constructor(name: string, type: string = "Tool", subType: string = "FishingRod", quantity: number, cost: number, description: string) {
+    constructor(name: string, type: string = "Tool", subType: string = "Fishing Rod", quantity: number, cost: number, description: string) {
         super(name, type, subType, quantity, cost, description);
     }
     override use(user: Character): Character {
         return super.use(user);
     }
 }
+export const basicFishingRod = new FishingRod("Basic Fishing Rod", "Tool", "Fishing Rod", 1, 5, "A basic rod for fishing")
 export class Hatchet extends Tool {
     constructor(name: string, type: string = "Tool", subType: string = "Hatchet", quantity: number, cost: number, description: string) {
         super(name, type, subType, quantity, cost, description);

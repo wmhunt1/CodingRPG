@@ -1,6 +1,7 @@
+//import Inventory from "../Components/InventoryComponent"
 import { Character } from "../Models/CharacterModel"
 import { Quest } from "../Models/QuestModel"
-import { addItemToInventory } from "./InventoryUtils"
+import { addItemToInventory, removeItemFromInventory } from "./InventoryUtils"
 import { levelUpHero } from "./LevelingUtils"
 //acceptQuest
 export const acceptQuest = (character: Character, journal: Quest[], questToAdd: Quest, addGameLog: (message: string) => void): void => {
@@ -25,11 +26,32 @@ export const updateQuestProgress = (character: Character, journal: Quest[], ques
 export const checkQuestProgress = (character: Character, journal: Quest[], questToUpdate: Quest, addGameLog: (message: string) => void): void => {
     const existingQuest = journal.find(quest => quest.name === questToUpdate.name);
     if (existingQuest) {
-        if (existingQuest.targetProgress >= existingQuest.target) {
-            completeQuest(character, journal, questToUpdate, addGameLog)
+        let questComplete = false;
+        if (existingQuest.type == "Slay") {
+            if (existingQuest.targetProgress >= existingQuest.target) {
+                questComplete = true;
+            }
+            else {
+                addGameLog(`${character.name} has not finished ${questToUpdate.name}. Current Progress: (${questToUpdate.targetProgress}/${questToUpdate.target})`)
+            }
+        }
+        else if (existingQuest.type == "Fetch" || existingQuest.type == "Fish" || existingQuest.type == "Gather") {
+            console.log("Not Implemented")
+            const existingItem = character.inventory.find(item => item.name === questToUpdate.objective);
+            if (!existingItem || existingItem.quantity < questToUpdate.target) {
+                addGameLog(`${character.name} does not have enough ${questToUpdate.objective}`)
+            }
+            else {
+                removeItemFromInventory(character.inventory, existingItem, questToUpdate.target)
+                addGameLog(`${character.name} hands in ${questToUpdate.objective} X ${questToUpdate.target}`)
+                questComplete = true
+            }
         }
         else {
-            addGameLog(`${character.name} has not finished ${questToUpdate.name}. Current Progress: (${questToUpdate.targetProgress}/${questToUpdate.target})`)
+            console.log("Default")
+        }
+        if (questComplete !== false) {
+            completeQuest(character, journal, questToUpdate, addGameLog)
         }
     }
 }
@@ -38,11 +60,12 @@ export const getQuestRewards = (character: Character, quest: Quest, addGameLog: 
     character.currentXP += quest.xpReward;
     levelUpHero(character, addGameLog)
     if (quest.itemReward.length > 0) {
+        addGameLog(`${character.name} recieves the following items`)
         for (let item = 0; item < quest.itemReward.length; item++) {
-            addItemToInventory(character.inventory, quest.itemReward[item])
+            addItemToInventory(character.inventory, quest.itemReward[item], quest.itemReward[item].quantity)
         }
     }
-    addGameLog(`${character.name} earns ${quest.xpReward} XP and ${quest.goldReward}`)
+    addGameLog(`${character.name} earns ${quest.xpReward} XP and ${quest.goldReward} Gold`)
     return character;
 }
 //completeQuest

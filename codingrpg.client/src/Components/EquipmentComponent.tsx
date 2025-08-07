@@ -55,7 +55,7 @@ function Equipment({ hero, back, onUpdateHero, addGameLog }: EquipmentProps) {
         // Add more slots as needed
 
         // Use the common helper to add the unequipped item back to inventory
-        addItemToInventory(updatedHero.inventory, itemToUnEquip);
+        addItemToInventory(updatedHero.inventory, itemToUnEquip,1);
 
         setCurrentHero(updatedHero);
         onUpdateHero(updatedHero);

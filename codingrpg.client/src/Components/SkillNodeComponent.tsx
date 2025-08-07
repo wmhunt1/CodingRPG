@@ -26,11 +26,20 @@ function SkillNode({ hero, back, skillNode, onUpdateHero, addGameLog }: SkillNod
     }
     function handleSkill(skill: SkillRecipe) {
         const updatedHero: Character = instantiateCharacterItems(JSON.parse(JSON.stringify(currentHero)));
-        addGameLog(`${updatedHero.name} starts to ${skill.name}`)
 
-        // 1. Check if all input items are in the inventory and remove them.
+        //need skill check at somepoint
         let hasAllInputs = true;
         const tempInventory: Item[] = [...updatedHero.inventory]; // Create a temporary copy to work with
+
+        if (skill.tool !== "N/A") {
+            const hasTool = tempInventory.some(inventoryItem => inventoryItem.subType === skill.tool);
+            if (!hasTool) {
+                addGameLog(`Failure: You do not have a :${skill.tool}`);
+                return; // Stop checking as soon as one is missing
+            }
+        }
+
+        addGameLog(`${updatedHero.name} starts to ${skill.name}`)
 
         for (const inputItem of skill.input) {
             // Use .some() to check if at least one item in the inventory has the same name
@@ -46,7 +55,7 @@ function SkillNode({ hero, back, skillNode, onUpdateHero, addGameLog }: SkillNod
         if (hasAllInputs) {
             // If we have all the inputs, remove them from the inventory.
             for (const inputItem of skill.input) {
-                removeItemFromInventory(tempInventory, inputItem);
+                removeItemFromInventory(tempInventory, inputItem, inputItem.quantity);
                 addGameLog(`Removed ${inputItem.name} from inventory.`);
             }
             updatedHero.inventory = tempInventory;
@@ -55,17 +64,17 @@ function SkillNode({ hero, back, skillNode, onUpdateHero, addGameLog }: SkillNod
             const success = rollForSuccess(0.7);
 
             if (success) {
-                addGameLog(`Success! ${updatedHero.name} successfully ${skill.name}s.`);
+                addGameLog(`Success!`);
                 // 3. If successful, add the outputs to the inventory.
                 for (const outputItem of skill.output) {
-                    addItemToInventory(updatedHero.inventory, outputItem);
+                    addItemToInventory(updatedHero.inventory, outputItem, outputItem.quantity);
                     addGameLog(`Added ${outputItem.name} to inventory.`);
                 }
             } else {
                 addGameLog(`Failure! ${updatedHero.name} fails to ${skill.name}.`);
                 // 4. If failed, add the failure outputs to the inventory.
                 for (const failureOutputItem of skill.failureOutput) {
-                    addItemToInventory(updatedHero.inventory, failureOutputItem);
+                    addItemToInventory(updatedHero.inventory, failureOutputItem, failureOutputItem.quantity);
                     addGameLog(`Added ${failureOutputItem.name} to inventory.`);
                 }
             }
@@ -92,31 +101,32 @@ function SkillNode({ hero, back, skillNode, onUpdateHero, addGameLog }: SkillNod
                         <h3>{skillNode.name}</h3>
                         <div className="skill-recipe">
                             {resources
-                              /*  .sort((a, b) => a.name.localeCompare(b.name)) later turn this into level*/
+                                /*  .sort((a, b) => a.name.localeCompare(b.name)) later turn this into level*/
                                 .map((skill, index) => (
-                                <div key={index}>
-                                    <p>{skill.name}</p>
-                                    <p>
-                                        Input:
-                                        {skill.input.map((inputItem, inputIndex) => (
-                                            <span key={inputIndex}>
-                                                {inputItem.name}
-                                                {inputIndex < skill.input.length - 1 ? ', ' : ''}
-                                            </span>
-                                        ))}
-                                    </p>
-                                    <p>
-                                        Output:
-                                        {skill.output.map((outputItem, outputIndex) => (
-                                            <span key={outputIndex}>
-                                                {outputItem.name}
-                                                {outputIndex < skill.output.length - 1 ? ', ' : ''}
-                                            </span>
-                                        ))}
-                                    </p>
-                                    <button className="skill-button" onClick={() => handleSkill(skill)}>{skill.verb}</button>
-                                </div>
-                            ))}
+                                    <div key={index}>
+                                        <p>{skill.name}</p>
+                                        <p>Tool: {skill.tool}</p>
+                                        <p>
+                                            Input:
+                                            {skill.input.map((inputItem, inputIndex) => (
+                                                <span key={inputIndex}>
+                                                    {inputItem.name}
+                                                    {inputIndex < skill.input.length - 1 ? ', ' : ''}
+                                                </span>
+                                            ))}
+                                        </p>
+                                        <p>
+                                            Output:
+                                            {skill.output.map((outputItem, outputIndex) => (
+                                                <span key={outputIndex}>
+                                                    {outputItem.name}
+                                                    {outputIndex < skill.output.length - 1 ? ', ' : ''}
+                                                </span>
+                                            ))}
+                                        </p>
+                                        <button className="skill-button" onClick={() => handleSkill(skill)}>{skill.verb}</button>
+                                    </div>
+                                ))}
                         </div>
                     </div>
                 </div>
