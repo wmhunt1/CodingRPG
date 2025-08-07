@@ -84,13 +84,15 @@ function Shop({ hero, back, shop, onUpdateHero, addGameLog, shopSkillNode, shopC
                         <h3>Buy</h3>
                         <div className="shop-items">
                             {
-                                shopInventory.map((item, index) => (
-                                    <div key={index}>
-                                        <p>{item.name}</p>
-                                        <p>{item.description}</p>
-                                        <button className="buy-sell-button" onClick={() => handleBuyItem(item)}>Buy ({item.cost} GP)</button>
-                                    </div>
-                                ))
+                                shopInventory
+                                    .sort((a, b) => a.name.localeCompare(b.name))
+                                    .map((item, index) => (
+                                        <div key={index}>
+                                            <p>{item.name}</p>
+                                            <p>{item.description}</p>
+                                            <button className="buy-sell-button" onClick={() => handleBuyItem(item)}>Buy ({item.cost} GP)</button>
+                                        </div>
+                                    ))
                             }
                         </div>
                     </div>
@@ -100,12 +102,14 @@ function Shop({ hero, back, shop, onUpdateHero, addGameLog, shopSkillNode, shopC
                             {currentHero.inventory.length > 0 ? (
                                 <div className="shop-items">
                                     {
-                                        currentHero.inventory.map((item, index) => (
-                                            <div key={index}>
-                                                <p>{item.name} x {item.quantity}</p>
-                                                <button className="buy-sell-button" onClick={() => handleSellItem(item)}>Sell ({Math.floor(item.cost / 2)} GP)</button>
-                                            </div>
-                                        ))
+                                        currentHero.inventory
+                                            .sort((a, b) => a.name.localeCompare(b.name)).
+                                            map((item, index) => (
+                                                <div key={index}>
+                                                    <p>{item.name} x {item.quantity}</p>
+                                                    <button className="buy-sell-button" onClick={() => handleSellItem(item)}>Sell ({Math.floor(item.cost / 2)} GP)</button>
+                                                </div>
+                                            ))
                                     }
                                 </div>
                             ) : (

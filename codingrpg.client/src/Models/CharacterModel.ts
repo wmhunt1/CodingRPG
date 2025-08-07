@@ -3,6 +3,7 @@ import {
     emptyHand,
     FootArmor, HandArmor, HeadArmor, Item, LegArmor, Neck,OffHand,pants, ratBite, Ring,shoes, ShoulderArmor, tunic, WaistArmor, Weapon, WristArmor
 } from './ItemModel.ts';
+import {Quest } from "./QuestModel.ts"
 
 export class Character {
     name: string = "";
@@ -50,6 +51,7 @@ export class Character {
     //abilities:
     //skills:
     party: Character[] = []
+    journal: Quest[] = []
     constructor(
         name: string,
         maxHP: number,

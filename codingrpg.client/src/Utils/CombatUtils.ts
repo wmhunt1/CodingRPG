@@ -1,4 +1,5 @@
 import { Character, Hero } from "../Models/CharacterModel"; // Assuming CharacterModel is accessible
+import { updateQuestProgress } from "./QuestUtils"
 
 /**
  * Applies an attack from an attacker to a target.
@@ -9,7 +10,7 @@ import { Character, Hero } from "../Models/CharacterModel"; // Assuming Characte
  * @returns The updated target character.
  */
 
-export const applyAttack = (attacker: Character, target: Character, addGameLog: (message: string) => void): Character => {
+export const applyAttack = (hero: Character, attacker: Character, target: Character, addGameLog: (message: string) => void): Character => {
     // Define the base hit chance as a decimal (e.g., 85% chance to hit)
     // This could be a stat on the character object in the future.
     const hitChance = 0.85;
@@ -20,7 +21,7 @@ export const applyAttack = (attacker: Character, target: Character, addGameLog: 
         const totalProtection = Math.floor((target.head.protection + target.shoulders.protection + target.chest.protection + target.hands.protection + target.wrists.protection + target.waist.protection + target.legs.protection + target.feet.protection) / 8)
         const strengthBonus = Math.floor(attacker.strength / 10);
         const totalAttack = attacker.mainHand.power + strengthBonus;
-        let damage =  totalAttack - totalProtection;
+        let damage = totalAttack - totalProtection;
         if (damage < 0) { damage = 0 }
         const updatedTarget = { ...target, currentHP: target.currentHP - damage };
 
@@ -32,6 +33,11 @@ export const applyAttack = (attacker: Character, target: Character, addGameLog: 
         }
 
         if (updatedTarget.currentHP <= 0) {
+            console.log(`${hero.name} journal update`)
+            const existingQuest = hero.journal.find(quest => quest.objective === updatedTarget.name);
+            if (existingQuest) {
+                updateQuestProgress(hero, hero.journal, existingQuest, addGameLog)
+            }
             addGameLog(`${updatedTarget.name} has been defeated!`);
         }
         return updatedTarget;
@@ -71,7 +77,7 @@ export const executeCombatRound = (
                 const targetEnemy = updatedEnemies.find((enemy) => enemy.currentHP > 0);
                 if (targetEnemy) {
                     const index = updatedEnemies.findIndex(e => e.name === targetEnemy.name);
-                    updatedEnemies[index] = applyAttack(hero, targetEnemy, addGameLog);
+                    updatedEnemies[index] = applyAttack(updatedHeroes[0], hero, targetEnemy, addGameLog);
                     if (updatedEnemies[index].currentHP <= 0) {
                         hero.currentXP += targetEnemy.currentXP;
                         hero.gold += targetEnemy.gold;
@@ -87,7 +93,7 @@ export const executeCombatRound = (
                     const targetHero = updatedHeroes.find((hero) => hero.currentHP > 0);
                     if (targetHero) {
                         const index = updatedHeroes.findIndex(h => h.name === targetHero.name);
-                        updatedHeroes[index] = applyAttack(enemy, targetHero, addGameLog) as Hero;
+                        updatedHeroes[index] = applyAttack(updatedEnemies[0], enemy, targetHero, addGameLog) as Hero;
                     }
                 });
             }

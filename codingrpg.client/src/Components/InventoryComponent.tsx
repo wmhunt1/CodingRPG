@@ -73,28 +73,30 @@ function Inventory({ hero, back, onUpdateHero, addGameLog }: InventoryProps) {
                     {currentHero.inventory.length > 0 ? ( // Use currentHero.inventory directly
                         <div className="inventory-items">
                             {
-                                currentHero.inventory.map((item, index) => {
-                                    // Determine the button text based on the item type
-                                    let buttonText = "Use";
-                                    if (item.type === "Food") {
-                                        buttonText = "Eat";
-                                    } else if (item.type === "Drink" || item.type === "Potion") {
-                                        buttonText = "Drink";
-                                    } else if (item.type === "Armor" || item.type === "Weapon" || item.type === "Accessory" || item.type === "OffHand") {
-                                        buttonText = "Equip";
-                                    }
+                                currentHero.inventory
+                                    .sort((a, b) => a.name.localeCompare(b.name)).
+                                    map((item, index) => {
+                                        // Determine the button text based on the item type
+                                        let buttonText = "Use";
+                                        if (item.type === "Food") {
+                                            buttonText = "Eat";
+                                        } else if (item.type === "Drink" || item.type === "Potion") {
+                                            buttonText = "Drink";
+                                        } else if (item.type === "Armor" || item.type === "Weapon" || item.type === "Accessory" || item.type === "OffHand") {
+                                            buttonText = "Equip";
+                                        }
 
-                                    return (
-                                        <div key={index}>
-                                            <p>{item.name}</p>
-                                            <p>{item.description}</p>
-                                            <button className="use-equip-button" onClick={() => handleUseItem(item)}>
-                                                {buttonText} x {item.quantity}
-                                            </button>
-                                            <button className="use-equip-button" onClick={() => handleDropItem(item)} >Drop</button>
-                                        </div>
-                                    );
-                                })
+                                        return (
+                                            <div key={index}>
+                                                <p>{item.name}</p>
+                                                <p>{item.description}</p>
+                                                <button className="use-equip-button" onClick={() => handleUseItem(item)}>
+                                                    {buttonText} x {item.quantity}
+                                                </button>
+                                                <button className="use-equip-button" onClick={() => handleDropItem(item)} >Drop</button>
+                                            </div>
+                                        );
+                                    })
                             }
                         </div>
                     ) : (

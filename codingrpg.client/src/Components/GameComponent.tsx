@@ -6,6 +6,7 @@ import Compass from "./CompassComponent"
 import CreateCharacter from "./CreateCharacterComponent";
 import Equipment from "./EquipmentComponent";
 import Inventory from "./InventoryComponent";
+import Journal from "./JournalComponent";
 import LoadGame from "./LoadGameComponent";
 import Log from "./LogComponent";
 import { MainMenu } from "./MenuComponent";
@@ -17,9 +18,10 @@ import Toolbar from "./ToolbarComponent"
 // Model Imports
 import { AreaModel, NotArea, StartingVillage } from "../Models/AreaModel"
 import { Character, Hero } from "../Models/CharacterModel";
-import {CombatEncounter, NoCombatEncounter } from "../Models/EncounterModel"
+import { CombatEncounter, NoCombatEncounter } from "../Models/EncounterModel"
 import { CombatLocation, Location, ShopLocation, SkillLocation } from "../Models/LocationModel"
 import { ValleyMap } from "../Models/MapModel"
+import { slayRatQuest1 } from "../Models/QuestModel"
 import { ShopModel } from "../Models/ShopModel"
 import { SkillNodeModel } from "../Models/SkillNodeModel"
 
@@ -31,6 +33,7 @@ import "../StyleSheets/GameStyle.css";
 
 //Util Imports
 import { calculateNewLocation } from "../Utils/MovementUtil"
+import { acceptQuest } from "../Utils/QuestUtils";
 
 // Define possible game states for better readability and type safety
 type GameState =
@@ -40,6 +43,7 @@ type GameState =
     | "Combat"
     | "Equipment"
     | "Inventory"
+    | "Journal"
     | "LoadGame"
     | "NewGame"
     | "Settings"
@@ -51,10 +55,10 @@ type AppLocation = CombatLocation | ShopLocation | SkillLocation | Location;
 function Game() {
     const [activeScreen, setActiveScreen] = useState<GameState>("MainMenu");
     const [area, setArea] = useState<AreaModel>(new StartingVillage());
-    const [currentShop, setCurrentShop] = useState<ShopModel>(new ShopModel("", [],[],new NoCombatEncounter()))
+    const [currentShop, setCurrentShop] = useState<ShopModel>(new ShopModel("", [], [], new NoCombatEncounter()))
     const [currentSkillNode, setCurrentSkillNode] = useState<SkillNodeModel>(new SkillNodeModel("Empty", []))
     const [hero, setHero] = useState<Hero>(new Hero("Hero"));
-    const [enemies, setEnemies] = useState<CombatEncounter>(new CombatEncounter("",[]))
+    const [enemies, setEnemies] = useState<CombatEncounter>(new CombatEncounter("", []))
     const [gameLog, setGameLog] = useState<string[]>(["Welcome to Coding RPG"]);
     const [lastScreen, setLastScreen] = useState<GameState>("Game");
     const [party, setParty] = useState<Character[]>(() => [hero, ...hero.party])
@@ -174,7 +178,7 @@ function Game() {
 
             addGameLog(combatMessage);
         },
-        [hero.name, addGameLog,lastScreen]
+        [hero.name, addGameLog, lastScreen]
     );
     const handleUpdateHeroes = useCallback((updatedHeroes: Character[]) => {
         setParty(updatedHeroes);
@@ -200,8 +204,9 @@ function Game() {
     const showInventory = useCallback(() => {
         setActiveScreen("Inventory");
     }, []);
-
-
+    const showJournal = useCallback(() => {
+        setActiveScreen("Journal");
+    }, []);
     return (
         <div id="game">
             <div className="game-screen">
@@ -228,7 +233,7 @@ function Game() {
                     // This is the new grid container for the "Game" screen
                     <div className="game-layout-grid">
                         <div className="toolbar">
-                            <Toolbar characterSheet={() => showCharacterSheet()} equipment={() => showEquipment()} inventory={() => showInventory()} mainMenu={() => setActiveScreen("MainMenu")} />
+                            <Toolbar characterSheet={() => showCharacterSheet()} equipment={() => showEquipment()} inventory={() => showInventory()} journal={() => showJournal()} mainMenu={() => setActiveScreen("MainMenu")} />
                         </div>
                         <div className="game-content-left">
                             <h3>Party</h3>
@@ -263,6 +268,7 @@ function Game() {
                                     {location.name}
                                 </button>
                             ))}
+                            <button className="area-button" onClick={() => acceptQuest(hero, hero.journal, slayRatQuest1, addGameLog)}>Test Quest</button>
                         </div>
                         <div className="game-content-bottom">
                             <div id="area-info">
@@ -279,6 +285,9 @@ function Game() {
                         onUpdateHero={handleUpdateSingleHero}
                         addGameLog={addGameLog}
                     />
+                )}
+                {activeScreen === "Journal" && (
+                    <Journal hero={hero} back={() => setActiveScreen("Game")} />
                 )}
                 {activeScreen === "LoadGame" && (
                     <LoadGame back={() => setActiveScreen("MainMenu")}></LoadGame>

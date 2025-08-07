@@ -7,6 +7,7 @@ import {
     Food, Drink, AlcoholicDrink, ManaPotion, StaminaPotion, BluntWeapon, NaturalWeapon, Resource, RawFish
 } from "../Models/ItemModel";
 
+import { Quest } from "../Models/QuestModel"
 
 /**
  * Creates an instance of an Item subclass from a plain JavaScript object.
@@ -135,6 +136,9 @@ export function instantiateCharacterItems(plainCharacter: any): Character {
 
     newCharacter.inventory = plainCharacter.inventory && Array.isArray(plainCharacter.inventory)
         ? plainCharacter.inventory.map((item: any) => instantiateItem(item))
+        : [];
+    newCharacter.journal = plainCharacter.journal && Array.isArray(plainCharacter.journal)
+        ? plainCharacter.journal.map((quest: any) => new Quest(quest.id,quest.name,quest.status,quest.type,quest.description,quest.objective,quest.target,quest.targetProgress,quest.xpReward,quest.goldReward,quest.itemReward))
         : [];
 
     return newCharacter;

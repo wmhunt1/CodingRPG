@@ -4,9 +4,10 @@ interface ToolbarProps {
     characterSheet: () => void;
     equipment: () => void;
     inventory: () => void;
+    journal: () => void;
     mainMenu: () => void;
 }
-function Toolbar({ characterSheet, equipment,inventory, mainMenu }: ToolbarProps) {
+function Toolbar({ characterSheet, equipment, inventory, journal, mainMenu }: ToolbarProps) {
     return (
         <div className="toolbar-options">
             <button className="toolbar-button">
@@ -24,11 +25,14 @@ function Toolbar({ characterSheet, equipment,inventory, mainMenu }: ToolbarProps
             <button className="toolbar-button" onClick={inventory}>
                 Inventory
             </button>
-            <button className="toolbar-button">
+            <button className="toolbar-button" onClick={journal}>
                 Journal
             </button>
             <button className="toolbar-button">
                 Map
+            </button>
+            <button className="toolbar-button">
+                Party
             </button>
             <button className="toolbar-button">
                 Skills
