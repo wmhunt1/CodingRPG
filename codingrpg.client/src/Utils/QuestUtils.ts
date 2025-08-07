@@ -20,8 +20,16 @@ export const updateQuestProgress = (character: Character, journal: Quest[], ques
     if (existingQuest) {
         existingQuest.targetProgress++;
         addGameLog(`${character.name} ${questToUpdate.name} (${questToUpdate.targetProgress}/${questToUpdate.target})`)
+    }
+}
+export const checkQuestProgress = (character: Character, journal: Quest[], questToUpdate: Quest, addGameLog: (message: string) => void): void => {
+    const existingQuest = journal.find(quest => quest.name === questToUpdate.name);
+    if (existingQuest) {
         if (existingQuest.targetProgress >= existingQuest.target) {
             completeQuest(character, journal, questToUpdate, addGameLog)
+        }
+        else {
+            addGameLog(`${character.name} has not finished ${questToUpdate.name}. Current Progress: (${questToUpdate.targetProgress}/${questToUpdate.target})`)
         }
     }
 }
@@ -41,7 +49,7 @@ export const getQuestRewards = (character: Character, quest: Quest, addGameLog: 
 export const completeQuest = (character: Character, journal: Quest[], questToUpdate: Quest, addGameLog: (message: string) => void): void => {
     const existingQuest = journal.find(quest => quest.name === questToUpdate.name);
     if (existingQuest) {
-        existingQuest.status = "Complete";
+        existingQuest.status = "Completed";
         getQuestRewards(character, questToUpdate, addGameLog)
         addGameLog(`${character.name} has completed ${questToUpdate.name}`)
     }

@@ -21,7 +21,7 @@ import { Character, Hero } from "../Models/CharacterModel";
 import { CombatEncounter, NoCombatEncounter } from "../Models/EncounterModel"
 import { CombatLocation, Location, ShopLocation, SkillLocation } from "../Models/LocationModel"
 import { ValleyMap } from "../Models/MapModel"
-import { slayRatQuest1 } from "../Models/QuestModel"
+import { Quest } from "../Models/QuestModel"
 import { ShopModel } from "../Models/ShopModel"
 import { SkillNodeModel } from "../Models/SkillNodeModel"
 
@@ -33,8 +33,7 @@ import "../StyleSheets/GameStyle.css";
 
 //Util Imports
 import { calculateNewLocation } from "../Utils/MovementUtil"
-import { acceptQuest } from "../Utils/QuestUtils";
-
+import { acceptQuest, checkQuestProgress } from "../Utils/QuestUtils";
 // Define possible game states for better readability and type safety
 type GameState =
     | "MainMenu"
@@ -66,8 +65,10 @@ function Game() {
     const areaMap = useMemo(() => {
         return new ValleyMap();
     }, [])
-
-
+    const availableQuests = area.quests.filter(quest => {
+        const journalEntry = hero.journal.find(journalQuest => journalQuest.id === quest.id);
+        return !journalEntry || journalEntry.status !== "Completed";
+    });
     // --- UPDATED CODE STARTS HERE --
 
     // Create a memoized array of surrounding areas for efficient rendering
@@ -128,6 +129,15 @@ function Game() {
         setActiveScreen("Game");
     }, []);
 
+    const handleQuest = useCallback((handledQuest: Quest) => {
+        const existingQuest = hero.journal.find(quest => quest.name === handledQuest.name);
+        if (!existingQuest) {
+            acceptQuest(hero, hero.journal, handledQuest, addGameLog)
+        }
+        else {
+            checkQuestProgress(hero, hero.journal, handledQuest, addGameLog)
+        }
+    }, [hero, addGameLog]);
     const handleSettings = useCallback(() => {
         setActiveScreen("Settings");
     }, []);
@@ -262,13 +272,28 @@ function Game() {
                             </div>
                         </div>
                         <div className="area-options">
-                            <h3>Area Options</h3>
-                            {area.locations.map((location, index) => (
-                                <button key={index} className="area-button" onClick={() => handleLocation(location)}>
-                                    {location.name}
-                                </button>
-                            ))}
-                            <button className="area-button" onClick={() => acceptQuest(hero, hero.journal, slayRatQuest1, addGameLog)}>Test Quest</button>
+                            <div>
+                                <h3>Area Options</h3>
+                                {area.locations.map((location, index) => (
+                                    <button key={index} className="area-button" onClick={() => handleLocation(location)}>
+                                        {location.name}
+                                    </button>
+                                ))}
+                            </div>
+                            <div>
+                                <h3>Quests</h3>
+                                {availableQuests.length > 0 ? (
+                                    // If there are available quests, map over them and render the buttons
+                                    availableQuests.map((quest, index) => (
+                                        <button key={index} className="area-button" onClick={() => handleQuest(quest)}>
+                                            {quest.name}
+                                        </button>
+                                    ))
+                                ) : (
+                                    // If the available quests array is empty, display the message
+                                    <p>No available quests.</p>
+                                )}
+                            </div>
                         </div>
                         <div className="game-content-bottom">
                             <div id="area-info">

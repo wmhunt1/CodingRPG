@@ -103,8 +103,8 @@ export class Humanoid extends Character {
 }
 export class Hero extends Humanoid {
     constructor(name: string) {
-        const maxHP = 10;
-        const currentHP = 10;
+        const maxHP = 100;
+        const currentHP = 100;
         const maxMP = 10;
         const currentMP = 10;
         const maxSP = 10;

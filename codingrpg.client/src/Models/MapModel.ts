@@ -1,5 +1,5 @@
 import { AreaModel, Bridge, StartingVillage } from './AreaModel.ts';
-import {MinnowFishingSpotLocation } from "./LocationModel.ts"
+import { MinnowFishingSpotLocation } from "./LocationModel.ts"
 export class MapModel {
     name: string;
     areas: AreaModel[]
@@ -8,11 +8,11 @@ export class MapModel {
         this.areas = areas;
     }
 }
-export class ValleyMap extends MapModel{
+export class ValleyMap extends MapModel {
     constructor() {
         const name = "Valley Map"
-        const areas = [new StartingVillage(),new Bridge("North Bridge",[new MinnowFishingSpotLocation()],0,1)]
-        super(name,areas)
+        const areas = [new StartingVillage(), new Bridge("North Bridge", [new MinnowFishingSpotLocation()], [], 0, 1)]
+        super(name, areas)
     }
 
 }
