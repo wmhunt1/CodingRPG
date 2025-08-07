@@ -10,8 +10,10 @@ import Journal from "./JournalComponent";
 import LoadGame from "./LoadGameComponent";
 import Log from "./LogComponent";
 import { MainMenu } from "./MenuComponent";
+import PartySidebar from "./PartySidebarComponent";
 import Settings from "./SettingsComponent";
 import Shop from "./ShopComponent"
+import SkillBook from "./SkillBookComponent"
 import SkillNode from "./SkillNodeComponent";
 import Toolbar from "./ToolbarComponent"
 
@@ -34,6 +36,7 @@ import "../StyleSheets/GameStyle.css";
 //Util Imports
 import { calculateNewLocation } from "../Utils/MovementUtil"
 import { acceptQuest, checkQuestProgress } from "../Utils/QuestUtils";
+
 // Define possible game states for better readability and type safety
 type GameState =
     | "MainMenu"
@@ -47,6 +50,7 @@ type GameState =
     | "NewGame"
     | "Settings"
     | "Shop"
+    | "SkillBook"
     | "SkillNode";
 
 type AppLocation = CombatLocation | ShopLocation | SkillLocation | Location;
@@ -217,6 +221,9 @@ function Game() {
     const showJournal = useCallback(() => {
         setActiveScreen("Journal");
     }, []);
+    const showSkillBook = useCallback(() => {
+        setActiveScreen("SkillBook");
+    }, []);
     return (
         <div id="game">
             <div className="game-screen">
@@ -243,18 +250,10 @@ function Game() {
                     // This is the new grid container for the "Game" screen
                     <div className="game-layout-grid">
                         <div className="toolbar">
-                            <Toolbar characterSheet={() => showCharacterSheet()} equipment={() => showEquipment()} inventory={() => showInventory()} journal={() => showJournal()} mainMenu={() => setActiveScreen("MainMenu")} />
+                            <Toolbar characterSheet={() => showCharacterSheet()} equipment={() => showEquipment()} inventory={() => showInventory()} journal={() => showJournal()} skill={() => showSkillBook()} mainMenu={() => setActiveScreen("MainMenu")} />
                         </div>
                         <div className="game-content-left">
-                            <h3>Party</h3>
-                            {party.map((partyMember, index) => (
-                                <div key={index}>
-                                    <p>{partyMember.name} - LV: {partyMember.level}</p>
-                                    <p>HP: {partyMember.currentHP}/{partyMember.maxHP}</p>
-                                    <p>HP: {partyMember.currentMP}/{partyMember.maxMP}</p>
-                                    <p>HP: {partyMember.currentSP}/{partyMember.maxSP}</p>
-                                </div>
-                            ))}
+                            <PartySidebar party={party} />
                         </div>
                         <div className="game-content-main">
                             <div className="area-map">
@@ -347,8 +346,10 @@ function Game() {
                     } shop={currentShop} onUpdateHero={handleUpdateSingleHero}
                         addGameLog={addGameLog} shopSkillNode={handleSkillNode} shopCombatEncounter={handleCombat} />
                 )}
+                {activeScreen === "SkillBook" && (
+                    <SkillBook hero={hero} back={() => setActiveScreen("Game")} />
+                )}
                 {activeScreen === "SkillNode" && (
-
                     <SkillNode hero={hero} back={() => setActiveScreen(lastScreen)} skillNode={currentSkillNode} onUpdateHero={handleUpdateSingleHero}
                         addGameLog={addGameLog} />
                 )}

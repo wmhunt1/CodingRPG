@@ -2,11 +2,13 @@ import '../StyleSheets/GameStyle.css';
 import { Character } from "../Models/CharacterModel";
 import { Item } from "../Models/ItemModel"
 import { useState, useEffect } from "react";
+import { Skill } from "../Models/SkillModel"
 import type { SkillNodeModel } from '../Models/SkillNodeModel';
 import type { SkillRecipe } from '../Models/SkillRecipesModel';
 
 import { instantiateCharacterItems } from "../Utils/CharacterUtils"
 import { addItemToInventory, removeItemFromInventory } from "../Utils/InventoryUtils"; // Assuming you put it there
+import { addSkillXP } from '../Utils/SkillUtil';
 
 interface SkillNodeProps {
     hero: Character;
@@ -25,16 +27,22 @@ function SkillNode({ hero, back, skillNode, onUpdateHero, addGameLog }: SkillNod
         return Math.random() < successRate;
     }
     function handleSkill(skill: SkillRecipe) {
-        const updatedHero: Character = instantiateCharacterItems(JSON.parse(JSON.stringify(currentHero)));
+        let updatedHero: Character = instantiateCharacterItems(JSON.parse(JSON.stringify(currentHero)));
 
         //need skill check at somepoint
+
         let hasAllInputs = true;
         const tempInventory: Item[] = [...updatedHero.inventory]; // Create a temporary copy to work with
+        const usedSkill: Skill | undefined = updatedHero.skillBook.find((s => skill.skill === s.name));
+        if (!usedSkill || usedSkill.level < skill.levelReq) {
+            addGameLog(`Failure: ${skill.name} requires at least ${skill.levelReq} in ${skill.skill}`);
+            return;
+        }
 
         if (skill.tool !== "N/A") {
             const hasTool = tempInventory.some(inventoryItem => inventoryItem.subType === skill.tool);
             if (!hasTool) {
-                addGameLog(`Failure: You do not have a :${skill.tool}`);
+                addGameLog(`Failure: You do not have a(n) ${skill.tool}`);
                 return; // Stop checking as soon as one is missing
             }
         }
@@ -68,6 +76,8 @@ function SkillNode({ hero, back, skillNode, onUpdateHero, addGameLog }: SkillNod
                 // 3. If successful, add the outputs to the inventory.
                 for (const outputItem of skill.output) {
                     addItemToInventory(updatedHero.inventory, outputItem, outputItem.quantity);
+                    //addSkillXP(hero, usedSkill.name, skill.xp, addGameLog)
+                    updatedHero = addSkillXP(updatedHero, skill.skill, skill.xp, addGameLog);
                     addGameLog(`Added ${outputItem.name} to inventory.`);
                 }
             } else {
@@ -105,6 +115,8 @@ function SkillNode({ hero, back, skillNode, onUpdateHero, addGameLog }: SkillNod
                                 .map((skill, index) => (
                                     <div key={index}>
                                         <p>{skill.name}</p>
+                                        <p>Required Level: {skill.levelReq}</p>
+                                        <p>XP: {skill.xp}</p>
                                         <p>Tool: {skill.tool}</p>
                                         <p>
                                             Input:

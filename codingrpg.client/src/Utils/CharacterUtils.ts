@@ -8,6 +8,7 @@ import {
 } from "../Models/ItemModel";
 
 import { Quest } from "../Models/QuestModel"
+import {Skill } from "../Models/SkillModel"
 
 /**
  * Creates an instance of an Item subclass from a plain JavaScript object.
@@ -140,6 +141,8 @@ export function instantiateCharacterItems(plainCharacter: any): Character {
     newCharacter.journal = plainCharacter.journal && Array.isArray(plainCharacter.journal)
         ? plainCharacter.journal.map((quest: any) => new Quest(quest.id,quest.name,quest.status,quest.type,quest.description,quest.objective,quest.target,quest.targetProgress,quest.xpReward,quest.goldReward,quest.itemReward))
         : [];
-
+    newCharacter.skillBook = plainCharacter.skillBook && Array.isArray(plainCharacter.skillBook)
+        ? plainCharacter.skillBook.map((skill: any) => new Skill(skill.name,skill.level,skill.currentXP,skill.maxXP))
+        : [];
     return newCharacter;
 }

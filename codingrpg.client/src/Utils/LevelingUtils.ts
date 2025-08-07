@@ -4,10 +4,14 @@ export const levelUpHero = (hero: Character, addGameLog: (message: string) => vo
     const updatedHero = { ...hero };
     while (updatedHero.currentXP >= updatedHero.maxXP) {
         updatedHero.level += 1;
-        updatedHero.currentXP -= updatedHero.maxXP;
         updatedHero.maxXP *= 2;
         updatedHero.maxHP += 10;
-        updatedHero.currentHP = Math.min(updatedHero.currentHP + 10, updatedHero.maxHP);
+        updatedHero.maxMP += 10;
+        updatedHero.maxSP += 10;
+        updatedHero.strength += 2;
+        updatedHero.currentHP = updatedHero.maxHP;
+        updatedHero.currentMP = updatedHero.maxMP;
+        updatedHero.currentSP = updatedHero.maxSP;
         addGameLog(`${updatedHero.name} is now level ${updatedHero.level}!`);
     }
     return updatedHero;

@@ -3,7 +3,8 @@ import {
     emptyHand,
     FootArmor, HandArmor, HeadArmor, Item, LegArmor, Neck,OffHand,pants, ratBite, Ring,shoes, ShoulderArmor, tunic, WaistArmor, Weapon, WristArmor
 } from './ItemModel.ts';
-import {Quest } from "./QuestModel.ts"
+import { Quest } from "./QuestModel.ts"
+import {cookingSkill, fishingSkill, Skill } from "./SkillModel.ts"
 
 export class Character {
     name: string = "";
@@ -52,6 +53,7 @@ export class Character {
     //skills:
     party: Character[] = []
     journal: Quest[] = []
+    skillBook: Skill[] = []
     constructor(
         name: string,
         maxHP: number,
@@ -115,8 +117,8 @@ export class Hero extends Humanoid {
         const strength = 10;
         const gold = 10;
         super(name, maxHP, currentHP, maxMP, currentMP, maxSP, currentSP, level, currentXP, maxXP,strength, gold)
-        //this.mainHand = new Stick();
         this.inventory = []
+        this.skillBook = [cookingSkill,fishingSkill]
     }
 }
 export class Beast extends Character {
