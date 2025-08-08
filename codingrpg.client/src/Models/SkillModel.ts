@@ -15,10 +15,27 @@ export class CraftingSkill extends Skill {
         super(name, level, currentXP, maxXP)
     }
 }
+//export const alchemySkill = new CraftingSkill("Alchemy", 1, 0, 50)
+//construction
 export const cookingSkill = new CraftingSkill("Cooking", 1, 0, 50)
+//crafting?
+//enchanting
+//engineering
+//firemaking or utility
+//fletching
+//jewelcrafting
+//leatherworking
+//pottery
+//export const smithingSkill = new CraftingSkill("Smithing", 1, 0, 50)
+//tailoring
 export class GatheringSkill extends Skill {
     constructor(name: string, level: number, currentXP: number, maxXP: number) {
         super(name, level, currentXP, maxXP)
     }
 }
+export const farmingSkill = new GatheringSkill("Farming",1,0,50)
 export const fishingSkill = new GatheringSkill("Fishing", 1, 0, 50)
+//export const herbloreSkill = new GatheringSkill("Herblore", 1, 0, 50)
+export const huntingSkill = new GatheringSkill("Hunting", 1, 0, 50)
+//export const miningSkill = new GatheringSkill("Mining", 1, 0, 50)
+//skinning

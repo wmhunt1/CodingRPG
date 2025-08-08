@@ -33,7 +33,7 @@ function Shop({ hero, back, shop, onUpdateHero, addGameLog, shopSkillNode, shopC
 
         // Check if the hero can afford the item
         if (updatedHero.gold >= itemToBuy.cost) {
-            addItemToInventory(updatedHero.inventory, itemToBuy,1)
+            addItemToInventory(updatedHero.inventory, itemToBuy, 1)
             // Deduct the cost
             updatedHero.gold -= itemToBuy.cost;
             setCurrentHero(updatedHero);
@@ -63,7 +63,7 @@ function Shop({ hero, back, shop, onUpdateHero, addGameLog, shopSkillNode, shopC
         const updatedHero: Character = JSON.parse(JSON.stringify(currentHero));
         updatedHero.gold += Math.floor(itemToSell.cost / 2);
         // Find the index of the item in the updated hero's inventory
-        removeItemFromInventory(updatedHero.inventory, itemToSell,1)
+        removeItemFromInventory(updatedHero.inventory, itemToSell, 1)
         setCurrentHero(updatedHero);
         onUpdateHero(updatedHero);
         addGameLog(`${hero.name} has sold ${itemToSell.name} for ${Math.floor(itemToSell.cost / 2)}.`);

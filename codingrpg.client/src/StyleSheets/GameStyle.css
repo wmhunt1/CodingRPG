@@ -86,7 +86,7 @@ body, html, #root {
 .use-equip-button {
     background-color: #8e44ad;
     color: white;
-    padding: 10px 15px;
+    padding: 10px 10px;
     border: none;
     border-radius: 5px;
     cursor: pointer;

@@ -22,10 +22,12 @@ export class Item {
     }
 
     use(user: Character): Character {
-        removeItemFromInventory(user.inventory, this,1);
+        removeItemFromInventory(user.inventory, this, 1);
         return user;
     }
 }
+export const bucket = new Item("Bucket", "Misc", "Misc", 1, 5, "A bucket")
+export const burntBread = new Item("Burnt Bread", "Junk", "Burnt Bread", 1, 0, "A burnt loaf of bread")
 export const burntFish = new Item("Burnt Fish", "Junk", "Burnt Fish", 1, 0, "A burnt fish")
 
 export class Consumable extends Item {
@@ -48,6 +50,8 @@ export class Drink extends Consumable {
         return super.use(user);
     }
 }
+export const milk = new Drink("Milk", "Drink", "Dairy", 1, 5, "Moo moo milk", 0)
+export const water = new Drink("Water", "Drink", "Water", 1, 0, "H20", 0)
 export class AlcoholicDrink extends Drink {
     constructor(name: string, type: string = "Drink", subType: string = "Alcohol", quantity: number, cost: number, description: string, consumedValue: number) {
         super(name, type, subType, quantity, cost, description, consumedValue);
@@ -69,6 +73,7 @@ export class Food extends Consumable {
 }
 
 export const bread = new Food("Bread", "Food", "Bread", 1, 5, "A loaf of bread", 0)
+export const butter = new Food("Butter", "Food", "Dairy", 1, 5, "A stick of butter", 0)
 export const cookedMinnow = new Food("Cooked Minnow", "Food", "CookedFish", 1, 2, "A cooked minnow, not very filling", 0)
 
 export class Potion extends Consumable {
@@ -93,7 +98,7 @@ export class HealthPotion extends Potion {
     }
 }
 
-export const basicHealthPotion = new HealthPotion("Basic Health Potion", "Potion", "Health Potion", 1, 5, "A Basic Health Potion", 5)
+export const basicHealthPotion = new HealthPotion("Basic Health Potion", "Potion", "Health Potion", 1, 10, "A Basic Health Potion", 5)
 
 export class ManaPotion extends Potion {
     constructor(name: string, type: string = "Potion", subType: string = "Mana Potion", quantity: number, cost: number, description: string, consumedValue: number) {
@@ -109,7 +114,7 @@ export class ManaPotion extends Potion {
     }
 }
 
-export const basicManaPotion = new ManaPotion("Basic Mana Potion", "Potion", "Mana Potion", 1, 5, "A Basic Mana Potion", 5)
+export const basicManaPotion = new ManaPotion("Basic Mana Potion", "Potion", "Mana Potion", 1, 10, "A Basic Mana Potion", 5)
 export class StaminaPotion extends Potion {
     constructor(name: string, type: string = "Potion", subType: string = "Stamina Potion", quantity: number, cost: number, description: string, consumedValue: number) {
         super(name, type, subType, quantity, cost, description, consumedValue);
@@ -124,7 +129,7 @@ export class StaminaPotion extends Potion {
     }
 }
 
-export const basicStaminaPotion = new HealthPotion("Basic Stamina Potion", "Potion", "Stamina Potion", 1, 5, "A Basic Stamina Potion", 5)
+export const basicStaminaPotion = new HealthPotion("Basic Stamina Potion", "Potion", "Stamina Potion", 1, 10, "A Basic Stamina Potion", 5)
 
 export class Equipable extends Item {
     slot: string;
@@ -210,16 +215,16 @@ export class Equipable extends Item {
         }
 
         // Remove the newly equipped item from the inventory.
-        removeItemFromInventory(user.inventory, this,1);
+        removeItemFromInventory(user.inventory, this, 1);
         console.log(`${user.name} equipped ${this.name}.`);
 
         // If there was an old item, and it wasn't a "bare" item, add it back to the inventory.
         if (oldEquippedItem && bareItem && oldEquippedItem.name !== bareItem.name) {
-            addItemToInventory(user.inventory, oldEquippedItem,1);
+            addItemToInventory(user.inventory, oldEquippedItem, 1);
             console.log(`${user.name} unequipped ${oldEquippedItem.name} and it was added to the inventory.`);
         } else if (oldEquippedItem && !bareItem) {
             // This case handles when an old item exists but no bare item was defined
-            addItemToInventory(user.inventory, oldEquippedItem,1);
+            addItemToInventory(user.inventory, oldEquippedItem, 1);
             console.log(`${user.name} unequipped ${oldEquippedItem.name} and it was added to the inventory.`);
         }
 
@@ -394,7 +399,24 @@ export class RawFish extends Resource {
     }
 }
 export const rawMinnow = new RawFish("Raw Minnow", "Resource", "RawFish", 1, 1, "A raw minnow")
-
+export class Processed extends Resource {
+    constructor(name: string, type: string = "Resource", subType: string = "Processed", quantity: number, cost: number, description: string) {
+        super(name, type, subType, quantity, cost, description);
+    }
+    override use(user: Character): Character {
+        return super.use(user);
+    }
+}
+export const wheatFlour = new Processed("Wheat Flour", "Resource", "Processed", 1, 1, "A bag of flour")
+export class Produce extends Resource {
+    constructor(name: string, type: string = "Resource", subType: string = "Produce", quantity: number, cost: number, description: string) {
+        super(name, type, subType, quantity, cost, description);
+    }
+    override use(user: Character): Character {
+        return super.use(user);
+    }
+}
+export const wheat = new Produce("Wheat", "Resource", "Produce", 1, 1, "A sheaf of wheat")
 export class Tool extends Item {
     constructor(name: string, type: string = "Tool", subType: string = "N/A", quantity: number, cost: number, description: string) {
         super(name, type, subType, quantity, cost, description);
@@ -428,4 +450,13 @@ export class Pickaxe extends Tool {
         return super.use(user);
     }
 }
+export class Sickle extends Tool {
+    constructor(name: string, type: string = "Tool", subType: string = "Sickle", quantity: number, cost: number, description: string) {
+        super(name, type, subType, quantity, cost, description);
+    }
+    override use(user: Character): Character {
+        return super.use(user);
+    }
+}
 
+export const basicSickle = new Sickle("Basic Sickle", "Tool", "Sickle", 1, 5, "A basic sickle for harvesting produce")

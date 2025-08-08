@@ -1,6 +1,7 @@
-import { AreaModel, Bridge, StartingVillage } from './AreaModel.ts';
-import { MinnowFishingSpotLocation } from "./LocationModel.ts"
-import {fetchRawMinnowQuest1 } from "./QuestModel.ts"
+import { AreaModel, Dock, Farm, Road, StartingVillage, WaterMill } from './AreaModel.ts';
+import { MinnowFishingSpotLocation, RiverWaterLocation } from "./LocationModel.ts"
+import { fetchRawMinnowQuest1 } from "./QuestModel.ts"
+
 export class MapModel {
     name: string;
     areas: AreaModel[]
@@ -9,10 +10,16 @@ export class MapModel {
         this.areas = areas;
     }
 }
+const riverFishingSpot = [new MinnowFishingSpotLocation()];
 export class ValleyMap extends MapModel {
     constructor() {
         const name = "Valley Map"
-        const areas = [new StartingVillage(), new Bridge("North Bridge", [new MinnowFishingSpotLocation()], [fetchRawMinnowQuest1], 0, 1)]
+        const areas = [
+
+            new Dock("Village Dock", [...riverFishingSpot, new RiverWaterLocation()], [fetchRawMinnowQuest1], -1, 0), new StartingVillage(),
+             new Road("Road", [], [], 0, -1), new Farm("Littleroot Farm", [], 1, -1),
+            new WaterMill("Water Mill", [], -1, -2),new Road("Road", [], [], 0, -2),
+        ]
         super(name, areas)
     }
 

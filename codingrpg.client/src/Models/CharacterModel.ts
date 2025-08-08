@@ -4,7 +4,7 @@ import {
     FootArmor, HandArmor, HeadArmor, Item, LegArmor, Neck, OffHand, pants, ratBite, Ring, shoes, ShoulderArmor, tunic, WaistArmor, Weapon, WristArmor
 } from './ItemModel.ts';
 import { Quest } from "./QuestModel.ts"
-import { cookingSkill, fishingSkill, Skill } from "./SkillModel.ts"
+import { cookingSkill, farmingSkill, fishingSkill, Skill } from "./SkillModel.ts"
 
 export class Character {
     name: string = "";
@@ -118,7 +118,7 @@ export class Hero extends Humanoid {
         const gold = 10;
         super(name, maxHP, currentHP, maxMP, currentMP, maxSP, currentSP, level, currentXP, maxXP, strength, gold)
         this.inventory = []
-        this.skillBook = [cookingSkill, fishingSkill]
+        this.skillBook = [cookingSkill, farmingSkill, fishingSkill]
     }
 }
 export class Beast extends Character {
