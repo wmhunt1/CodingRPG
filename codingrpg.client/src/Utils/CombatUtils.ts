@@ -24,7 +24,6 @@ export const applyAttack = (hero: Character, attacker: Character, target: Charac
         }
 
         if (updatedTarget.currentHP <= 0) {
-            console.log(`${hero.name} journal update`)
             const existingQuest = hero.journal.find(quest => quest.objective === updatedTarget.name);
             if (existingQuest) {
                 updateQuestProgress(hero, hero.journal, existingQuest, addGameLog)
@@ -72,10 +71,6 @@ export const executeCombatRound = (
                         if (targetEnemy) {
                             const index = updatedEnemies.findIndex(e => e.name === targetEnemy.name);
                             updatedEnemies[index] = applyAttack(firstHero, firstHero, targetEnemy, addGameLog);
-                            if (updatedEnemies[index].currentHP <= 0) {
-                                firstHero.currentXP += targetEnemy.currentXP;
-                                firstHero.gold += targetEnemy.gold;
-                            }
                         }
                     }
                     else {

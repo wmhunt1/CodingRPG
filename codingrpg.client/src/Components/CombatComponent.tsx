@@ -1,11 +1,11 @@
-// CombatArena.tsx
+// src/Components/CombatArena.tsx
 // Component Imports
 
 // Model Imports
 import { Character, Hero } from "../Models/CharacterModel";
 
 // React Imports
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback,useRef } from "react";
 
 // Stylesheet Imports
 import "../StyleSheets/GameStyle.css";
@@ -25,6 +25,9 @@ interface CombatArenaProps {
 
 //add target selection later
 function CombatArena({ heroes, enemies, onCombatEnd, onUpdateHeroes, addGameLog }: CombatArenaProps) {
+    // We now store a copy of the initial enemies to ensure the full list is available for looting on victory
+    const originalEnemiesRef = useRef<Character[]>(enemies.map((enemy) => ({ ...enemy })));
+
     const [combatOngoing, setCombatOngoing] = useState(true);
     const [currentHeroes, setCurrentHeroes] = useState<Hero[]>(() =>
         heroes.map((hero) => ({ ...hero }))
@@ -43,12 +46,14 @@ function CombatArena({ heroes, enemies, onCombatEnd, onUpdateHeroes, addGameLog 
         onUpdateHeroes(currentHeroes);
     }, [currentHeroes, onUpdateHeroes]);
 
-    // This useCallback now calls the external utility
+    // Pass the original enemies list to the combat outcome check
     const handleCheckCombatOutcome = useCallback(
         (checkedHeroes: Hero[], checkedEnemies: Character[]) => {
             const { combatOngoing: newCombatOngoing, finalHeroes } = checkCombatOutcome(
                 checkedHeroes,
+                // We now pass the original list of enemies to the check, not the current list
                 checkedEnemies,
+                originalEnemiesRef.current,
                 onCombatEnd,
                 addGameLog
             );
@@ -57,9 +62,10 @@ function CombatArena({ heroes, enemies, onCombatEnd, onUpdateHeroes, addGameLog 
                 setCurrentHeroes(finalHeroes); // Update heroes with leveled-up versions
             }
         },
-        [onCombatEnd, addGameLog]
+        [onCombatEnd, addGameLog, originalEnemiesRef]
     );
 
+    // No longer filtering enemies inside this function
     const handleCombatRound = useCallback(() => {
         if (!combatOngoing) return;
         const selectedTarget = targetType === "Ally" ? currentHeroes[targetedIndex] : currentEnemies[targetedIndex];

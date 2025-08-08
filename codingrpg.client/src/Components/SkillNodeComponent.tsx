@@ -111,7 +111,7 @@ function SkillNode({ hero, back, skillNode, onUpdateHero, addGameLog }: SkillNod
                         <h3>{skillNode.name}</h3>
                         <div className="skill-recipe">
                             {resources
-                                /*  .sort((a, b) => a.name.localeCompare(b.name)) later turn this into level*/
+                                .sort((a, b) => a.levelReq - b.levelReq)
                                 .map((skill, index) => (
                                     <div key={index}>
                                         <p>{skill.name}</p>

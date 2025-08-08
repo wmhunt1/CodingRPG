@@ -1,5 +1,5 @@
 import {
-    Back, bareBack, bareChest, bareFeet, bareFinger, bareFist, bareHands, bareHead, bareLegs, bareNeck, bareShoulders, bareWaist, bareWrists, ChestArmor,
+    Back, bareBack, bareChest, bareFeet, bareFinger, bareFist, bareHands, bareHead, bareLegs, bareNeck, bareShoulders, bareWaist, bareWrists,cheese, ChestArmor,
     emptyHand,
     FootArmor, HandArmor, HeadArmor, Item, LegArmor, Neck, OffHand, pants, ratBite, Ring, shoes, ShoulderArmor, tunic, WaistArmor, Weapon, WristArmor
 } from './ItemModel.ts';
@@ -152,6 +152,7 @@ export class Rat extends Beast {
         const gold = 5;
         super(name, maxHP, currentHP, maxMP, currentMP, maxSP, currentSP, level, currentXP, maxXP, strength, gold)
         this.mainHand = ratBite;
+        this.inventory = [cheese]
     }
 }
 

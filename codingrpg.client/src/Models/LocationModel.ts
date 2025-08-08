@@ -1,6 +1,6 @@
 import { CombatEncounter, RatCellarCombatEncounter } from "./EncounterModel.ts"
 import {FarmShop, GeneralShop, InnShop, ShopModel, SmithShop } from "./ShopModel.ts"
-import { ButterChurn, CookingRange, DairyCow,Mill, MinnowFishingSpot,RiverWater, SkillNodeModel,Well,WheatField } from "./SkillNodeModel.ts"
+import { ButterChurn, CookingRange, DairyCow,Mill, MinnowFishingSpot,RiverWater, SalmonFishingSpot, SkillNodeModel,TroutFishingSpot,Well,WheatField } from "./SkillNodeModel.ts"
 export class Location {
     name: string;
     constructor(name: string) {
@@ -138,8 +138,22 @@ export class FishingSpotLocation extends GatheringSKillLocation {
 }
 export class MinnowFishingSpotLocation extends FishingSpotLocation {
     constructor() {
-        const name = "Fishing Spot";
+        const name = "Minnow Fishing Spot";
         const skillNode = new MinnowFishingSpot()
+        super(name, skillNode)
+    }
+}
+export class SalmonFishingSpotLocation extends FishingSpotLocation {
+    constructor() {
+        const name = "Salmon Fishing Spot";
+        const skillNode = new SalmonFishingSpot()
+        super(name, skillNode)
+    }
+}
+export class TroutFishingSpotLocation extends FishingSpotLocation {
+    constructor() {
+        const name = "Trout Fishing Spot";
+        const skillNode = new TroutFishingSpot()
         super(name, skillNode)
     }
 }

@@ -1,4 +1,4 @@
-import { bakeBread, churnButter, cookRawMinow, fetchWater, fishRawMinnow, harvestWheat, milkCow, millWheatFlour, SkillRecipe } from "./SkillRecipesModel"
+import { bakeBread, churnButter, cookRawMinow, fetchWater, fishRawMinnow, fishRawSalmon, harvestWheat, milkCow, millWheatFlour, SkillRecipe } from "./SkillRecipesModel"
 export class SkillNodeModel {
     name: string;
     recipes: SkillRecipe[];
@@ -96,15 +96,29 @@ export class DairyCow extends LiveStock {
     }
 }
 export class FishingSpot extends GatheringSKillNode {
-    constructor(recipes: SkillRecipe[]) {
-        const name = "Fishing Spot"
+    constructor(name: string, recipes: SkillRecipe[]) {
         super(name, recipes)
     }
 }
 export class MinnowFishingSpot extends FishingSpot {
     constructor() {
+        const name = "Minnow Fishing Spot"
         const recipes: SkillRecipe[] = [fishRawMinnow]
-        super(recipes)
+        super(name, recipes)
+    }
+}
+export class SalmonFishingSpot extends FishingSpot {
+    constructor() {
+        const name = "Salmon Fishing Spot"
+        const recipes: SkillRecipe[] = [fishRawSalmon]
+        super(name, recipes)
+    }
+}
+export class TroutFishingSpot extends FishingSpot {
+    constructor() {
+        const name = "Trout Fishing Spot"
+        const recipes: SkillRecipe[] = [fishRawSalmon]
+        super(name, recipes)
     }
 }
 export class MiningSite extends GatheringSKillNode {

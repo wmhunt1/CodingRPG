@@ -74,6 +74,7 @@ export class Food extends Consumable {
 
 export const bread = new Food("Bread", "Food", "Bread", 1, 5, "A loaf of bread", 0)
 export const butter = new Food("Butter", "Food", "Dairy", 1, 5, "A stick of butter", 0)
+export const cheese = new Food("Cheese", "Food", "Dairy", 1, 5, "Cheesy", 0)
 export const cookedMinnow = new Food("Cooked Minnow", "Food", "CookedFish", 1, 2, "A cooked minnow, not very filling", 0)
 
 export class Potion extends Consumable {
@@ -399,6 +400,8 @@ export class RawFish extends Resource {
     }
 }
 export const rawMinnow = new RawFish("Raw Minnow", "Resource", "RawFish", 1, 1, "A raw minnow")
+export const rawSalmon = new RawFish("Raw Salmon", "Resource", "RawFish", 1, 1, "A raw salmon")
+export const rawTrout = new RawFish("Raw Trout", "Resource", "RawFish", 1, 1, "A raw trout")
 export class Processed extends Resource {
     constructor(name: string, type: string = "Resource", subType: string = "Processed", quantity: number, cost: number, description: string) {
         super(name, type, subType, quantity, cost, description);

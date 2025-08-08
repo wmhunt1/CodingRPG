@@ -1,4 +1,4 @@
-import { bread,bucket, butter, burntBread, burntFish, cookedMinnow, Item, milk, rawMinnow, water, wheat, wheatFlour } from "./ItemModel"
+import { bread, bucket, butter, burntBread, burntFish, cookedMinnow, Item, milk, rawMinnow, water, wheat, wheatFlour, rawSalmon, rawTrout } from "./ItemModel"
 export class SkillRecipe {
     name: string;
     skill: string;
@@ -54,3 +54,5 @@ export class FishingSkillRecipe extends GatheringSkillRecipe {
     }
 }
 export const fishRawMinnow = new FishingSkillRecipe("Fish for Minnow", "Fishing", 1, 5, "Fishing Rod", [], [rawMinnow], [], "Fish")
+export const fishRawSalmon = new FishingSkillRecipe("Fish for Minnow", "Fishing", 30, 150, "Fishing Rod", [], [rawSalmon], [], "Fish")
+export const fishRawTrout = new FishingSkillRecipe("Fish for Minnow", "Fishing", 15, 75, "Fishing Rod", [], [rawTrout], [], "Fish")

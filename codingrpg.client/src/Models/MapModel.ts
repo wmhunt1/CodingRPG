@@ -1,5 +1,5 @@
 import { AreaModel, Dock, Farm, Road, StartingVillage, WaterMill } from './AreaModel.ts';
-import { MinnowFishingSpotLocation, RiverWaterLocation } from "./LocationModel.ts"
+import { MinnowFishingSpotLocation, RiverWaterLocation, SalmonFishingSpotLocation, TroutFishingSpotLocation } from "./LocationModel.ts"
 import { fetchRawMinnowQuest1 } from "./QuestModel.ts"
 
 export class MapModel {
@@ -10,7 +10,7 @@ export class MapModel {
         this.areas = areas;
     }
 }
-const riverFishingSpot = [new MinnowFishingSpotLocation()];
+const riverFishingSpot = [new MinnowFishingSpotLocation(), new SalmonFishingSpotLocation(), new TroutFishingSpotLocation()];
 export class ValleyMap extends MapModel {
     constructor() {
         const name = "Valley Map"
