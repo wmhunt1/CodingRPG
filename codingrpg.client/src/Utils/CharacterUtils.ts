@@ -144,5 +144,8 @@ export function instantiateCharacterItems(plainCharacter: any): Character {
     newCharacter.skillBook = plainCharacter.skillBook && Array.isArray(plainCharacter.skillBook)
         ? plainCharacter.skillBook.map((skill: any) => new Skill(skill.name,skill.level,skill.currentXP,skill.maxXP))
         : [];
+    newCharacter.party = plainCharacter.party && Array.isArray(plainCharacter.party)
+        ? plainCharacter.party.map((character: any) => instantiateCharacterItems(character))
+        : [];
     return newCharacter;
 }

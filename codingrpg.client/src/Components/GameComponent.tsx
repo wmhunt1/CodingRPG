@@ -64,7 +64,9 @@ function Game() {
     const [enemies, setEnemies] = useState<CombatEncounter>(new CombatEncounter("", []))
     const [gameLog, setGameLog] = useState<string[]>(["Welcome to Coding RPG"]);
     const [lastScreen, setLastScreen] = useState<GameState>("Game");
-    const [party, setParty] = useState<Character[]>(() => [hero, ...hero.party])
+    const [party, setParty] = useState<Character[]>(() =>
+        hero.party.map((partyMember) => ({ ...partyMember }))
+    );
 
     const areaMap = useMemo(() => {
         return new ValleyMap();
@@ -129,7 +131,7 @@ function Game() {
 
     const handleOnCreateEnd = useCallback((updatedHero: Hero) => {
         setHero(updatedHero);
-        setParty([updatedHero, ...updatedHero.party]);
+        setParty([...updatedHero.party]);
         setActiveScreen("Game");
     }, []);
 
@@ -173,7 +175,7 @@ function Game() {
         (result: "victory" | "defeat" | "run" | "exit", updatedHeroes: Hero[]) => {
             setActiveScreen(lastScreen);
             setHero(updatedHeroes[0]);
-            setParty(updatedHeroes);
+            setParty(updatedHeroes[0].party);
 
             let combatMessage: string;
             switch (result) {
@@ -195,7 +197,8 @@ function Game() {
         [hero.name, addGameLog, lastScreen]
     );
     const handleUpdateHeroes = useCallback((updatedHeroes: Character[]) => {
-        setParty(updatedHeroes);
+        setHero(updatedHeroes[0])
+        setParty(updatedHeroes[0].party);
 
         if (updatedHeroes.length > 0) {
             setHero(updatedHeroes[0] as Hero);
@@ -206,7 +209,7 @@ function Game() {
     const handleUpdateSingleHero = useCallback((updatedHero: Character) => {
         setHero(updatedHero as Hero);
 
-        setParty([updatedHero]);
+        setParty(updatedHero.party);
     }, []);
 
     const showCharacterSheet = useCallback(() => {
@@ -253,7 +256,7 @@ function Game() {
                             <Toolbar characterSheet={() => showCharacterSheet()} equipment={() => showEquipment()} inventory={() => showInventory()} journal={() => showJournal()} skill={() => showSkillBook()} mainMenu={() => setActiveScreen("MainMenu")} />
                         </div>
                         <div className="game-content-left">
-                            <PartySidebar party={party} />
+                            <PartySidebar hero={hero} party={party} />
                         </div>
                         <div className="game-content-main">
                             <div className="area-map">

@@ -58,6 +58,8 @@ export const executeCombatRound = (
     let updatedEnemies = enemies.map((e) => ({ ...e }));
 
     const heroesGoFirst = Math.random() > 0.5;
+    updatedEnemies = updatedEnemies.filter((enemy) => enemy.currentHP > 0);
+
 
     const turns = [
         () => { // Heroes' Turn
@@ -99,8 +101,15 @@ export const executeCombatRound = (
             if (updatedEnemies.some((enemy) => enemy.currentHP > 0)) {
                 updatedEnemies.forEach((enemy) => {
                     if (enemy.currentHP <= 0) return;
-                    const targetHero = updatedHeroes.find((hero) => hero.currentHP > 0);
-                    if (targetHero) {
+
+                    // Filter for heroes that are still alive
+                    const aliveHeroes = updatedHeroes.filter(hero => hero.currentHP > 0);
+
+                    // If there are any heroes left, choose a random one as the target
+                    if (aliveHeroes.length > 0) {
+                        const randomIndex = Math.floor(Math.random() * aliveHeroes.length);
+                        const targetHero = aliveHeroes[randomIndex];
+
                         const index = updatedHeroes.findIndex(h => h.name === targetHero.name);
                         updatedHeroes[index] = applyAttack(updatedEnemies[0], enemy, targetHero, addGameLog) as Hero;
                     }

@@ -51,6 +51,11 @@ function Shop({ hero, back, shop, onUpdateHero, addGameLog, shopSkillNode, shopC
             updatedHero.currentHP = updatedHero.maxHP
             updatedHero.currentMP = updatedHero.maxMP
             updatedHero.currentSP = updatedHero.maxSP
+            updatedHero.party.forEach(hero => {
+                hero.currentHP = hero.maxHP
+                hero.currentMP = hero.maxMP
+                hero.currentSP = hero.maxSP
+            })
             setCurrentHero(updatedHero);
             onUpdateHero(updatedHero);
             addGameLog(`${hero.name} stays the night for ${cost} GP.`);
@@ -67,6 +72,7 @@ function Shop({ hero, back, shop, onUpdateHero, addGameLog, shopSkillNode, shopC
         setCurrentHero(updatedHero);
         onUpdateHero(updatedHero);
         addGameLog(`${hero.name} has sold ${itemToSell.name} for ${Math.floor(itemToSell.cost / 2)}.`);
+        console.log(updatedHero.party)
     }
     return (
         <div id="shop" className="game-layout-grid">

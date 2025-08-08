@@ -118,6 +118,7 @@ export class Hero extends Humanoid {
         const gold = 10;
         super(name, maxHP, currentHP, maxMP, currentMP, maxSP, currentSP, level, currentXP, maxXP, strength, gold)
         this.inventory = []
+        this.party = []
         this.skillBook = [cookingSkill, farmingSkill, fishingSkill]
     }
 }
