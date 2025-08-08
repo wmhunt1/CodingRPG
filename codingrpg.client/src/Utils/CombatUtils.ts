@@ -1,14 +1,5 @@
 import { Character, Hero } from "../Models/CharacterModel"; // Assuming CharacterModel is accessible
-import { updateQuestProgress } from "./QuestUtils"
-
-/**
- * Applies an attack from an attacker to a target.
- * Now includes a chance for the attack to miss.
- * @param attacker The attacking character.
- * @param target The target character.
- * @param addGameLog Function to add messages to the game log.
- * @returns The updated target character.
- */
+import { updateQuestProgress } from "./QuestUtils";
 
 export const applyAttack = (hero: Character, attacker: Character, target: Character, addGameLog: (message: string) => void): Character => {
     // Define the base hit chance as a decimal (e.g., 85% chance to hit)
@@ -59,31 +50,54 @@ export const applyAttack = (hero: Character, attacker: Character, target: Charac
 export const executeCombatRound = (
     heroes: Hero[],
     enemies: Character[],
-    addGameLog: (message: string) => void
+    addGameLog: (message: string) => void,
+    action: string,
+    target: Character
 ) => {
     // Create new mutable copies of the arrays to work with
     const updatedHeroes = heroes.map((h) => ({ ...h }));
     let updatedEnemies = enemies.map((e) => ({ ...e }));
 
-    // Randomly decide if heroes or enemies go first
-    //later make it so speed is a factor
     const heroesGoFirst = Math.random() > 0.5;
 
-    // An array of the two turn functions to execute
     const turns = [
         () => { // Heroes' Turn
-            updatedHeroes.forEach((hero) => {
-                if (hero.currentHP <= 0) return;
-                const targetEnemy = updatedEnemies.find((enemy) => enemy.currentHP > 0);
-                if (targetEnemy) {
-                    const index = updatedEnemies.findIndex(e => e.name === targetEnemy.name);
-                    updatedEnemies[index] = applyAttack(updatedHeroes[0], hero, targetEnemy, addGameLog);
-                    if (updatedEnemies[index].currentHP <= 0) {
-                        hero.currentXP += targetEnemy.currentXP;
-                        hero.gold += targetEnemy.gold;
+            if (updatedHeroes.length > 0) {
+                const firstHero = updatedHeroes[0];
+                if (firstHero.currentHP > 0) {
+                    // Handle the first hero's specific action based on the 'action' parameter
+                    // This example assumes 'attack' is the only action for now
+                    if (action === 'Attack') {
+                        const targetEnemy = updatedEnemies.find((enemy) => enemy.name === target.name);
+                        if (targetEnemy) {
+                            const index = updatedEnemies.findIndex(e => e.name === targetEnemy.name);
+                            updatedEnemies[index] = applyAttack(firstHero, firstHero, targetEnemy, addGameLog);
+                            if (updatedEnemies[index].currentHP <= 0) {
+                                firstHero.currentXP += targetEnemy.currentXP;
+                                firstHero.gold += targetEnemy.gold;
+                            }
+                        }
+                    }
+                    else {
+                        console.log("Other action")
                     }
                 }
-            });
+
+                // Handle the rest of the heroes
+                for (let i = 1; i < updatedHeroes.length; i++) {
+                    const hero = updatedHeroes[i];
+                    if (hero.currentHP <= 0) continue;
+                    const targetEnemy = updatedEnemies.find((enemy) => enemy.currentHP > 0);
+                    if (targetEnemy) {
+                        const index = updatedEnemies.findIndex(e => e.name === targetEnemy.name);
+                        updatedEnemies[index] = applyAttack(hero, hero, targetEnemy, addGameLog);
+                        if (updatedEnemies[index].currentHP <= 0) {
+                            hero.currentXP += targetEnemy.currentXP;
+                            hero.gold += targetEnemy.gold;
+                        }
+                    }
+                }
+            }
             updatedEnemies = updatedEnemies.filter((enemy) => enemy.currentHP > 0);
         },
         () => { // Enemies' Turn
@@ -100,15 +114,12 @@ export const executeCombatRound = (
         }
     ];
 
-    // Execute the turns in the determined order
     if (heroesGoFirst) {
-        //addGameLog("Heroes move first.");
-        turns[0](); // Heroes' turn
-        turns[1](); // Enemies' turn
+        turns[0]();
+        turns[1]();
     } else {
-        //addGameLog("Enemies ambush the heroes and get to go first!");
-        turns[1](); // Enemies' turn
-        turns[0](); // Heroes' turn
+        turns[1]();
+        turns[0]();
     }
 
     return { updatedHeroes, updatedEnemies };

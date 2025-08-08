@@ -1,10 +1,10 @@
 import {
     Back, bareBack, bareChest, bareFeet, bareFinger, bareFist, bareHands, bareHead, bareLegs, bareNeck, bareShoulders, bareWaist, bareWrists, ChestArmor,
     emptyHand,
-    FootArmor, HandArmor, HeadArmor, Item, LegArmor, Neck,OffHand,pants, ratBite, Ring,shoes, ShoulderArmor, tunic, WaistArmor, Weapon, WristArmor
+    FootArmor, HandArmor, HeadArmor, Item, LegArmor, Neck, OffHand, pants, ratBite, Ring, shoes, ShoulderArmor, tunic, WaistArmor, Weapon, WristArmor
 } from './ItemModel.ts';
 import { Quest } from "./QuestModel.ts"
-import {cookingSkill, fishingSkill, Skill } from "./SkillModel.ts"
+import { cookingSkill, fishingSkill, Skill } from "./SkillModel.ts"
 
 export class Character {
     name: string = "";
@@ -95,9 +95,9 @@ export class Humanoid extends Character {
         currentSP: number,
         level: number,
         currentXP: number,
-        maxXP: number, strength:number,
+        maxXP: number, strength: number,
         gold: number) {
-        super(name, maxHP, currentHP, maxMP, currentMP, maxSP, currentSP, level, currentXP, maxXP, strength,gold)
+        super(name, maxHP, currentHP, maxMP, currentMP, maxSP, currentSP, level, currentXP, maxXP, strength, gold)
         this.chest = tunic;
         this.legs = pants;
         this.feet = shoes;
@@ -116,9 +116,9 @@ export class Hero extends Humanoid {
         const maxXP = 50;
         const strength = 10;
         const gold = 10;
-        super(name, maxHP, currentHP, maxMP, currentMP, maxSP, currentSP, level, currentXP, maxXP,strength, gold)
+        super(name, maxHP, currentHP, maxMP, currentMP, maxSP, currentSP, level, currentXP, maxXP, strength, gold)
         this.inventory = []
-        this.skillBook = [cookingSkill,fishingSkill]
+        this.skillBook = [cookingSkill, fishingSkill]
     }
 }
 export class Beast extends Character {
@@ -128,9 +128,9 @@ export class Beast extends Character {
         currentSP: number,
         level: number,
         currentXP: number, // Using 'experience' to map to plainCharacter.currentXP
-        maxXP: number, strength:number,
+        maxXP: number, strength: number,
         gold: number) {
-        super(name, maxHP, currentHP, maxMP, currentMP, maxSP, currentSP, level, currentXP, maxXP,strength, gold)
+        super(name, maxHP, currentHP, maxMP, currentMP, maxSP, currentSP, level, currentXP, maxXP, strength, gold)
         this.name = name;
         this.currentMP = 0;
         this.maxMP = 0;
@@ -150,7 +150,7 @@ export class Rat extends Beast {
         const maxXP = 50;
         const strength = 5;
         const gold = 5;
-        super(name, maxHP, currentHP, maxMP, currentMP, maxSP, currentSP, level, currentXP, maxXP,strength, gold)
+        super(name, maxHP, currentHP, maxMP, currentMP, maxSP, currentSP, level, currentXP, maxXP, strength, gold)
         this.mainHand = ratBite;
     }
 }

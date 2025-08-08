@@ -78,10 +78,10 @@ body, html, #root {
     gap: 15px;
 }
 
-
+.action-button,
 .area-button,
 .buy-sell-button,
-.menu-button,.skill-button,
+.menu-button, .skill-button,
 .toolbar-button,
 .use-equip-button {
     background-color: #8e44ad;
@@ -95,6 +95,7 @@ body, html, #root {
     transition: background-color 0.2s ease, transform 0.1s ease;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
     word-break: break-word; /* Prevents long text in buttons from overflowing */
+    margin: 1px;
 }
 
     .toolbar-button:hover,
@@ -121,12 +122,16 @@ body, html, #root {
     overflow-y: auto; /* **CRUCIAL**: Allows vertical scrolling for long content */
     overflow-x: hidden; /* Prevents horizontal scrolling inside these panels */
     box-sizing: border-box;
-    max-height:290px;
+    max-height: 290px;
 }
 
 .game-content-left {
     grid-area: left;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: stretch;
 }
 
 .game-content-main {
@@ -202,7 +207,7 @@ body, html, #root {
     border-top: 2px solid #6c5ce7;
     box-sizing: border-box;
     width: 100%;
-    max-height:100px;
+    max-height: 100px;
 }
 
     .game-log p {
@@ -240,7 +245,7 @@ body, html, #root {
 
 /* Specific component styles */
 .combat-display-area,
-.inventory-display-area,.skill-recipe-display-area,
+.inventory-display-area, .skill-recipe-display-area,
 .stats-display-area {
     display: flex;
     justify-content: space-around;
@@ -293,11 +298,13 @@ body, html, #root {
         max-height: 150px;
     }
 }
-.area-image{
-    width:50px;
-    height:50px;
-    border:solid black 1px;
+
+.area-image {
+    width: 50px;
+    height: 50px;
+    border: solid black 1px;
 }
+
 .current-location {
     border: solid gold 1px;
 }

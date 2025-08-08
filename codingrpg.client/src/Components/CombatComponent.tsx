@@ -22,6 +22,7 @@ interface CombatArenaProps {
     gameLog: string[];
     addGameLog: (message: string) => void;
 }
+
 //add target selection later
 function CombatArena({ heroes, enemies, onCombatEnd, onUpdateHeroes, addGameLog }: CombatArenaProps) {
     const [combatOngoing, setCombatOngoing] = useState(true);
@@ -31,6 +32,12 @@ function CombatArena({ heroes, enemies, onCombatEnd, onUpdateHeroes, addGameLog 
     const [currentEnemies, setCurrentEnemies] = useState<Character[]>(() =>
         enemies.map((enemy) => ({ ...enemy }))
     );
+    const [action, setAction] = useState("Attack")
+    const [target, setTarget] = useState(enemies[0])
+    const [targetType, setTargetType] = useState<"Ally" | "Enemy">("Enemy");
+    // State to hold the index of the selected target
+    const [targetedIndex, setTargetedIndex] = useState(0);
+    const [round, setRound] = useState(1);
 
     useEffect(() => {
         onUpdateHeroes(currentHeroes);
@@ -55,24 +62,37 @@ function CombatArena({ heroes, enemies, onCombatEnd, onUpdateHeroes, addGameLog 
 
     const handleCombatRound = useCallback(() => {
         if (!combatOngoing) return;
+        const selectedTarget = targetType === "Ally" ? currentHeroes[targetedIndex] : currentEnemies[targetedIndex];
 
         const { updatedHeroes, updatedEnemies } = executeCombatRound(
             currentHeroes,
             currentEnemies,
-            addGameLog
+            addGameLog,
+            action,
+            selectedTarget
         );
 
         setCurrentEnemies(updatedEnemies);
         setCurrentHeroes(updatedHeroes);
         handleCheckCombatOutcome(updatedHeroes, updatedEnemies);
-    }, [combatOngoing, currentHeroes, currentEnemies, addGameLog, handleCheckCombatOutcome]);
-
+        setRound(round + 1)
+    }, [combatOngoing, currentHeroes, currentEnemies, addGameLog, handleCheckCombatOutcome, action, targetType, targetedIndex, round]);
 
     const handleRun = useCallback(() => {
         setCombatOngoing(false);
         addGameLog(`Heroes attempt to run!`);
         onCombatEnd("run", currentHeroes);
     }, [onCombatEnd, currentHeroes, addGameLog]);
+
+    const handleSelectAction = useCallback((selectedAction: string) => {
+        setAction(selectedAction);
+    }, []);
+    // Updated handleSelectTarget to store the index
+    const handleSelectTarget = useCallback((selectedTarget: Character, type: "Ally" | "Enemy", index: number) => {
+        setTarget(selectedTarget);
+        setTargetType(type);
+        setTargetedIndex(index);
+    }, []);
 
     useEffect(() => {
         addGameLog("A new battle begins!");
@@ -81,11 +101,29 @@ function CombatArena({ heroes, enemies, onCombatEnd, onUpdateHeroes, addGameLog 
     return (
         <div className="game-layout-grid">
             <div className="toolbar">
-                <h2>Combat</h2>
+                <h2>Combat Round {round}</h2>
             </div>
             <div className="game-content-left">
-                <h3>Placeholder</h3>
-                <p>Placeholder for spellcasting etc perhaps</p>
+                <h3>Action Options</h3>
+                {/*Maybe use item etc overhere*/}
+                {combatOngoing ? (
+                    <>
+                        <button className="action-button" onClick={() => handleSelectAction("Attack")}>
+                            Basic Attack
+                        </button>
+                        <button className="action-button" onClick={() => handleSelectAction("Attack")}>
+                            Item
+                        </button>
+                        <button className="action-button" onClick={() => handleSelectAction("Attack")}>
+                            Spell
+                        </button>
+                        <button className="action-button" onClick={() => handleSelectAction("Attack")}>
+                            Ability
+                        </button>
+                    </>
+                ) : (
+                    <></>
+                )}
             </div>
             <div className="game-content-main">
                 <div className="combat-display-area">
@@ -93,7 +131,8 @@ function CombatArena({ heroes, enemies, onCombatEnd, onUpdateHeroes, addGameLog 
                         <h3>Heroes</h3>
                         {currentHeroes.map((hero, index) => (
                             <div key={index} className="character-stats">
-                                <h3>{hero.name}</h3>
+                                {/* Use index and targetType for accurate targeting */}
+                                <h3>{hero.name} {targetType === "Ally" && targetedIndex === index && "(Target)"}</h3>
                                 <p>
                                     <span>
                                         HP: {hero.currentHP}/{hero.maxHP} -
@@ -101,6 +140,7 @@ function CombatArena({ heroes, enemies, onCombatEnd, onUpdateHeroes, addGameLog 
                                         SP: {hero.currentSP}/{hero.maxSP}
                                     </span>
                                 </p>
+                                <button onClick={() => handleSelectTarget(hero, "Ally", index)}>Select Target</button>
                             </div>
                         ))}
                     </div>
@@ -108,7 +148,8 @@ function CombatArena({ heroes, enemies, onCombatEnd, onUpdateHeroes, addGameLog 
                         <h3>Enemies</h3>
                         {currentEnemies.map((enemy, index) => (
                             <div key={index} className="character-stats">
-                                <h3>{enemy.name}</h3>
+                                {/* Use index and targetType for accurate targeting */}
+                                <h3>{enemy.name} {targetType === "Enemy" && targetedIndex === index && "(Target)"}</h3>
                                 <p>
                                     <span>
                                         HP: {enemy.currentHP}/{enemy.maxHP} -
@@ -116,6 +157,7 @@ function CombatArena({ heroes, enemies, onCombatEnd, onUpdateHeroes, addGameLog 
                                         SP: {enemy.currentSP}/{enemy.maxSP}
                                     </span>
                                 </p>
+                                <button onClick={() => handleSelectTarget(enemy, "Enemy", index)}>Select Target</button>
                             </div>
                         ))}
                     </div>
@@ -127,7 +169,7 @@ function CombatArena({ heroes, enemies, onCombatEnd, onUpdateHeroes, addGameLog 
                 {combatOngoing ? (
                     <>
                         <button className="area-button" onClick={handleCombatRound}>
-                            Attack
+                            Start Round
                         </button>
                         <button className="area-button" onClick={handleRun}>
                             Run
@@ -141,8 +183,8 @@ function CombatArena({ heroes, enemies, onCombatEnd, onUpdateHeroes, addGameLog 
 
             </div>
             <div className="game-content-bottom">
-                <h3>Placeholder</h3>
-                <p>Placeholder</p>
+                <h3>Current Target/Current Action </h3>
+                <p>{target.name} ({targetType})/{action}</p>
             </div>
         </div>
     );
