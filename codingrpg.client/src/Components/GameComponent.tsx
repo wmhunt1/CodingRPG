@@ -4,6 +4,7 @@ import CharacterSheet from "./CharacterSheetComponent";
 import CombatArena from "./CombatComponent";
 import Compass from "./CompassComponent"
 import CreateCharacter from "./CreateCharacterComponent";
+import DialogueSystem from "./DialogueSystemComponent";
 import Equipment from "./EquipmentComponent";
 import Inventory from "./InventoryComponent";
 import Journal from "./JournalComponent";
@@ -20,6 +21,8 @@ import Toolbar from "./ToolbarComponent"
 // Model Imports
 import { AreaModel, NotArea, StartingVillage } from "../Models/AreaModel"
 import { Character, Hero } from "../Models/CharacterModel";
+import { DialogueManager, testDialogueData, type DialogueNode } from "../Models/DialogueNodeModel"
+//import  type{ DialogueNode } from "../Models/DialogueNodeModel"
 import { CombatEncounter, NoCombatEncounter } from "../Models/EncounterModel"
 import { CombatLocation, Location, ShopLocation, SkillLocation } from "../Models/LocationModel"
 import { ValleyMap } from "../Models/MapModel"
@@ -37,12 +40,14 @@ import "../StyleSheets/GameStyle.css";
 import { calculateNewLocation } from "../Utils/MovementUtil"
 import { acceptQuest, checkQuestProgress } from "../Utils/QuestUtils";
 
+
 // Define possible game states for better readability and type safety
 type GameState =
     | "MainMenu"
     | "Game"
     | "CharacterSheet"
     | "Combat"
+    | "Dialogue"
     | "Equipment"
     | "Inventory"
     | "Journal"
@@ -60,6 +65,7 @@ function Game() {
     const [area, setArea] = useState<AreaModel>(new StartingVillage());
     const [currentShop, setCurrentShop] = useState<ShopModel>(new ShopModel("", [], [], new NoCombatEncounter()))
     const [currentSkillNode, setCurrentSkillNode] = useState<SkillNodeModel>(new SkillNodeModel("Empty", []))
+    const [currentDialogueData, setCurrentDialogueData] = useState<DialogueNode[]>(testDialogueData)
     const [hero, setHero] = useState<Hero>(new Hero("Hero"));
     const [enemies, setEnemies] = useState<CombatEncounter>(new CombatEncounter("", []))
     const [gameLog, setGameLog] = useState<string[]>(["Welcome to Coding RPG"]);
@@ -67,7 +73,7 @@ function Game() {
     const [party, setParty] = useState<Character[]>(() =>
         hero.party.map((partyMember) => ({ ...partyMember }))
     );
-
+    const dialogueManager = useMemo(() => new DialogueManager(currentDialogueData), [currentDialogueData]);
     const areaMap = useMemo(() => {
         return new ValleyMap();
     }, [])
@@ -105,11 +111,13 @@ function Game() {
         setEnemies(enemies)
     }, [setEnemies]);
 
+    const handleDialogue = useCallback((dialogueData: DialogueNode[]) => {
+        setCurrentDialogueData(dialogueData)
+        setActiveScreen("Dialogue");
+    }, []);
     const handleExitGame = useCallback(() => {
         console.log("Exiting Game");
     }, []);
-
-    // --- END OF UPDATED FUNCTION ---
 
     const handleLoadGame = useCallback(() => {
         setActiveScreen("LoadGame");
@@ -243,6 +251,13 @@ function Game() {
                         addGameLog={addGameLog}
                     />
                 )}
+                {activeScreen === "Dialogue" && (
+                    <DialogueSystem dialogueManager={dialogueManager}
+                        back={() => {
+                            setActiveScreen("Game")
+                            setLastScreen("Game")
+                        }} />
+                )}
                 {activeScreen === "Equipment" && (
                     <Equipment hero={hero}
                         back={() => setActiveScreen("Game")}
@@ -295,6 +310,10 @@ function Game() {
                                     // If the available quests array is empty, display the message
                                     <p>No available quests.</p>
                                 )}
+                            </div>
+                            <div>
+                                <h3>Test Features</h3>
+                                <button className="area-button" onClick={() => handleDialogue(testDialogueData)}>Dialogue Test</button>
                             </div>
                         </div>
                         <div className="game-content-bottom">
