@@ -1,7 +1,7 @@
 // Equipment.tsx
 import '../StyleSheets/GameStyle.css';
 import { Character } from "../Models/CharacterModel";
-import { bareBack, bareChest, bareHands, bareHead, bareFeet, bareFinger, bareFist, bareLegs, bareNeck, bareShoulders, bareWaist, bareWrists, Equipable, OffHandWeapon, Shield, emptyHand } from "../Models/ItemModel"; // Import Item for addItemToInventory
+import { bareBack, bareChest, bareHands, bareHead, bareFeet, bareFinger, bareFist, bareLegs, bareNeck, bareShoulders, bareWaist, bareWrists, dogBite, Equipable, OffHandWeapon, Shield, emptyHand } from "../Models/ItemModel"; // Import Item for addItemToInventory
 import { useState, useEffect } from "react";
 import { instantiateCharacterItems } from "../Utils/CharacterUtils"
 
@@ -28,7 +28,12 @@ function Equipment({ hero, back, onUpdateHero, addGameLog }: EquipmentProps) {
         if (itemToUnEquip.slot === "Chest") {
             updatedHero.chest = bareChest;
         } else if (itemToUnEquip.slot === "Weapon") {
-            updatedHero.mainHand = bareFist; // Assuming 'Weapon' unequips to a bare fist in the main hand
+            if (updatedHero.subType === "Dog") {
+                updatedHero.mainHand = dogBite
+            }
+            else {
+                updatedHero.mainHand = bareFist; // Assuming 'Weapon' unequips to a bare fist in the main hand
+            }
         } else if (itemToUnEquip.slot === "OffHand") {
             updatedHero.offHand = emptyHand; // Assuming 'Weapon' unequips to a bare fist in the main hand
         } else if (itemToUnEquip.slot === "Head") {
@@ -55,7 +60,7 @@ function Equipment({ hero, back, onUpdateHero, addGameLog }: EquipmentProps) {
         // Add more slots as needed
 
         // Use the common helper to add the unequipped item back to inventory
-        addItemToInventory(updatedHero.inventory, itemToUnEquip,1);
+        addItemToInventory(updatedHero.inventory, itemToUnEquip, 1);
 
         setCurrentHero(updatedHero);
         onUpdateHero(updatedHero);
@@ -68,15 +73,22 @@ function Equipment({ hero, back, onUpdateHero, addGameLog }: EquipmentProps) {
                 <h2>{currentHero.name}'s Equipment</h2>
             </div>
             <div className="game-content-left">
-                <h3>Placeholder</h3>
-                <p>Placeholder</p>
+                <h3>Party</h3>
+                <p>{hero.name}</p>
+                <button className="action-button" onClick={() => setCurrentHero(hero)}>Select</button>
+                {hero.party.map((partyMember, index) => (
+                    <div key={index}>
+                        <p>{partyMember.name}</p>
+                        <button className="action-button" style={{ width: "100%" }} onClick={() => setCurrentHero(partyMember)}>Select</button>
+                    </div>
+                ))}
             </div>
             <div className="game-content-main">
                 <div className="stats-display-area">
                     <div className="stats-container">
                         <h3>Weapons</h3>
                         <div className="stats">
-                            <p>Weapon: {currentHero.mainHand.name} ({currentHero.mainHand.power}) {currentHero.mainHand.name !== "Bare Fist" ? <button className="use-equip-button" onClick={() => handleUnEquipItem(currentHero.mainHand)}>UnEquip</button> : <></>}</p>
+                            <p>Weapon: {currentHero.mainHand.name} ({currentHero.mainHand.power}) {currentHero.mainHand.name !== "Bare Fist" && currentHero.mainHand.name !== "Dog Bite" ? <button className="use-equip-button" onClick={() => handleUnEquipItem(currentHero.mainHand)}>UnEquip</button> : <></>}</p>
                             <p>OffHand: {currentHero.offHand.name} {currentHero.offHand instanceof OffHandWeapon ? `(${currentHero.offHand.power})` : <></>}{currentHero.offHand instanceof Shield ? `(${currentHero.offHand.protection})` : <></>}{currentHero.offHand.name !== "Empty Hand" ? <button className="use-equip-button" onClick={() => handleUnEquipItem(currentHero.offHand)}>UnEquip</button> : <></>}</p>
                         </div>
                     </div>

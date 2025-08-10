@@ -1,9 +1,10 @@
 import '../StyleSheets/GameStyle.css';
 import { Character } from "../Models/CharacterModel";
-import { Item } from "../Models/ItemModel"; // Import Equipable
+import { Item, Equipable } from "../Models/ItemModel";
 import { useState, useEffect } from "react";
 import { instantiateCharacterItems } from "../Utils/CharacterUtils"
 import { removeItemFromInventory } from '../Utils/InventoryUtils';
+import { Potion, Food } from "../Models/ItemModel";
 
 interface InventoryProps {
     hero: Character;
@@ -13,49 +14,72 @@ interface InventoryProps {
 }
 
 function Inventory({ hero, back, onUpdateHero, addGameLog }: InventoryProps) {
+    // The currentHero state tracks which character is selected to receive the item's effects.
+    // We initialize it with the main hero from the props.
     const [currentHero, setCurrentHero] = useState(hero);
-    // setInventory state is redundant if currentHero's inventory is always used
-    // const [inventory, setInventory] = useState(hero.inventory);
 
+    // This effect ensures that if the main hero prop changes from the parent,
+    // we reset the selected character to the main hero.
     useEffect(() => {
         setCurrentHero(instantiateCharacterItems(hero));
     }, [hero]);
 
     function handleDropItem(itemToDrop: Item) {
-        // Create a deep copy of currentHero to maintain immutability
-        const updatedHero: Character = instantiateCharacterItems(JSON.parse(JSON.stringify(currentHero)));
+        // Create a deep copy of the main hero to maintain immutability.
+        // All changes to the inventory should happen on this object.
+        const updatedHero: Character = instantiateCharacterItems(JSON.parse(JSON.stringify(hero)));
 
+        // Remove the item from the main hero's inventory.
+        removeItemFromInventory(updatedHero.inventory, itemToDrop, 1);
 
-        removeItemFromInventory(updatedHero.inventory, itemToDrop,1)
-        setCurrentHero(updatedHero);
-        // setInventory(newHeroState.inventory); // No longer needed
-        onUpdateHero(updatedHero); // Notify parent of the updated hero state
-        addGameLog(`${currentHero.name} dropped ${itemToDrop.name}.`);
+        // Notify the parent component of the updated hero state.
+        onUpdateHero(updatedHero);
+        addGameLog(`${hero.name} dropped ${itemToDrop.name}.`);
     }
 
     function handleUseItem(itemToUse: Item) {
-        // Create a deep copy of currentHero to maintain immutability
-        const updatedHero: Character = instantiateCharacterItems(JSON.parse(JSON.stringify(currentHero)));
+        // Create a deep copy of the main hero to maintain immutability.
+        // This is the hero whose inventory we will be modifying.
+        const updatedHero: Character = instantiateCharacterItems(JSON.parse(JSON.stringify(hero)));
 
-        // Let the item's use method handle its effect and inventory changes
-        // The use method returns the modified character
-        const newHeroState = itemToUse.use(updatedHero);
+        // Create a copy of the target character (the one selected from the party list)
+        // to apply the item's effects to them specifically.
+        const updatedTargetCharacter: Character = instantiateCharacterItems(JSON.parse(JSON.stringify(currentHero)));
 
-        setCurrentHero(newHeroState);
-        // setInventory(newHeroState.inventory); // No longer needed
-        onUpdateHero(newHeroState); // Notify parent of the updated hero state
-        let verb = ""
-        if (itemToUse.type === "Drink" || itemToUse.type === "Potion") {
-            verb = "drank"
+        // Let the item's use method handle its effect and inventory changes on the target character.
+        // We do this first to make sure the item's logic is applied correctly.
+        const newTargetState = itemToUse.use(updatedTargetCharacter);
+
+        // Find the index of the selected character in the updated hero's party.
+        // This allows us to update the correct character in the party array.
+        const partyMemberIndex = updatedHero.party.findIndex(
+            (member) => member.name === currentHero.name
+        );
+
+        // Update the character in the party if they are not the main hero.
+        if (partyMemberIndex !== -1) {
+            updatedHero.party[partyMemberIndex] = newTargetState;
+        } else {
+            // If the selected character is the main hero, update the main hero directly.
+            Object.assign(updatedHero, newTargetState);
         }
-        else if (itemToUse.type === "Armor" || itemToUse.type === "Weapon" || itemToUse.type === "Accessory" || itemToUse.type === "OffHand") {
-            verb = "equipped"
-        }
-        else if (itemToUse.type === "Food") {
-            verb = "ate"
-        }
-        else {
-            verb = "used"
+
+        // Now, remove the item from the main hero's inventory.
+        removeItemFromInventory(updatedHero.inventory, itemToUse, 1);
+
+        // Update the current hero state to reflect the item's effects on the selected character.
+        setCurrentHero(newTargetState);
+
+        // Notify the parent component of the updated hero state.
+        onUpdateHero(updatedHero);
+
+        let verb = "";
+        if (itemToUse instanceof Potion || itemToUse instanceof Food) {
+            verb = (itemToUse instanceof Potion) ? "drank" : "ate";
+        } else if (itemToUse instanceof Equipable) {
+            verb = "equipped";
+        } else {
+            verb = "used";
         }
         addGameLog(`${currentHero.name} ${verb} ${itemToUse.name}.`);
     }
@@ -63,20 +87,30 @@ function Inventory({ hero, back, onUpdateHero, addGameLog }: InventoryProps) {
     return (
         <div className="game-layout-grid inventory-wrapper" id="inventory">
             <div className="toolbar">
-                <h2>{currentHero.name}'s Inventory</h2>
+                {/* The title now reflects the main hero whose inventory is being displayed */}
+                <h2>{hero.name}'s Inventory</h2>
             </div>
             <div className="game-content-left">
-                <h3>Placeholder</h3>
+                <h3>Party</h3>
+                <p>{hero.name}</p>
+                {/* A button to select the main hero */}
+                <button className="action-button" onClick={() => setCurrentHero(hero)}>Select</button>
+                {hero.party.map((partyMember, index) => (
+                    <div key={index}>
+                        <p>{partyMember.name}</p>
+                        {/* A button to select a party member */}
+                        <button className="action-button" style={{ width: "100%" }} onClick={() => setCurrentHero(partyMember)}>Select</button>
+                    </div>
+                ))}
             </div>
             <div className="game-content-main inventory-items-container">
                 <div className="inventory-display-area">
-                    {currentHero.inventory.length > 0 ? ( // Use currentHero.inventory directly
+                    {hero.inventory.length > 0 ? (
                         <div className="inventory-items">
                             {
-                                currentHero.inventory
-                                    .sort((a, b) => a.name.localeCompare(b.name)).
-                                    map((item, index) => {
-                                        // Determine the button text based on the item type
+                                hero.inventory
+                                    .sort((a, b) => a.name.localeCompare(b.name))
+                                    .map((item, index) => {
                                         let buttonText = "Use";
                                         if (item.type === "Food") {
                                             buttonText = "Eat";
@@ -90,9 +124,11 @@ function Inventory({ hero, back, onUpdateHero, addGameLog }: InventoryProps) {
                                             <div key={index}>
                                                 <p>{item.name}</p>
                                                 <p>{item.description}</p>
+                                                {/* The use button calls handleUseItem, which will use the item on currentHero */}
                                                 <button className="use-equip-button" onClick={() => handleUseItem(item)}>
                                                     {buttonText} x {item.quantity}
                                                 </button>
+                                                {/* The drop button always drops from the main hero's inventory */}
                                                 <button className="use-equip-button" onClick={() => handleDropItem(item)} >Drop</button>
                                             </div>
                                         );
@@ -110,7 +146,7 @@ function Inventory({ hero, back, onUpdateHero, addGameLog }: InventoryProps) {
             </div>
             <div className="game-content-bottom">
                 <h3>Interaction / Status</h3>
-                <p>Placeholder for Bottom Panel</p>
+                <p>Selected Character: {currentHero.name}</p>
             </div>
         </div>
     );

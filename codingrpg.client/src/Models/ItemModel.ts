@@ -148,7 +148,12 @@ export class Equipable extends Item {
             case "Weapon":
                 oldEquippedItem = user.mainHand;
                 user.mainHand = this as unknown as Weapon;
-                bareItem = bareFist;
+                if (user.subType === "Dog") {
+                    bareItem = dogBite;
+                }
+                else {
+                    bareItem = bareFist;
+                }
                 break;
             case "OffHand":
                 oldEquippedItem = user.offHand;
