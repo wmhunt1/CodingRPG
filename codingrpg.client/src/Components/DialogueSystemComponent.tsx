@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { DialogueManager } from "../Models/DialogueNodeModel"
+import { DialogueManager } from "../Models/DialogueManager"
 import type { DialogueNode } from "../Models/DialogueNodeModel"
 
 // Interfaces for clear typing of the dialogue data structure.
@@ -13,7 +13,7 @@ interface DialogueSystemProps {
     //dialogueData: DialogueNode[]
     back: () => void
 }
-export default function DialogueSystem({dialogueManager, back }: DialogueSystemProps) {
+export default function DialogueSystem({ dialogueManager, back }: DialogueSystemProps) {
     //const dialogueManager = useMemo(() => new DialogueManager(dialogueData), [dialogueData]);
     // State to hold the current dialogue node ID.
     const [currentNodeId, setCurrentNodeId] = useState(1);
@@ -27,16 +27,18 @@ export default function DialogueSystem({dialogueManager, back }: DialogueSystemP
         if (currentNodeId) {
             setCurrentDialogue(dialogueManager.findNode(currentNodeId));
         }
-    }, [currentNodeId,dialogueManager]);
+    }, [currentNodeId, dialogueManager]);
 
     // Handler for when a choice is clicked.
     const handleChoiceClick = (nextId: number) => {
         if (nextId) {
             setCurrentNodeId(nextId);
+
         } else {
             setIsDialogueVisible(false);
         }
     };
+
 
     // This function will render the dialogue UI.
     const renderDialogue = () => {
@@ -62,25 +64,31 @@ export default function DialogueSystem({dialogueManager, back }: DialogueSystemP
                         currentDialogue.choices.map((choice, index) => (
                             <button
                                 key={index}
-                                onClick={() => handleChoiceClick(choice.nextId)}
+                                onClick={() => {
+                                    if (choice.action) {
+                                        choice.action()
+                                    }
+                                    handleChoiceClick(choice.nextId)
+                                }
+                                }
                                 className="w-full text-left px-4 py-3 bg-gray-700 hover:bg-gray-600 text-white font-medium rounded-lg shadow-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
                             >
                                 {choice.text}
                             </button>
                         ))
                     ) : (
-                            <div className="text-center">
-                                <p className="text-xl text-white mb-4">Conversation has ended.</p>
-                                <button
-                                    onClick={() => {
-                                        setCurrentNodeId(1);
-                                        setIsDialogueVisible(true);
-                                    }}
-                                    className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md transition-colors duration-200"
-                                >
-                                    Restart Dialogue
-                                </button>
-                            </div>
+                        <div className="text-center">
+                            <p className="text-xl text-white mb-4">Conversation has ended.</p>
+                            {/*<button*/}
+                            {/*    onClick={() => {*/}
+                            {/*        setCurrentNodeId(1);*/}
+                            {/*        setIsDialogueVisible(true);*/}
+                            {/*    }}*/}
+                            {/*    className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md transition-colors duration-200"*/}
+                            {/*>*/}
+                            {/*    Restart Dialogue*/}
+                            {/*</button>*/}
+                        </div>
                     )}
                 </div>
             </div>

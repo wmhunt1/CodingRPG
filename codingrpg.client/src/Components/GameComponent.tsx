@@ -21,8 +21,9 @@ import Toolbar from "./ToolbarComponent"
 // Model Imports
 import { AreaModel, NotArea, StartingVillage } from "../Models/AreaModel"
 import { Character, Hero } from "../Models/CharacterModel";
-import { DialogueManager, testDialogueData, type DialogueNode } from "../Models/DialogueNodeModel"
-//import  type{ DialogueNode } from "../Models/DialogueNodeModel"
+// We now import the function, not the dialogue array itself
+import { type DialogueNode, getRawMinnowQuest1Dialogue } from "../Models/DialogueNodeModel"
+import { DialogueManager } from "../Models/DialogueManager"
 import { CombatEncounter, NoCombatEncounter } from "../Models/EncounterModel"
 import { CombatLocation, Location, ShopLocation, SkillLocation } from "../Models/LocationModel"
 import { ValleyMap } from "../Models/MapModel"
@@ -39,6 +40,7 @@ import "../StyleSheets/GameStyle.css";
 //Util Imports
 import { calculateNewLocation } from "../Utils/MovementUtil"
 import { acceptQuest, checkQuestProgress } from "../Utils/QuestUtils";
+import { QuestManager } from "../Models/QuestManager";
 
 
 // Define possible game states for better readability and type safety
@@ -65,7 +67,6 @@ function Game() {
     const [area, setArea] = useState<AreaModel>(new StartingVillage());
     const [currentShop, setCurrentShop] = useState<ShopModel>(new ShopModel("", [], [], new NoCombatEncounter()))
     const [currentSkillNode, setCurrentSkillNode] = useState<SkillNodeModel>(new SkillNodeModel("Empty", []))
-    const [currentDialogueData, setCurrentDialogueData] = useState<DialogueNode[]>(testDialogueData)
     const [hero, setHero] = useState<Hero>(new Hero("Hero"));
     const [enemies, setEnemies] = useState<CombatEncounter>(new CombatEncounter("", []))
     const [gameLog, setGameLog] = useState<string[]>(["Welcome to Coding RPG"]);
@@ -73,13 +74,15 @@ function Game() {
     const [party, setParty] = useState<Character[]>(() =>
         hero.party.map((partyMember) => ({ ...partyMember }))
     );
-    const dialogueManager = useMemo(() => new DialogueManager(currentDialogueData), [currentDialogueData]);
+    const questManager = useMemo(() => new QuestManager(), []);
+    // Initialize state by calling the dialogue function with the hero object
+
     const areaMap = useMemo(() => {
         return new ValleyMap();
     }, [])
     const availableQuests = area.quests.filter(quest => {
         const journalEntry = hero.journal.find(journalQuest => journalQuest.id === quest.id);
-        return !journalEntry || journalEntry.status !== "Completed";
+        return !journalEntry || journalEntry.status !== "Completed" ;
     });
     // --- UPDATED CODE STARTS HERE --
 
@@ -102,6 +105,9 @@ function Game() {
         setGameLog((prevLog) => [...prevLog, message]);
     }, []);
 
+    const [currentDialogueData, setCurrentDialogueData] = useState<DialogueNode[]>(getRawMinnowQuest1Dialogue(hero, addGameLog));
+    const dialogueManager = useMemo(() => new DialogueManager(currentDialogueData, questManager), [currentDialogueData, questManager]);
+
     const handleContinueGame = useCallback(() => {
         setActiveScreen("Game");
     }, []);
@@ -111,10 +117,14 @@ function Game() {
         setEnemies(enemies)
     }, [setEnemies]);
 
-    const handleDialogue = useCallback((dialogueData: DialogueNode[]) => {
-        setCurrentDialogueData(dialogueData)
+    // The handleDialogue function now accepts a function that generates dialogue
+    const handleDialogue = useCallback((dialogueGenerator: (hero: Hero, addGameLog: (message: string) => void) => DialogueNode[]) => {
+        // Call the dialogue generator function with the current hero object
+        const dialogueData = dialogueGenerator(hero,addGameLog);
+        setCurrentDialogueData(dialogueData);
         setActiveScreen("Dialogue");
-    }, []);
+    }, [hero,addGameLog]); // Add hero as a dependency
+
     const handleExitGame = useCallback(() => {
         console.log("Exiting Game");
     }, []);
@@ -205,7 +215,7 @@ function Game() {
         [hero.name, addGameLog, lastScreen]
     );
     const handleUpdateHeroes = useCallback((updatedHeroes: Character[]) => {
-        setHero(updatedHeroes[0])
+        setHero(updatedHeroes[0] as Hero)
         setParty(updatedHeroes[0].party);
 
         if (updatedHeroes.length > 0) {
@@ -312,9 +322,20 @@ function Game() {
                                 )}
                             </div>
                             <div>
-                                <h3>Test Features</h3>
-                                <button className="area-button" onClick={() => handleDialogue(testDialogueData)}>Dialogue Test</button>
+                                <h3>People</h3>
+                                {area.conversations.map((dialogueGenerator, index) => (
+                                    // Pass the dialogue function, not the result
+                                    <button key={index} className="area-button" onClick={() => handleDialogue(dialogueGenerator)}>
+                                        Speak with {dialogueGenerator(hero,addGameLog)[0].character}
+                                    </button>
+                                ))}
                             </div>
+                            {/*<div>*/}
+                            {/*    <h3>Test Features</h3>*/}
+                            {/*    <button className="area-button" onClick={() => handleDialogue(getRawMinnowQuest1Dialogue)}>*/}
+                            {/*        Speak with Old Fisherman*/}
+                            {/*    </button>*/}
+                            {/*</div>*/}
                         </div>
                         <div className="game-content-bottom">
                             <div id="area-info">

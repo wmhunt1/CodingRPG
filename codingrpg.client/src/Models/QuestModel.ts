@@ -1,6 +1,7 @@
 import { beer, Item } from "./ItemModel"
 
-export const questStatuses = ["Not Started", "In-Progress", "Completeds", "Failed"]
+//export const questStatuses = ["Not Started", "In-Progress", "Completed", "Failed"]
+
 export class Quest {
     id: string;
     name: string;
@@ -25,6 +26,12 @@ export class Quest {
         this.xpReward = xpReward;
         this.goldReward = goldReward;
         this.itemReward = itemReward;
+    }
+}
+//makes sure that conversations only happen once
+export class ConversationQuest extends Quest {
+    constructor(id: string, name: string, status: string, type: string = "Conversation", description: string, objective: string, target: number, targetProgress: number, xpReward: number, goldReward: number, itemReward: Item[]) {
+        super(id, name, status, type, description, objective, target, targetProgress, xpReward, goldReward, itemReward)
     }
 }
 export class FetchQuest extends Quest {

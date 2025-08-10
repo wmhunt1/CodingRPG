@@ -1,97 +1,156 @@
+import { addItemToInventory } from "../Utils/InventoryUtils"
+import { acceptQuest } from "../Utils/QuestUtils";
+import type { Character } from "./CharacterModel";
+import { basicFishingRod } from "./ItemModel";
+import { fetchRawMinnowQuest1 } from "./QuestModel"
+import { checkQuestProgress } from "../Utils/QuestUtils"
 export interface Choice {
     text: string;
     nextId: number;
+    action?: () => void;
+    // Add an optional 'condition' property to each choice
+    condition?: {
+        questId: string;
+        status: "Completed" | "In-Progress" | "Not-Started" | "Failed";
+    };
 }
 
 export interface DialogueNode {
+    hero?: Character
     id: number;
     character: string;
     text: string;
     choices: Choice[];
+    quest?: string;
+    condition?: {
+        questId: string;
+        status: "Completed" | "In-Progress" | "Not-Started" | "Failed";
+    };
 }
+export const getRawMinnowQuest1Dialogue = (hero: Character, addGameLog: (message: string) => void): DialogueNode[] => {
+    const existingQuest = hero.journal.find(quest => quest.id === "fetchRawMinnowQuest1");
+    if (existingQuest) {
+        if (existingQuest.status === "In-Progress") {
+            console.log(existingQuest.status)
+            return [
+                {
+                    id: 1,
+                    character: "Old Fisherman",
+                    text: `Did you get those minnows?`,
+                    choices: [
+                        {
+                            text: "Yes",
+                            nextId: 2,
+                            // The action now accepts 'hero' as an argument.
+                            action: () => {
+                                checkQuestProgress(hero, hero.journal, existingQuest, addGameLog)
+                            },
 
-// A class to manage the dialogue data and provide methods to interact with it.
-export class DialogueManager {
-    private dialogueData: DialogueNode[];
+                        },
+                        { text: "No", nextId: 3 }
+                    ],
+                    condition: { questId: "fetchRawMinnowQuest1", status: "In-Progress" }
+                },
+                {
+                    id: 2,
+                    character: "Old Fisherman",
+                    text: `Thanks`,
+                    choices: [],
+                    condition: { questId: "fetchRawMinnowQuest1", status: "In-Progress" }
+                },
+                {
+                    id: 3,
+                    character: "Old Fisherman",
+                    text: `Keep going`,
+                    choices: [],
+                    condition: { questId: "fetchRawMinnowQuest1", status: "In-Progress" }
+                }
+                //
+            ];
+        }
+        else {
+            return [
+                {
+                    id: 1,
+                    character: "Old Fisherman",
+                    text: `Fishing is a rewarding Profession`,
+                    choices: [
 
-    constructor(data: DialogueNode[]) {
-        this.dialogueData = data;
+                    ],
+                    condition: { questId: "fetchRawMinnowQuest1", status: "Not-Started" }
+                }
+            ];
+        }
+    }
+    else {
+        console.log("Doesn't have quest")
+        return [
+            {
+                id: 1,
+                character: "Old Fisherman",
+                text: `Hello, youngster. Care to help do some fishing? I have an extra rod if you don't have one.'`,
+                choices: [
+                    {
+                        text: "Yes",
+                        nextId: 2,
+                        // The action now accepts 'hero' as an argument.
+                        action: () => {
+                            const existingItem = hero.inventory.find(item => item.subType === "Fishing Rod");
+                            if (!existingItem) {
+                                addItemToInventory(hero.inventory, basicFishingRod, 1)
+                            }
+                        },
+
+                    },
+                    { text: "No", nextId: 3 }
+                ],
+                condition: { questId: "fetchRawMinnowQuest1", status: "Not-Started" }
+            },
+            {
+                id: 2,
+                character: "Old Fisherman",
+                text: `I'm running low on bait would you mind catching 5 minnows for me?'`,
+                choices: [
+                    {
+                        text: "Yes",
+                        nextId: 4,
+                        action: () => acceptQuest(hero, hero.journal, fetchRawMinnowQuest1, addGameLog)
+                    },
+                    { text: "No", nextId: 5 }
+                ],
+                condition: { questId: "fetchRawMinnowQuest1", status: "Not-Started" }
+            },
+            {
+                id: 3,
+                character: "Old Fisherman",
+                text: `Maybe another time`,
+                choices: [],
+                condition: { questId: "fetchRawMinnowQuest1", status: "Not-Started" }
+            },
+            {
+                id: 4,
+                character: "Old Fisherman",
+                text: `Thanks, youngster`,
+                choices: [],
+                //condition: { questId: "fetchRawMinnowQuest1", status: "" }
+            },
+            {
+                id: 5,
+                character: "Old Fisherman",
+                text: `Oh well`,
+                choices: [],
+                //condition: { questId: "fetchRawMinnowQuest1", status: "Not-Started" }
+            },
+            {
+                id: 6,
+                character: "Old Fisherman",
+                text: `Did you get those minnows?`,
+                choices: [],
+                condition: { questId: "fetchRawMinnowQuest1", status: "In-Progress" }
+            },
+            //
+        ];
     }
 
-    public findNode(id: number): DialogueNode | undefined {
-        return this.dialogueData.find(node => node.id === id);
-    }
-}
-export const testDialogueData: DialogueNode[] = [
-    {
-        id: 1,
-        character: "Mysterious Stranger",
-        text: "Welcome, adventurer. You seem lost.",
-        choices: [
-            { text: "Who are you?", nextId: 2 },
-            { text: "Where am I?", nextId: 3 },
-            { text: "I'm not lost, you are!", nextId: 4 },
-        ],
-    },
-    {
-        id: 2,
-        character: "Mysterious Stranger",
-        text: "I am a humble traveler. Now, what brings you to these forgotten lands?",
-        choices: [
-            { text: "I'm on a quest.", nextId: 5 },
-            { text: "Just passing through.", nextId: 6 },
-        ],
-    },
-    {
-        id: 3,
-        character: "Mysterious Stranger",
-        text: "This is the Whispering Glade, a place of ancient magic and forgotten tales. Be careful.",
-        choices: [
-            { text: "Tell me more about the magic.", nextId: 7 },
-            { text: "Okay, thanks for the warning.", nextId: 6 },
-        ],
-    },
-    {
-        id: 4,
-        character: "Mysterious Stranger",
-        text: "A feisty one, I see. Very well, be on your way then. There is nothing for you here.",
-        choices: [], // This ends the conversation
-    },
-    {
-        id: 5,
-        character: "Mysterious Stranger",
-        text: "A quest? Intriguing. What is your goal?",
-        choices: [
-            { text: "I am searching for the legendary Sunstone.", nextId: 8 },
-            { text: "I'd rather not say.", nextId: 9 },
-        ],
-    },
-    {
-        id: 6,
-        character: "Mysterious Stranger",
-        text: "Farewell, then. May your path be clear.",
-        choices: [], // This ends the conversation
-    },
-    {
-        id: 7,
-        character: "Mysterious Stranger",
-        text: "The magic here is tied to the ancient trees. They hold the memories of this world.",
-        choices: [
-            { text: "Fascinating.", nextId: 6 },
-        ],
-    },
-    {
-        id: 8,
-        character: "Mysterious Stranger",
-        text: "The Sunstone? That is a relic of immense power. It is said to be guarded by a dragon.",
-        choices: [
-            { text: "A dragon? I'll be careful.", nextId: 6 },
-        ],
-    },
-    {
-        id: 9,
-        character: "Mysterious Stranger",
-        text: "I understand. Some secrets are best kept. Safe travels, friend.",
-        choices: [],
-    },
-];
+
+};
