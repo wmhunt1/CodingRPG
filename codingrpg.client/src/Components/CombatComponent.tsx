@@ -117,13 +117,13 @@ function CombatArena({ heroes, enemies, onCombatEnd, onUpdateHeroes, addGameLog 
                         <button className="action-button" onClick={() => handleSelectAction("Attack")}>
                             Basic Attack
                         </button>
-                        <button className="action-button" onClick={() => handleSelectAction("Attack")}>
+                        <button className="action-button" onClick={() => handleSelectAction("Item")}>
                             Item
                         </button>
-                        <button className="action-button" onClick={() => handleSelectAction("Attack")}>
+                        <button className="action-button" onClick={() => handleSelectAction("Spell")}>
                             Spell
                         </button>
-                        <button className="action-button" onClick={() => handleSelectAction("Attack")}>
+                        <button className="action-button" onClick={() => handleSelectAction("Ability")}>
                             Ability
                         </button>
                     </>

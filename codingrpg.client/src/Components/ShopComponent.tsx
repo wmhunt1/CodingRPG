@@ -7,6 +7,7 @@ import { addItemToInventory, removeItemFromInventory } from "../Utils/InventoryU
 import { InnShop, ShopModel } from "../Models/ShopModel"
 
 import { useState, useEffect } from "react";
+import { fullHeal } from '../Utils/GameUtil';
 //import Inventory from './InventoryComponent';
 
 interface ShopProps {
@@ -48,14 +49,7 @@ function Shop({ hero, back, shop, onUpdateHero, addGameLog, shopSkillNode, shopC
         const updatedHero: Character = JSON.parse(JSON.stringify(currentHero));
         if (updatedHero.gold >= cost) {
             updatedHero.gold -= cost;
-            updatedHero.currentHP = updatedHero.maxHP
-            updatedHero.currentMP = updatedHero.maxMP
-            updatedHero.currentSP = updatedHero.maxSP
-            updatedHero.party.forEach(hero => {
-                hero.currentHP = hero.maxHP
-                hero.currentMP = hero.maxMP
-                hero.currentSP = hero.maxSP
-            })
+            fullHeal(updatedHero)
             setCurrentHero(updatedHero);
             onUpdateHero(updatedHero);
             addGameLog(`${hero.name} stays the night for ${cost} GP.`);

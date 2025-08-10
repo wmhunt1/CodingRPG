@@ -4,7 +4,7 @@ import { Character } from "../Models/CharacterModel";
 import {
     Armor, Back, bareBack, bareChest, bareFeet, bareFinger, bareFist, bareHands, bareHead, bareLegs, bareNeck, bareShoulders, bareWaist, bareWrists,
     ChestArmor, Consumable, emptyHand, Equipable, FootArmor, HandArmor, HeadArmor, HealthPotion, Item, LegArmor, Neck, OffHandWeapon, Potion, Ring, Shield, ShoulderArmor, WaistArmor, Weapon, WristArmor,
-    Food, Drink, AlcoholicDrink, ManaPotion, StaminaPotion, BluntWeapon, NaturalWeapon, Resource, RawFish
+    Food, Drink, AlcoholicDrink, ManaPotion, StaminaPotion, BluntWeapon, NaturalWeapon, Resource, RawFish,SpellTome
 } from "../Models/ItemModel";
 
 import { Quest } from "../Models/QuestModel"
@@ -86,6 +86,7 @@ export function instantiateItem(plainItem: any): Item {
                 case "Health Potion": return new HealthPotion(plainItem.name, plainItem.type, plainItem.subType, plainItem.quantity, plainItem.cost, plainItem.description, plainItem.consumedValue);
                 case "Mana Potion": return new ManaPotion(plainItem.name, plainItem.type, plainItem.subType, plainItem.quantity, plainItem.cost, plainItem.description, plainItem.consumedValue);
                 case "Stamina Potion": return new StaminaPotion(plainItem.name, plainItem.type, plainItem.subType, plainItem.quantity, plainItem.cost, plainItem.description, plainItem.consumedValue);
+                case "SpellTome": return new SpellTome(plainItem.name, plainItem.type, plainItem.subType, plainItem.quantity, plainItem.cost, plainItem.description, plainItem.spell)
                 case "N/A": return new Potion(plainItem.name, plainItem.type, plainItem.subType, plainItem.quantity, plainItem.cost, plainItem.description, plainItem.consumedValue);
                 default: return new Consumable(plainItem.name, plainItem.type, plainItem.subType, plainItem.quantity, plainItem.cost, plainItem.description, plainItem.consumedValue);
             }
@@ -104,9 +105,9 @@ export function instantiateSpell(plainSpell: any): Spell {
     // Use a switch statement on the item's `type` and `subType` for robust instantiation
     switch (plainSpell.subType) {
         case "Healing":
-            return new HealingSpell(plainSpell.name, plainSpell.description, plainSpell.school, plainSpell.level, plainSpell.type, plainSpell.subType, plainSpell.manaCost, plainSpell.spellValue)
+            return new HealingSpell(plainSpell.name, plainSpell.description, plainSpell.school, plainSpell.level, plainSpell.type, plainSpell.subType, plainSpell.manaCost, plainSpell.spellValue,plainSpell.duration)
         default:
-            return new Spell(plainSpell.name, plainSpell.description, plainSpell.school, plainSpell.level, plainSpell.type, plainSpell.subType, plainSpell.manaCost, plainSpell.spellValue)
+            return new Spell(plainSpell.name, plainSpell.description, plainSpell.school, plainSpell.level, plainSpell.type, plainSpell.subType, plainSpell.manaCost, plainSpell.spellValue,plainSpell.duration)
     }
 }
 

@@ -1,6 +1,6 @@
-import { Back, ChestArmor, Consumable, Drink, Equipable, Food, FootArmor, HandArmor, HeadArmor, Item, LegArmor, Neck, OffHandWeapon, Potion, Ring, Shield, ShoulderArmor, WaistArmor, Weapon, WristArmor } from "../Models/ItemModel";
+import { Back, ChestArmor, Consumable, Drink, Equipable, Food, FootArmor, HandArmor, HeadArmor, Item, LegArmor, Neck, OffHandWeapon, Potion, Ring, Shield, ShoulderArmor, SpellTome, WaistArmor, Weapon, WristArmor } from "../Models/ItemModel";
 
-export function addItemToInventory(inventory: Item[], itemToAdd: Item,quantity:number): void {
+export function addItemToInventory(inventory: Item[], itemToAdd: Item, quantity: number): void {
     const existingItem = inventory.find(item => item.name === itemToAdd.name);
 
     if (existingItem) {
@@ -14,7 +14,7 @@ export function addItemToInventory(inventory: Item[], itemToAdd: Item,quantity:n
             newItemInstance = new Weapon(itemToAdd.name, itemToAdd.type, itemToAdd.subType, 1, itemToAdd.cost, itemToAdd.description, itemToAdd.slot, (itemToAdd as Weapon).power);
         }
         else if (itemToAdd instanceof OffHandWeapon) {
-            newItemInstance = new OffHandWeapon(itemToAdd.name, itemToAdd.type, itemToAdd.subType, 1, itemToAdd.cost, itemToAdd.description,itemToAdd.slot, (itemToAdd as OffHandWeapon).power);
+            newItemInstance = new OffHandWeapon(itemToAdd.name, itemToAdd.type, itemToAdd.subType, 1, itemToAdd.cost, itemToAdd.description, itemToAdd.slot, (itemToAdd as OffHandWeapon).power);
         } else if (itemToAdd instanceof Shield) {
             newItemInstance = new Shield(itemToAdd.name, itemToAdd.type, itemToAdd.subType, 1, itemToAdd.cost, itemToAdd.description, itemToAdd.slot, (itemToAdd as Shield).protection);
         } else if (itemToAdd instanceof HeadArmor) {
@@ -47,6 +47,8 @@ export function addItemToInventory(inventory: Item[], itemToAdd: Item,quantity:n
             newItemInstance = new Drink(itemToAdd.name, itemToAdd.type, itemToAdd.subType, 1, itemToAdd.cost, itemToAdd.description, (itemToAdd as Drink).consumedValue);
         } else if (itemToAdd instanceof Potion) {
             newItemInstance = new Potion(itemToAdd.name, itemToAdd.type, itemToAdd.subType, 1, itemToAdd.cost, itemToAdd.description, (itemToAdd as Potion).consumedValue);
+        } else if (itemToAdd instanceof SpellTome) {
+            newItemInstance = new SpellTome(itemToAdd.name, itemToAdd.type, itemToAdd.subType, 1, itemToAdd.cost, itemToAdd.description, (itemToAdd as SpellTome).spell);
         } else if (itemToAdd instanceof Consumable) { // General consumable
             newItemInstance = new Consumable(itemToAdd.name, itemToAdd.type, itemToAdd.subType, 1, itemToAdd.cost, itemToAdd.description, (itemToAdd as Consumable).consumedValue);
         }
@@ -58,7 +60,7 @@ export function addItemToInventory(inventory: Item[], itemToAdd: Item,quantity:n
     }
 }
 
-export function removeItemFromInventory(inventory: Item[], itemToRemove: Item,quantity:number): void {
+export function removeItemFromInventory(inventory: Item[], itemToRemove: Item, quantity: number): void {
     const itemIndex = inventory.findIndex(item => item.name === itemToRemove.name);
 
     if (itemIndex > -1) {

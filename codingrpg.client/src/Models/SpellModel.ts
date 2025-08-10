@@ -1,3 +1,4 @@
+import { healCharacter } from "../Utils/GameUtil";
 import { addSpellToSpellBook } from "../Utils/SpellUtil";
 import { Character } from "./CharacterModel"
 export class Spell {
@@ -9,8 +10,9 @@ export class Spell {
     subType: string;
     manaCost: number;
     spellValue: number;
+    duration: number;
     //effect: () => void;
-    constructor(name: string, description: string, school: string, level: number, type: string, subType: string, manaCost: number, spellValue: number) {
+    constructor(name: string, description: string, school: string, level: number, type: string, subType: string, manaCost: number, spellValue: number,duration:number) {
         this.name = name;
         this.description = description;
         this.school = school;
@@ -19,6 +21,7 @@ export class Spell {
         this.subType = subType;
         this.manaCost = manaCost;
         this.spellValue = spellValue;
+        this.duration = duration;
     }
     cast(caster: Character, target: Character): { caster: Character, target: Character } {
         console.log(target)
@@ -30,20 +33,17 @@ export class Spell {
     }
 }
 export class HealingSpell extends Spell {
-    constructor(name: string, description: string, school: string, level: number, type: string, subType: string, manaCost: number, spellValue: number) {
-        super(name, description, school, level, type, subType, manaCost, spellValue)
+    constructor(name: string, description: string, school: string, level: number, type: string, subType: string, manaCost: number, spellValue: number,duration:number){
+        super(name, description, school, level, type, subType, manaCost, spellValue,duration)
     }
     override cast(caster: Character, target: Character): { caster: Character, target: Character } {
         if (caster.currentMP >= this.manaCost) {
             caster.currentMP -= this.manaCost
-            target.currentHP += this.spellValue;
-            if (target.currentHP > caster.maxHP) {
-                target.currentHP = caster.maxHP;
-            }
+            healCharacter(target,this.spellValue)
         }
         return { caster, target };
     }
 }
-export const basicHealSpell = new HealingSpell("Basic Heal", "A basic healing spell that restores 5 HP", "Restoration", 1, "Restoration", "Healing", 5, 5)
+export const basicHealSpell = new HealingSpell("Basic Heal", "A basic healing spell that restores 5 HP", "Restoration", 1, "Restoration", "Healing", 5, 5,0)
 //heal
 //multiHeal

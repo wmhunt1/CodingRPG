@@ -1,8 +1,10 @@
 //Models/ItemModel.ts
 
 import { Character } from "./CharacterModel";
-import { Spell } from "./SpellModel"
+import { basicHealSpell, Spell } from "./SpellModel"
 import { addItemToInventory, removeItemFromInventory } from "..//Utils/InventoryUtils";
+import { healCharacter } from "../Utils/GameUtil";
+import { addSpellToSpellBook } from "../Utils/SpellUtil";
 
 export class Item {
     name: string;
@@ -91,10 +93,8 @@ export class HealthPotion extends Potion {
         super(name, type, subType, quantity, cost, description, consumedValue);
     }
     override use(user: Character): Character {
-        user.currentHP += this.consumedValue;
-        if (user.currentHP > user.maxHP) {
-            user.currentHP = user.maxHP;
-        }
+
+        healCharacter(user, this.consumedValue)
         // After affecting HP, remove from inventory
         return super.use(user);
     }
@@ -140,9 +140,12 @@ export class SpellTome extends Item {
         this.spell = spell;
     }
     override use(user: Character): Character {
-        return super.use(user);
+        addSpellToSpellBook(user.spellBook, this.spell)
+        removeItemFromInventory(user.inventory,this,1)
+        return user;
     }
 }
+export const basicHealSpellTome = new SpellTome("Tome: Basic Heal", "Consumable", "SpellTome", 1, 10, "Teaches Basic Heal", basicHealSpell)
 export class Equipable extends Item {
     slot: string;
     constructor(name: string, type: string = "Equipable", subType: string = "N/A", quantity: number, cost: number, description: string, slot: string) {

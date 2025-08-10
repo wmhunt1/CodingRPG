@@ -119,7 +119,7 @@ export class StartingVillage extends Village {
     constructor() {
         const name = "Starting Village"
         //maybe move cellar to inn location
-        const locations: Location[] = [new GeneralStoreLocation("Joe the Trader's"), new InnLocation("Dreaming Worker Inn", 5), new SmithShopLocation("Forgeheart Smithy"), new WellLocation()]
+        const locations: Location[] = [new GeneralStoreLocation("Joe the Trader's"), new InnLocation("Dreaming Worker Inn", 5),new SmithShopLocation("Forgeheart Smithy"), new WellLocation()]
         const conversations: ((hero: Character, addGameLog: (message: string) => void) => DialogueNode[])[] = []
         const quests: Quest[] = [slayRatQuest1]
         const x = 0;

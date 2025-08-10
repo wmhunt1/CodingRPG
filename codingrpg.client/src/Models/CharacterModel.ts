@@ -10,7 +10,7 @@ import {
 } from './ItemModel.ts';
 import { Quest } from "./QuestModel.ts"
 import { cookingSkill, farmingSkill, fishingSkill, Skill } from "./SkillModel.ts"
-import { basicHealSpell, Spell } from "./SpellModel.ts"
+import { Spell } from "./SpellModel.ts"
 
 export class Character {
     name: string = "";
@@ -135,7 +135,7 @@ export class Hero extends Humanoid {
         this.inventory = []
         this.party = [loyalHound]
         this.skillBook = [cookingSkill, farmingSkill, fishingSkill]
-        this.spellBook = [basicHealSpell]
+        this.spellBook = []
     }
 }
 export class Beast extends Character {

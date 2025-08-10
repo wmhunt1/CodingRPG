@@ -1,6 +1,6 @@
 import { CombatEncounter, RatCellarCombatEncounter } from "./EncounterModel.ts"
-import {FarmShop, GeneralShop, InnShop, ShopModel, SmithShop } from "./ShopModel.ts"
-import { ButterChurn, CookingRange, DairyCow,Mill, MinnowFishingSpot,RiverWater, SalmonFishingSpot, SkillNodeModel,TroutFishingSpot,Well,WheatField } from "./SkillNodeModel.ts"
+import { FarmShop, GeneralShop, InnShop, MagicShop, ShopModel, SmithShop, TempleShop } from "./ShopModel.ts"
+import { ButterChurn, CookingRange, DairyCow, Mill, MinnowFishingSpot, RiverWater, SalmonFishingSpot, SkillNodeModel, TroutFishingSpot, Well, WheatField } from "./SkillNodeModel.ts"
 export class Location {
     name: string;
     //add conversations
@@ -50,9 +50,21 @@ export class InnLocation extends ShopLocation {
         this.innStay = innStay;
     }
 }
+export class MagicShopLocation extends ShopLocation {
+    constructor(name: string) {
+        const shop = new MagicShop()
+        super(name, shop)
+    }
+}
 export class SmithShopLocation extends ShopLocation {
     constructor(name: string) {
         const shop = new SmithShop()
+        super(name, shop)
+    }
+}
+export class TempleShopLocation extends ShopLocation {
+    constructor(name: string) {
+        const shop = new TempleShop()
         super(name, shop)
     }
 }
