@@ -9,6 +9,7 @@ import {
 
 import { Quest } from "../Models/QuestModel"
 import { Skill } from "../Models/SkillModel"
+import { HealingSpell, Spell } from "../Models/SpellModel"
 
 /**
  * Creates an instance of an Item subclass from a plain JavaScript object.
@@ -99,6 +100,15 @@ export function instantiateItem(plainItem: any): Item {
             return new Item(plainItem.name, plainItem.type, plainItem.subType, plainItem.quantity, plainItem.cost, plainItem.description);
     }
 }
+export function instantiateSpell(plainSpell: any): Spell {
+    // Use a switch statement on the item's `type` and `subType` for robust instantiation
+    switch (plainSpell.subType) {
+        case "Healing":
+            return new HealingSpell(plainSpell.name, plainSpell.description, plainSpell.school, plainSpell.level, plainSpell.type, plainSpell.subType, plainSpell.manaCost, plainSpell.spellValue)
+        default:
+            return new Spell(plainSpell.name, plainSpell.description, plainSpell.school, plainSpell.level, plainSpell.type, plainSpell.subType, plainSpell.manaCost, plainSpell.spellValue)
+    }
+}
 
 export function instantiateCharacterItems(plainCharacter: any): Character {
     const newCharacter = new Character(
@@ -145,6 +155,10 @@ export function instantiateCharacterItems(plainCharacter: any): Character {
         : [];
     newCharacter.skillBook = plainCharacter.skillBook && Array.isArray(plainCharacter.skillBook)
         ? plainCharacter.skillBook.map((skill: any) => new Skill(skill.name, skill.level, skill.currentXP, skill.maxXP))
+        : [];
+    newCharacter.spellBook = plainCharacter.spellBook && Array.isArray(plainCharacter.spellBook)
+        //might need an instantiateSpell
+        ? plainCharacter.spellBook.map((spell: any) => instantiateSpell(spell))
         : [];
     newCharacter.party = plainCharacter.party && Array.isArray(plainCharacter.party)
         ? plainCharacter.party.map((character: any) => instantiateCharacterItems(character))

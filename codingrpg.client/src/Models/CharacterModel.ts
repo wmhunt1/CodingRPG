@@ -10,6 +10,7 @@ import {
 } from './ItemModel.ts';
 import { Quest } from "./QuestModel.ts"
 import { cookingSkill, farmingSkill, fishingSkill, Skill } from "./SkillModel.ts"
+import { basicHealSpell, Spell } from "./SpellModel.ts"
 
 export class Character {
     name: string = "";
@@ -61,6 +62,7 @@ export class Character {
     party: Character[] = []
     journal: Quest[] = []
     skillBook: Skill[] = []
+    spellBook: Spell[] = []
     constructor(
         name: string,
         type: string,
@@ -109,8 +111,8 @@ export class Humanoid extends Character {
         maxXP: number, strength: number,
         gold: number) {
         const type = "Humanoid"
-        const subType =  "";
-        super(name,type,subType, maxHP, currentHP, maxMP, currentMP, maxSP, currentSP, level, currentXP, maxXP, strength, gold)
+        const subType = "";
+        super(name, type, subType, maxHP, currentHP, maxMP, currentMP, maxSP, currentSP, level, currentXP, maxXP, strength, gold)
         this.chest = tunic;
         this.legs = pants;
         this.feet = shoes;
@@ -133,6 +135,7 @@ export class Hero extends Humanoid {
         this.inventory = []
         this.party = [loyalHound]
         this.skillBook = [cookingSkill, farmingSkill, fishingSkill]
+        this.spellBook = [basicHealSpell]
     }
 }
 export class Beast extends Character {
@@ -146,7 +149,7 @@ export class Beast extends Character {
         maxXP: number, strength: number,
         gold: number) {
         const type = "Beast"
-        super(name,type,subType, maxHP, currentHP, maxMP, currentMP, maxSP, currentSP, level, currentXP, maxXP, strength, gold)
+        super(name, type, subType, maxHP, currentHP, maxMP, currentMP, maxSP, currentSP, level, currentXP, maxXP, strength, gold)
         this.name = name;
         this.currentMP = 0;
         this.maxMP = 0;
@@ -166,8 +169,8 @@ export class Rat extends Beast {
         const currentXP = 5;
         const maxXP = 50;
         const strength = 5;
-        const gold = 5;  
-        super(name,subType, maxHP, currentHP, maxMP, currentMP, maxSP, currentSP, level, currentXP, maxXP, strength, gold)
+        const gold = 5;
+        super(name, subType, maxHP, currentHP, maxMP, currentMP, maxSP, currentSP, level, currentXP, maxXP, strength, gold)
         this.mainHand = ratBite;
         this.inventory = [cheese]
     }
@@ -187,7 +190,7 @@ export class Dog extends Beast {
         const maxXP = 50;
         const strength = 10;
         const gold = 0;
-        super(name,subType, maxHP, currentHP, maxMP, currentMP, maxSP, currentSP, level, currentXP, maxXP, strength, gold)
+        super(name, subType, maxHP, currentHP, maxMP, currentMP, maxSP, currentSP, level, currentXP, maxXP, strength, gold)
         this.mainHand = dogBite;
     }
 }

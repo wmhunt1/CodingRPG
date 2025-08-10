@@ -1,6 +1,7 @@
 //Models/ItemModel.ts
 
 import { Character } from "./CharacterModel";
+import { Spell } from "./SpellModel"
 import { addItemToInventory, removeItemFromInventory } from "..//Utils/InventoryUtils";
 
 export class Item {
@@ -132,6 +133,16 @@ export class StaminaPotion extends Potion {
 
 export const basicStaminaPotion = new HealthPotion("Basic Stamina Potion", "Potion", "Stamina Potion", 1, 10, "A Basic Stamina Potion", 5)
 
+export class SpellTome extends Item {
+    spell: Spell;
+    constructor(name: string, type: string = "Consumable", subType: string = "SpellTome", quantity: number, cost: number, description: string, spell: Spell) {
+        super(name, type, subType, quantity, cost, description);
+        this.spell = spell;
+    }
+    override use(user: Character): Character {
+        return super.use(user);
+    }
+}
 export class Equipable extends Item {
     slot: string;
     constructor(name: string, type: string = "Equipable", subType: string = "N/A", quantity: number, cost: number, description: string, slot: string) {

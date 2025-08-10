@@ -16,6 +16,7 @@ import Settings from "./SettingsComponent";
 import Shop from "./ShopComponent"
 import SkillBook from "./SkillBookComponent"
 import SkillNode from "./SkillNodeComponent";
+import SpellBook from "./SpellBookComponent"
 import Toolbar from "./ToolbarComponent"
 
 // Model Imports
@@ -58,7 +59,8 @@ type GameState =
     | "Settings"
     | "Shop"
     | "SkillBook"
-    | "SkillNode";
+    | "SkillNode"
+    | "SpellBook";
 
 type AppLocation = CombatLocation | ShopLocation | SkillLocation | Location;
 
@@ -245,6 +247,9 @@ function Game() {
     const showSkillBook = useCallback(() => {
         setActiveScreen("SkillBook");
     }, []);
+    const showSpellBook = useCallback(() => {
+        setActiveScreen("SpellBook");
+    }, []);
     return (
         <div id="game">
             <div className="game-screen">
@@ -278,7 +283,7 @@ function Game() {
                     // This is the new grid container for the "Game" screen
                     <div className="game-layout-grid">
                         <div className="toolbar">
-                            <Toolbar characterSheet={() => showCharacterSheet()} equipment={() => showEquipment()} inventory={() => showInventory()} journal={() => showJournal()} skill={() => showSkillBook()} mainMenu={() => setActiveScreen("MainMenu")} />
+                            <Toolbar characterSheet={() => showCharacterSheet()} equipment={() => showEquipment()} inventory={() => showInventory()} journal={() => showJournal()} skill={() => showSkillBook()} spell={() => showSpellBook()} mainMenu={() => setActiveScreen("MainMenu")} />
                         </div>
                         <div className="game-content-left">
                             <PartySidebar hero={hero} party={party} />
@@ -395,6 +400,9 @@ function Game() {
                 {activeScreen === "SkillNode" && (
                     <SkillNode hero={hero} back={() => setActiveScreen(lastScreen)} skillNode={currentSkillNode} onUpdateHero={handleUpdateSingleHero}
                         addGameLog={addGameLog} />
+                )}
+                {activeScreen === "SpellBook" && (
+                    <SpellBook hero={hero} back={() => setActiveScreen("Game")} addGameLog={addGameLog} />
                 )}
             </div>
             <Log logEntries={gameLog} />

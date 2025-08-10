@@ -7,8 +7,9 @@ interface ToolbarProps {
     journal: () => void;
     mainMenu: () => void;
     skill: () => void;
+    spell: () => void;
 }
-function Toolbar({ characterSheet, equipment, inventory, journal, mainMenu,skill }: ToolbarProps) {
+function Toolbar({ characterSheet, equipment, inventory, journal, mainMenu,skill,spell }: ToolbarProps) {
     return (
         <div className="toolbar-options">
             <button className="toolbar-button">
@@ -38,7 +39,7 @@ function Toolbar({ characterSheet, equipment, inventory, journal, mainMenu,skill
             <button className="toolbar-button" onClick={skill}>
                 Skills
             </button>
-            <button className="toolbar-button">
+            <button className="toolbar-button" onClick={spell}>
                 Spellbook
             </button>
             <button className="toolbar-button" onClick={mainMenu}>
