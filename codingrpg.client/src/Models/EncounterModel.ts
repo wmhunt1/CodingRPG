@@ -21,7 +21,7 @@ export class NoCombatEncounter extends CombatEncounter {
 }
 export class RatCellarCombatEncounter extends CombatEncounter {
     constructor() {
-        const name = "Kill Rats"
+        const name = "Cellar full of rats"
         const minRats = 1;
         const maxRats = 3;
         const numberOfRats = Math.floor(Math.random() * (maxRats - minRats + 1)) + minRats;

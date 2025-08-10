@@ -83,7 +83,6 @@ export const getRawMinnowQuest1Dialogue = (hero: Character, addGameLog: (message
         }
     }
     else {
-        console.log("Doesn't have quest")
         return [
             {
                 id: 1,

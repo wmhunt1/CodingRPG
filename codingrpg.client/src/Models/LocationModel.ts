@@ -3,6 +3,7 @@ import {FarmShop, GeneralShop, InnShop, ShopModel, SmithShop } from "./ShopModel
 import { ButterChurn, CookingRange, DairyCow,Mill, MinnowFishingSpot,RiverWater, SalmonFishingSpot, SkillNodeModel,TroutFishingSpot,Well,WheatField } from "./SkillNodeModel.ts"
 export class Location {
     name: string;
+    //add conversations
     constructor(name: string) {
         this.name = name;
     }

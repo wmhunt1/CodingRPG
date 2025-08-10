@@ -227,7 +227,7 @@ function Game() {
     const handleUpdateSingleHero = useCallback((updatedHero: Character) => {
         setHero(updatedHero as Hero);
 
-        setParty(updatedHero.party);
+        //setParty(updatedHero.party);
     }, []);
 
     const showCharacterSheet = useCallback(() => {
@@ -253,7 +253,7 @@ function Game() {
                 )}
                 {activeScreen === "Combat" && (
                     <CombatArena
-                        heroes={party}
+                        heroes={[hero, ...party]}
                         enemies={enemies.combatants}
                         onCombatEnd={handleCombatEnd}
                         onUpdateHeroes={handleUpdateHeroes}

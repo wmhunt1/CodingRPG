@@ -1,13 +1,20 @@
 import {
-    Back, bareBack, bareChest, bareFeet, bareFinger, bareFist, bareHands, bareHead, bareLegs, bareNeck, bareShoulders, bareWaist, bareWrists,cheese, ChestArmor,
-    emptyHand,
-    FootArmor, HandArmor, HeadArmor, Item, LegArmor, Neck, OffHand, pants, ratBite, Ring, shoes, ShoulderArmor, tunic, WaistArmor, Weapon, WristArmor
+    Back, bareBack, bareChest, bareFeet, bareFinger, bareFist, bareHands, bareHead, bareLegs, bareNeck, bareShoulders, bareWaist, bareWrists, cheese, ChestArmor,
+    dogBite, emptyHand, FootArmor,
+    HandArmor, HeadArmor, Item,
+    LegArmor,
+    Neck, OffHand, pants,
+    ratBite, Ring, shoes, ShoulderArmor,
+    tunic,
+    WaistArmor, Weapon, WristArmor
 } from './ItemModel.ts';
 import { Quest } from "./QuestModel.ts"
 import { cookingSkill, farmingSkill, fishingSkill, Skill } from "./SkillModel.ts"
 
 export class Character {
     name: string = "";
+    type: string;
+    subType: string;
     level: number = 1;
     currentXP: number = 0;
     maxXP: number = 50;
@@ -56,6 +63,8 @@ export class Character {
     skillBook: Skill[] = []
     constructor(
         name: string,
+        type: string,
+        subType: string,
         maxHP: number,
         currentHP: number,
         maxMP: number,
@@ -70,6 +79,8 @@ export class Character {
         // No need to pass weapon, chest, inventory to constructor if they are initialized after
     ) {
         this.name = name;
+        this.type = type;
+        this.subType = subType;
         this.maxHP = maxHP;
         this.currentHP = currentHP;
         this.maxMP = maxMP;
@@ -97,7 +108,9 @@ export class Humanoid extends Character {
         currentXP: number,
         maxXP: number, strength: number,
         gold: number) {
-        super(name, maxHP, currentHP, maxMP, currentMP, maxSP, currentSP, level, currentXP, maxXP, strength, gold)
+        const type = "Humanoid"
+        const subType =  "";
+        super(name,type,subType, maxHP, currentHP, maxMP, currentMP, maxSP, currentSP, level, currentXP, maxXP, strength, gold)
         this.chest = tunic;
         this.legs = pants;
         this.feet = shoes;
@@ -118,12 +131,13 @@ export class Hero extends Humanoid {
         const gold = 10;
         super(name, maxHP, currentHP, maxMP, currentMP, maxSP, currentSP, level, currentXP, maxXP, strength, gold)
         this.inventory = []
-        this.party = []
+        this.party = [loyalHound]
         this.skillBook = [cookingSkill, farmingSkill, fishingSkill]
     }
 }
 export class Beast extends Character {
     constructor(name: string,
+        subType: string,
         maxHP: number, currentHP: number, maxMP: number, currentMP: number,
         maxSP: number,
         currentSP: number,
@@ -131,7 +145,8 @@ export class Beast extends Character {
         currentXP: number, // Using 'experience' to map to plainCharacter.currentXP
         maxXP: number, strength: number,
         gold: number) {
-        super(name, maxHP, currentHP, maxMP, currentMP, maxSP, currentSP, level, currentXP, maxXP, strength, gold)
+        const type = "Beast"
+        super(name,type,subType, maxHP, currentHP, maxMP, currentMP, maxSP, currentSP, level, currentXP, maxXP, strength, gold)
         this.name = name;
         this.currentMP = 0;
         this.maxMP = 0;
@@ -140,6 +155,7 @@ export class Beast extends Character {
 export class Rat extends Beast {
     constructor() {
         const name = "Rat";
+        const subType = "Rat"
         const maxHP = 5;
         const currentHP = 5;
         const maxMP = 0;
@@ -150,12 +166,32 @@ export class Rat extends Beast {
         const currentXP = 5;
         const maxXP = 50;
         const strength = 5;
-        const gold = 5;
-        super(name, maxHP, currentHP, maxMP, currentMP, maxSP, currentSP, level, currentXP, maxXP, strength, gold)
+        const gold = 5;  
+        super(name,subType, maxHP, currentHP, maxMP, currentMP, maxSP, currentSP, level, currentXP, maxXP, strength, gold)
         this.mainHand = ratBite;
         this.inventory = [cheese]
     }
 }
+export class Dog extends Beast {
+    constructor() {
+        const name = "Loyal Hound";
+        const subType = "Dog"
+        const maxHP = 10;
+        const currentHP = 10;
+        const maxMP = 10;
+        const currentMP = 10;
+        const maxSP = 10;
+        const currentSP = 10;
+        const level = 1;
+        const currentXP = 0;
+        const maxXP = 50;
+        const strength = 10;
+        const gold = 0;
+        super(name,subType, maxHP, currentHP, maxMP, currentMP, maxSP, currentSP, level, currentXP, maxXP, strength, gold)
+        this.mainHand = dogBite;
+    }
+}
+export const loyalHound = new Dog()
 
 
 

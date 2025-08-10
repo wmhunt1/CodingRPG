@@ -8,7 +8,7 @@ import {
 } from "../Models/ItemModel";
 
 import { Quest } from "../Models/QuestModel"
-import {Skill } from "../Models/SkillModel"
+import { Skill } from "../Models/SkillModel"
 
 /**
  * Creates an instance of an Item subclass from a plain JavaScript object.
@@ -103,6 +103,8 @@ export function instantiateItem(plainItem: any): Item {
 export function instantiateCharacterItems(plainCharacter: any): Character {
     const newCharacter = new Character(
         plainCharacter.name,
+        plainCharacter.type,
+        plainCharacter.subType,
         plainCharacter.maxHP,
         plainCharacter.currentHP,
         plainCharacter.maxMP,
@@ -139,10 +141,10 @@ export function instantiateCharacterItems(plainCharacter: any): Character {
         ? plainCharacter.inventory.map((item: any) => instantiateItem(item))
         : [];
     newCharacter.journal = plainCharacter.journal && Array.isArray(plainCharacter.journal)
-        ? plainCharacter.journal.map((quest: any) => new Quest(quest.id,quest.name,quest.status,quest.type,quest.description,quest.objective,quest.target,quest.targetProgress,quest.xpReward,quest.goldReward,quest.itemReward))
+        ? plainCharacter.journal.map((quest: any) => new Quest(quest.id, quest.name, quest.status, quest.type, quest.description, quest.objective, quest.target, quest.targetProgress, quest.xpReward, quest.goldReward, quest.itemReward))
         : [];
     newCharacter.skillBook = plainCharacter.skillBook && Array.isArray(plainCharacter.skillBook)
-        ? plainCharacter.skillBook.map((skill: any) => new Skill(skill.name,skill.level,skill.currentXP,skill.maxXP))
+        ? plainCharacter.skillBook.map((skill: any) => new Skill(skill.name, skill.level, skill.currentXP, skill.maxXP))
         : [];
     newCharacter.party = plainCharacter.party && Array.isArray(plainCharacter.party)
         ? plainCharacter.party.map((character: any) => instantiateCharacterItems(character))

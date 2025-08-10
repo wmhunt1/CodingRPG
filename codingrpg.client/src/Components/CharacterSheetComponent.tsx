@@ -1,30 +1,42 @@
 import '../StyleSheets/GameStyle.css';
 import { Character } from "../Models/CharacterModel";
 
+import { useState } from "react"
+
 interface CharacterSheetProps {
     hero: Character;
     back: () => void
 }
 function CharacterSheet({ hero, back }: CharacterSheetProps) {
+    const party = hero.party;
+    const [activeCharacter, setActiveCharacter] = useState<Character>(hero)
+
     return (
         <div className="game-layout-grid" id="character-sheet">
             <div className="toolbar">
-                <h2>{hero.name}'s Character Sheet</h2>
+                <h2>{activeCharacter.name}'s Character Sheet</h2>
             </div>
             <div className="game-content-left">
-                <h3>Placeholder</h3>
-                <p>Placeholder</p>
+                <h3>Party</h3>
+                <p>{hero.name}</p>
+                <button className="action-button" onClick={() => setActiveCharacter(hero)}>Select</button>
+                {party.map((partyMember, index) => (
+                    <div key={index}>
+                        <p>{partyMember.name}</p>
+                        <button className="action-button" style={{ width: "100%" }} onClick={() => setActiveCharacter(partyMember)}>Select</button>
+                    </div>
+                ))}
             </div>
             <div className="game-content-main">
                 <div className="stats-display-area">
                     <div className="stats-container">
                         <h3>Base Stats</h3>
                         <div className="stats">
-                            <p>Name: {hero.name}</p>
-                            <p>Level: {hero.level} ({hero.currentXP}/{hero.maxXP})</p>
-                            <p>HP: {hero.currentHP}/{hero.maxHP}</p>
-                            <p>MP: {hero.currentMP}/{hero.maxMP}</p>
-                            <p>SP: {hero.currentSP}/{hero.maxSP}</p>
+                            <p>Name: {activeCharacter.name}</p>
+                            <p>Level: {activeCharacter.level} ({activeCharacter.currentXP}/{activeCharacter.maxXP})</p>
+                            <p>HP: {activeCharacter.currentHP}/{activeCharacter.maxHP}</p>
+                            <p>MP: {activeCharacter.currentMP}/{activeCharacter.maxMP}</p>
+                            <p>SP: {activeCharacter.currentSP}/{activeCharacter.maxSP}</p>
                         </div>
                     </div>
                     <div className="stats-container">

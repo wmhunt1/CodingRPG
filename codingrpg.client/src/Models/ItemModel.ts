@@ -381,6 +381,7 @@ export class NaturalWeapon extends Weapon {
     }
 }
 export const bareFist = new NaturalWeapon("Bare Fist", "Weapon", "Natural", 0, 1, "Your own two fists", "Weapon", 1)
+export const dogBite = new NaturalWeapon("Dog Bite", "Weapon", "Natural", 0, 1, "A Dog's powerful jaws", "Weapon", 5)
 export const ratBite = new NaturalWeapon("Rat Bite", "Weapon", "Natural", 0, 1, "A Rat's sharp teeth", "Weapon", 1)
 
 export class Resource extends Item {
