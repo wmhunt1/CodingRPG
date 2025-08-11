@@ -239,6 +239,7 @@ function Game() {
         setActiveScreen("Equipment");
     }, []);
     const showInventory = useCallback(() => {
+        setLastScreen("Inventory")
         setActiveScreen("Inventory");
     }, []);
     const showJournal = useCallback(() => {
@@ -353,9 +354,13 @@ function Game() {
                 {activeScreen === "Inventory" && (
                     <Inventory
                         hero={hero}
-                        back={() => setActiveScreen("Game")}
+                        back={() => {
+                            setActiveScreen("Game")
+                            setLastScreen("Game")
+                        }}
                         onUpdateHero={handleUpdateSingleHero}
                         addGameLog={addGameLog}
+                        inventorySkillNode={handleSkillNode}
                     />
                 )}
                 {activeScreen === "Journal" && (

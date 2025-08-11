@@ -18,6 +18,7 @@ export class CraftingSkill extends Skill {
 //export const alchemySkill = new CraftingSkill("Alchemy", 1, 0, 50)
 //construction
 export const cookingSkill = new CraftingSkill("Cooking", 1, 0, 50)
+export const leatherWorkingSkill = new CraftingSkill("Leatherworking", 1,0,50)
 //crafting?
 //enchanting
 //engineering
@@ -39,3 +40,4 @@ export const fishingSkill = new GatheringSkill("Fishing", 1, 0, 50)
 export const huntingSkill = new GatheringSkill("Hunting", 1, 0, 50)
 //export const miningSkill = new GatheringSkill("Mining", 1, 0, 50)
 //skinning
+export const woodcuttingSkill = new GatheringSkill("Woodcutting",1,0,50)

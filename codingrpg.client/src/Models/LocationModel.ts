@@ -1,6 +1,6 @@
-import { CombatEncounter, RatCellarCombatEncounter } from "./EncounterModel.ts"
+import { CombatEncounter, CowCombatEncounter, RatCellarCombatEncounter } from "./EncounterModel.ts"
 import { FarmShop, GeneralShop, InnShop, MagicShop, PotionShop, ShopModel, SmithShop, TempleShop } from "./ShopModel.ts"
-import { ButterChurn, CookingRange, DairyCow, Mill, MinnowFishingSpot, RiverWater, SalmonFishingSpot, SkillNodeModel, TroutFishingSpot, Well, WheatField } from "./SkillNodeModel.ts"
+import { ButterChurn, CookingRange, DairyCow, Mill, MinnowFishingSpot, RiverWater, SalmonFishingSpot, SkillNodeModel, TroutFishingSpot, Well, WheatField, WoodTree } from "./SkillNodeModel.ts"
 export class Location {
     name: string;
     //add conversations
@@ -13,6 +13,13 @@ export class CombatLocation extends Location {
     constructor(name: string, combatEncounter: CombatEncounter) {
         super(name)
         this.combatEncounter = combatEncounter;
+    }
+}
+export class CowCombatLocation extends CombatLocation {
+    constructor() {
+        const name = "Kill Cows"
+        const combatEncounter: CombatEncounter = new CowCombatEncounter()
+        super(name, combatEncounter)
     }
 }
 export class RatCellar extends CombatLocation {
@@ -100,7 +107,7 @@ export class ButterChurnLocation extends CookingSKillLocation {
 }
 export class CookingRangeLocation extends CookingSKillLocation {
     constructor() {
-        const name = "Range";
+        const name = "Cooking Range";
         const skillNode = new CookingRange()
         super(name, skillNode)
     }
@@ -120,8 +127,7 @@ export class RiverWaterLocation extends CookingSKillLocation {
     }
 }
 export class WellLocation extends CookingSKillLocation {
-    constructor() {
-        const name = "Well";
+    constructor(name: string) {
         const skillNode = new Well()
         super(name, skillNode)
     }
@@ -184,5 +190,22 @@ export class MiningSkillLocation extends GatheringSKillLocation {
 export class MineLocation extends MiningSkillLocation {
     constructor(name: string, skilLNode: SkillNodeModel) {
         super(name, skilLNode)
+    }
+}
+export class WoodcuttingSkillLocation extends GatheringSKillLocation {
+    constructor(name: string, skilLNode: SkillNodeModel) {
+        super(name, skilLNode)
+    }
+}
+export class TreeLocation extends WoodcuttingSkillLocation {
+    constructor(name: string, skilLNode: SkillNodeModel) {
+        super(name, skilLNode)
+    }
+}
+export class WoodTreeLocation extends TreeLocation {
+    constructor() {
+        const name = "Tree";
+        const skillNode = new WoodTree()
+        super(name, skillNode)
     }
 }

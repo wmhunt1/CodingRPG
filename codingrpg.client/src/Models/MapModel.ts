@@ -1,6 +1,6 @@
 import { AreaModel, Bridge, Cabin, Dock, Farm, Forest, Graveyard, HauntedHouse, River, Road, RoadRotated, StartingVillage, WaterMill } from './AreaModel.ts';
 import { getRawMinnowQuest1Dialogue } from "./DialogueNodeModel.ts"
-import { Location, MinnowFishingSpotLocation, PotionShopLocation, RiverWaterLocation, SalmonFishingSpotLocation, TroutFishingSpotLocation } from "./LocationModel.ts"
+import { Location, MinnowFishingSpotLocation, PotionShopLocation, RiverWaterLocation, SalmonFishingSpotLocation, TroutFishingSpotLocation,WoodTreeLocation } from "./LocationModel.ts"
 //import { fetchRawMinnowQuest1 } from "./QuestModel.ts"
 
 export class MapModel {
@@ -11,7 +11,7 @@ export class MapModel {
         this.areas = areas;
     }
 }
-const forestLocations: Location[] = []
+const forestLocations: Location[] = [new WoodTreeLocation()]
 const riverFishingSpot = [new MinnowFishingSpotLocation(), new SalmonFishingSpotLocation(), new TroutFishingSpotLocation()];
 const riverLocations = [...riverFishingSpot, new RiverWaterLocation()]
 export class ValleyMap extends MapModel {

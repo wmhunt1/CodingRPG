@@ -1,4 +1,4 @@
-import { Character, Rat } from './CharacterModel.ts';
+import { Character,Cow, Rat } from './CharacterModel.ts';
 export class Encounter {
     name: string;
     constructor(name: string) {
@@ -10,6 +10,13 @@ export class CombatEncounter extends Encounter {
     constructor(name: string, combatants: Character[]) {
         super(name)
         this.combatants = combatants;
+    }
+}
+export class CowCombatEncounter extends CombatEncounter {
+    constructor() {
+        const name = "A Cow"
+        const combatants: Character[] = [new Cow()];
+        super(name, combatants)
     }
 }
 export class NoCombatEncounter extends CombatEncounter {

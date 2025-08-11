@@ -5,15 +5,17 @@ import { useState, useEffect } from "react";
 import { instantiateCharacterItems } from "../Utils/CharacterUtils"
 import { removeItemFromInventory } from '../Utils/InventoryUtils';
 import { Potion, Food } from "../Models/ItemModel";
+import {LeatherworkingSKillNode, SkillNodeModel } from "../Models/SkillNodeModel"
 
 interface InventoryProps {
     hero: Character;
     back: () => void;
     onUpdateHero: (updatedHero: Character) => void;
     addGameLog: (message: string) => void;
+    inventorySkillNode: (skillNode: SkillNodeModel) => void;
 }
 
-function Inventory({ hero, back, onUpdateHero, addGameLog }: InventoryProps) {
+function Inventory({ hero, back, onUpdateHero, addGameLog,inventorySkillNode }: InventoryProps) {
     // The currentHero state tracks which character is selected to receive the item's effects.
     // We initialize it with the main hero from the props.
     const [currentHero, setCurrentHero] = useState(hero);
@@ -78,7 +80,9 @@ function Inventory({ hero, back, onUpdateHero, addGameLog }: InventoryProps) {
             verb = (itemToUse instanceof Potion) ? "drank" : "ate";
         } else if (itemToUse instanceof Equipable) {
             verb = "equipped";
-        } else {
+        }
+        else
+        {
             verb = "used";
         }
         addGameLog(`${currentHero.name} ${verb} ${itemToUse.name}.`);
@@ -142,6 +146,7 @@ function Inventory({ hero, back, onUpdateHero, addGameLog }: InventoryProps) {
             </div>
             <div className="area-options">
                 <h3>Area Options</h3>
+                <button className="area-button" onClick={() => inventorySkillNode(new LeatherworkingSKillNode)}>Leatherworking</button>
                 <button className='area-button' onClick={() => back()}>Back</button>
             </div>
             <div className="game-content-bottom">

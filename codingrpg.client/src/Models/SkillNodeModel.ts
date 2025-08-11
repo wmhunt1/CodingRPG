@@ -1,4 +1,15 @@
-import { bakeBread, churnButter, cookRawMinow, fetchWater, fishRawMinnow, fishRawSalmon, harvestWheat, milkCow, millWheatFlour, SkillRecipe } from "./SkillRecipesModel"
+import {
+    bakeBread,
+    chopWoodLogs,
+    churnButter, cookRawBeef, cookRawMinow, cookRawSalmon, cookRawTrout,
+    craftLeatherBelt, craftLeatherBoots, craftLeatherBracers, craftLeatherChest, craftLeatherCowl, craftLeatherGauntlets, craftLeatherLegs, craftLeatherPauldrons,
+    fetchWater,
+    fishRawMinnow, fishRawSalmon,
+    harvestWheat,
+    milkCow,
+    millWheatFlour,
+    SkillRecipe
+} from "./SkillRecipesModel"
 export class SkillNodeModel {
     name: string;
     recipes: SkillRecipe[];
@@ -23,15 +34,15 @@ export class CookingSKillNode extends CraftingSkillNode {
 }
 export class ButterChurn extends CookingSKillNode {
     constructor() {
-        const name = "Butter";
+        const name = "Butter Churn";
         const recipes: SkillRecipe[] = [churnButter]
         super(name, recipes)
     }
 }
 export class CookingRange extends CookingSKillNode {
     constructor() {
-        const name = "Range";
-        const recipes: SkillRecipe[] = [bakeBread, cookRawMinow]
+        const name = "Cooking Range";
+        const recipes: SkillRecipe[] = [bakeBread, cookRawBeef, cookRawMinow, cookRawSalmon, cookRawTrout]
         super(name, recipes)
     }
 }
@@ -58,6 +69,14 @@ export class Well extends WaterSourceNode {
     constructor() {
         const name = "Well";
         super(name)
+    }
+}
+export class LeatherworkingSKillNode extends CraftingSkillNode {
+
+    constructor() {
+        const name = "Leatherworking"
+        const recipes: SkillRecipe[] = [craftLeatherBelt, craftLeatherBoots, craftLeatherBracers, craftLeatherChest, craftLeatherCowl, craftLeatherGauntlets, craftLeatherLegs, craftLeatherPauldrons]
+        super(name, recipes)
     }
 }
 export class GatheringSKillNode extends SkillNodeModel {
@@ -121,13 +140,30 @@ export class TroutFishingSpot extends FishingSpot {
         super(name, recipes)
     }
 }
-export class MiningSite extends GatheringSKillNode {
+export class MiningSkillNode extends GatheringSKillNode {
     constructor(name: string, recipes: SkillRecipe[]) {
         super(name, recipes)
     }
 }
-export class OreVein extends MiningSite {
+export class OreVein extends MiningSkillNode {
     constructor(name: string, recipes: SkillRecipe[]) {
+        super(name, recipes)
+    }
+}
+export class WoodcuttingSkillNode extends GatheringSKillNode {
+    constructor(name: string, recipes: SkillRecipe[]) {
+        super(name, recipes)
+    }
+}
+export class Tree extends WoodcuttingSkillNode {
+    constructor(name: string, recipes: SkillRecipe[]) {
+        super(name, recipes)
+    }
+}
+export class WoodTree extends Tree {
+    constructor() {
+        const name = "Trees"
+        const recipes: SkillRecipe[] = [chopWoodLogs]
         super(name, recipes)
     }
 }

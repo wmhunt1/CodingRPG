@@ -1,7 +1,15 @@
-import {Character } from "./CharacterModel.ts"
+import { Character } from "./CharacterModel.ts"
 import { type DialogueNode } from "./DialogueNodeModel.ts"
-import { ButterChurnLocation, CookingRangeLocation, DairyCowLocation, FarmShopLocation, GeneralStoreLocation, InnLocation, Location, MillLocation, SmithShopLocation, WellLocation, WheatFieldLocation } from './LocationModel.ts';
-import { Quest,slayRatQuest1 } from "./QuestModel.ts"
+import {
+    ButterChurnLocation, CookingRangeLocation, CowCombatLocation,
+    DairyCowLocation, FarmShopLocation,
+    GeneralStoreLocation, InnLocation,
+    Location,
+    MillLocation,
+    SmithShopLocation,
+    WellLocation, WheatFieldLocation
+} from './LocationModel.ts';
+import { Quest, slayRatQuest1 } from "./QuestModel.ts"
 import bridgeImage from "../assets/stone-bridge.png"
 import cabinImage from "../assets/wood-cabin.png"
 import dockImage from "../assets/wooden-pier.png"
@@ -48,7 +56,7 @@ export class NotArea extends AreaModel {
     }
 }
 export class Dungeon extends AreaModel {
-    constructor(name: string, locations: Location[], quests: Quest[], conversations: ((hero: Character, addGameLog: (message: string) => void) => DialogueNode[])[],  x: number, y: number) {
+    constructor(name: string, locations: Location[], quests: Quest[], conversations: ((hero: Character, addGameLog: (message: string) => void) => DialogueNode[])[], x: number, y: number) {
         super(name, locations, quests, conversations, x, y)
         //this.imageSrc = farmImage;
         //this.imageAlt = "Farm";
@@ -56,7 +64,7 @@ export class Dungeon extends AreaModel {
 }
 export class Farm extends AreaModel {
     constructor(name: string, quests: Quest[], conversations: ((hero: Character, addGameLog: (message: string) => void) => DialogueNode[])[], x: number, y: number) {
-        const locations: Location[] = [new FarmShopLocation(`${name} Shop`), new ButterChurnLocation(), new CookingRangeLocation(), new DairyCowLocation(), new WellLocation(), new WheatFieldLocation()]
+        const locations: Location[] = [new FarmShopLocation(`${name} Shop`), new ButterChurnLocation(), new CookingRangeLocation(), new CowCombatLocation(), new DairyCowLocation(), new WellLocation("Farm Well"), new WheatFieldLocation()]
         super(name, locations, quests, conversations, x, y)
         this.imageSrc = farmImage;
         this.imageAlt = "Farm";
@@ -86,7 +94,7 @@ export class Structure extends AreaModel {
     }
 }
 export class Cabin extends Structure {
-    constructor(name: string,locations:Location[], quests: Quest[], conversations: ((hero: Character, addGameLog: (message: string) => void) => DialogueNode[])[], x: number, y: number) {
+    constructor(name: string, locations: Location[], quests: Quest[], conversations: ((hero: Character, addGameLog: (message: string) => void) => DialogueNode[])[], x: number, y: number) {
         super(name, locations, quests, conversations, x, y)
         this.imageSrc = cabinImage;
         this.imageAlt = "Cabin";
@@ -134,7 +142,7 @@ export class RoadRotated extends TravelWay {
     }
 }
 export class Settlement extends AreaModel {
-    constructor(name: string, locations: Location[], quests: Quest[], conversations: ((hero: Character, addGameLog: (message: string) => void) => DialogueNode[])[] , x: number, y: number) {
+    constructor(name: string, locations: Location[], quests: Quest[], conversations: ((hero: Character, addGameLog: (message: string) => void) => DialogueNode[])[], x: number, y: number) {
         super(name, locations, quests, conversations, x, y)
         this.imageSrc = villageImage;
         this.imageAlt = "A Settlement";
@@ -151,7 +159,7 @@ export class StartingVillage extends Village {
     constructor() {
         const name = "Starting Village"
         //maybe move cellar to inn location
-        const locations: Location[] = [new GeneralStoreLocation("Joe the Trader's"), new InnLocation("Dreaming Worker Inn", 5),new SmithShopLocation("Forgeheart Smithy"), new WellLocation()]
+        const locations: Location[] = [new GeneralStoreLocation("Joe the Trader's"), new InnLocation("Dreaming Worker Inn", 5), new SmithShopLocation("Forgeheart Smithy"), new WellLocation("Village Well")]
         const conversations: ((hero: Character, addGameLog: (message: string) => void) => DialogueNode[])[] = []
         const quests: Quest[] = [slayRatQuest1]
         const x = 0;
@@ -161,7 +169,7 @@ export class StartingVillage extends Village {
 }
 export class WaterBody extends AreaModel {
     //fishing spot
-    constructor(name: string, locations: Location[], quests: Quest[], conversations: ((hero: Character, addGameLog: (message: string) => void) => DialogueNode[])[],x: number, y: number) {
+    constructor(name: string, locations: Location[], quests: Quest[], conversations: ((hero: Character, addGameLog: (message: string) => void) => DialogueNode[])[], x: number, y: number) {
         super(name, locations, quests, conversations, x, y)
     }
 }

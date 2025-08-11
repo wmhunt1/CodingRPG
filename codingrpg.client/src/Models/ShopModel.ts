@@ -1,5 +1,10 @@
 import { CombatEncounter, NoCombatEncounter, RatCellarCombatEncounter } from "./EncounterModel.ts";
-import { basicFishingRod, basicHealSpellTome,basicHealthPotion, basicManaPotion, basicSickle, basicStaminaPotion, beer, bread, bucket, butter, club, Item, milk, woodenShield } from "./ItemModel"
+import {
+    basicFishingRod, basicHatchet, basicHealSpellTome, basicHealthPotion, basicManaPotion, basicNeedleAndThread, basicSickle, basicStaminaPotion,
+    beer, bread, bucket, butter, club, Item,
+    leatherBelt, leatherBoots, leatherBracers, leatherChest, leatherCowl, leatherGauntlets, leatherLegs, leatherPauldrons,
+    milk, woodenShield
+} from "./ItemModel"
 import { CookingRange, SkillNodeModel } from "./SkillNodeModel.ts"
 export class ShopModel {
     name: string;
@@ -25,7 +30,7 @@ export class FarmShop extends ShopModel {
 export class GeneralShop extends ShopModel {
     constructor() {
         const name = "General Shop";
-        const inventory: Item[] = [basicFishingRod, basicSickle, bucket]
+        const inventory: Item[] = [basicFishingRod, basicHatchet, basicNeedleAndThread, basicSickle, bucket]
         const skillNodes: SkillNodeModel[] = []
         const combatEncounter = new NoCombatEncounter()
         super(name, inventory, skillNodes, combatEncounter)
@@ -54,7 +59,7 @@ export class MagicShop extends ShopModel {
 export class PotionShop extends ShopModel {
     constructor() {
         const name = "Potion Shop";
-        const inventory: Item[] = [basicHealthPotion,basicManaPotion,basicStaminaPotion]
+        const inventory: Item[] = [basicHealthPotion, basicManaPotion, basicStaminaPotion]
         const skillNodes: SkillNodeModel[] = [];
         const combatEncounter = new NoCombatEncounter();
         super(name, inventory, skillNodes, combatEncounter)
@@ -72,7 +77,7 @@ export class TempleShop extends ShopModel {
 export class SmithShop extends ShopModel {
     constructor() {
         const name = "Smithy";
-        const inventory: Item[] = [club, woodenShield]
+        const inventory: Item[] = [club, leatherBelt, leatherBoots, leatherBracers, leatherChest, leatherCowl, leatherGauntlets, leatherLegs, leatherPauldrons, woodenShield]
         const skillNodes: SkillNodeModel[] = [];
         const combatEncounter = new NoCombatEncounter();
         super(name, inventory, skillNodes, combatEncounter)

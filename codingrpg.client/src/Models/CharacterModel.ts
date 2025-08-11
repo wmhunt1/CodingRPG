@@ -1,17 +1,17 @@
 import {
-    Back, bareBack, bareChest, bareFeet, bareFinger, bareFist, bareHands, bareHead, bareLegs, bareNeck, bareShoulders, bareWaist, bareWrists, cheese, ChestArmor,
+    Back, bareBack, bareChest, bareFeet, bareFinger, bareFist, bareHands, bareHead, bareLegs, bareNeck, bareShoulders, bareWaist, bareWrists,
+    charge, cheese, ChestArmor, cowLeather,
     dogBite, emptyHand, FootArmor,
     HandArmor, HeadArmor, Item,
     LegArmor,
     Neck, OffHand, pants,
-    ratBite, Ring, shoes, ShoulderArmor,
+    ratBite,rawBeef, Ring, shoes, ShoulderArmor,
     tunic,
     WaistArmor, Weapon, WristArmor,
-    basicHealthPotion
 } from './ItemModel.ts';
 import { Quest } from "./QuestModel.ts"
-import { cookingSkill, farmingSkill, fishingSkill, Skill } from "./SkillModel.ts"
-import {basicHealSpell, Spell } from "./SpellModel.ts"
+import { cookingSkill, farmingSkill, fishingSkill, leatherWorkingSkill, Skill, woodcuttingSkill } from "./SkillModel.ts"
+import { Spell } from "./SpellModel.ts"
 
 export class Character {
     name: string = "";
@@ -133,10 +133,10 @@ export class Hero extends Humanoid {
         const strength = 10;
         const gold = 10;
         super(name, maxHP, currentHP, maxMP, currentMP, maxSP, currentSP, level, currentXP, maxXP, strength, gold)
-        this.inventory = [basicHealthPotion]
+        this.inventory = []
         this.party = [loyalHound]
-        this.skillBook = [cookingSkill, farmingSkill, fishingSkill]
-        this.spellBook = [basicHealSpell]
+        this.skillBook = [cookingSkill, farmingSkill, fishingSkill,leatherWorkingSkill,woodcuttingSkill]
+        this.spellBook = []
     }
 }
 export class Beast extends Character {
@@ -156,24 +156,24 @@ export class Beast extends Character {
         this.maxMP = 0;
     }
 }
-export class Rat extends Beast {
+export class Cow extends Beast {
     constructor() {
-        const name = "Rat";
-        const subType = "Rat"
-        const maxHP = 5;
-        const currentHP = 5;
+        const name = "Cow";
+        const subType = "Cow"
+        const maxHP = 20;
+        const currentHP = 20;
         const maxMP = 0;
         const currentMP = 0;
-        const maxSP = 5;
-        const currentSP = 5;
-        const level = 1;
-        const currentXP = 5;
+        const maxSP = 10;
+        const currentSP = 10;
+        const level = 5;
+        const currentXP = 25;
         const maxXP = 50;
-        const strength = 5;
-        const gold = 5;
+        const strength = 15;
+        const gold = 0;
         super(name, subType, maxHP, currentHP, maxMP, currentMP, maxSP, currentSP, level, currentXP, maxXP, strength, gold)
-        this.mainHand = ratBite;
-        this.inventory = [cheese]
+        this.mainHand = charge;
+        this.inventory = [cowLeather, rawBeef]
     }
 }
 export class Dog extends Beast {
@@ -196,6 +196,26 @@ export class Dog extends Beast {
     }
 }
 export const loyalHound = new Dog()
+export class Rat extends Beast {
+    constructor() {
+        const name = "Rat";
+        const subType = "Rat"
+        const maxHP = 5;
+        const currentHP = 5;
+        const maxMP = 0;
+        const currentMP = 0;
+        const maxSP = 5;
+        const currentSP = 5;
+        const level = 1;
+        const currentXP = 5;
+        const maxXP = 50;
+        const strength = 5;
+        const gold = 5;
+        super(name, subType, maxHP, currentHP, maxMP, currentMP, maxSP, currentSP, level, currentXP, maxXP, strength, gold)
+        this.mainHand = ratBite;
+        this.inventory = [cheese]
+    }
+}
 
 
 
