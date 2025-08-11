@@ -3,12 +3,17 @@ import { type DialogueNode } from "./DialogueNodeModel.ts"
 import { ButterChurnLocation, CookingRangeLocation, DairyCowLocation, FarmShopLocation, GeneralStoreLocation, InnLocation, Location, MillLocation, SmithShopLocation, WellLocation, WheatFieldLocation } from './LocationModel.ts';
 import { Quest,slayRatQuest1 } from "./QuestModel.ts"
 import bridgeImage from "../assets/stone-bridge.png"
+import cabinImage from "../assets/wood-cabin.png"
 import dockImage from "../assets/wooden-pier.png"
 import farmImage from "../assets/wheat.png";
 import forestImage from "../assets/forest.png";
+import graveyardImage from "../assets/tombstone.png"
+import hauntedHouseImage from "../assets/spooky-house.png"
 import notAreaImage from "../assets/plain-square.png"
 import roadImage from "../assets/stone-path.png"
-import riverImage from "../assets/splashy-stream.png";
+import roadRotatedImage from "../assets/stone-path-rotate.png"
+import riverImage from "../assets/river.png";
+import riverRotatedImage from "../assets/river-rotated.png";
 import villageImage from "../assets/village.png";
 import waterMillImage from "../assets/water-mill.png";
 
@@ -60,11 +65,17 @@ export class Farm extends AreaModel {
 }
 export class Forest extends AreaModel {
     //hunting spot lumbering
-    constructor(name: string, quests: Quest[], conversations: ((hero: Character, addGameLog: (message: string) => void) => DialogueNode[])[], x: number, y: number) {
-        const locations: Location[] = []
+    constructor(name: string, locations: Location[], quests: Quest[], conversations: ((hero: Character, addGameLog: (message: string) => void) => DialogueNode[])[], x: number, y: number) {
         super(name, locations, quests, conversations, x, y)
         this.imageSrc = forestImage;
-        this.imageAlt = "Forest";
+        this.imageAlt = "A forest";
+    }
+}
+export class Graveyard extends AreaModel {
+    constructor(name: string, locations: Location[], quests: Quest[], conversations: ((hero: Character, addGameLog: (message: string) => void) => DialogueNode[])[], x: number, y: number) {
+        super(name, locations, quests, conversations, x, y)
+        this.imageSrc = graveyardImage;
+        this.imageAlt = "A graveyard";
     }
 }
 export class Structure extends AreaModel {
@@ -72,6 +83,20 @@ export class Structure extends AreaModel {
         super(name, locations, quests, conversations, x, y)
         //this.imageSrc = farmImage;
         //this.imageAlt = "Farm";
+    }
+}
+export class Cabin extends Structure {
+    constructor(name: string,locations:Location[], quests: Quest[], conversations: ((hero: Character, addGameLog: (message: string) => void) => DialogueNode[])[], x: number, y: number) {
+        super(name, locations, quests, conversations, x, y)
+        this.imageSrc = cabinImage;
+        this.imageAlt = "Cabin";
+    }
+}
+export class HauntedHouse extends Structure {
+    constructor(name: string, locations: Location[], quests: Quest[], conversations: ((hero: Character, addGameLog: (message: string) => void) => DialogueNode[])[], x: number, y: number) {
+        super(name, locations, quests, conversations, x, y)
+        this.imageSrc = hauntedHouseImage;
+        this.imageAlt = "A Haunted House";
     }
 }
 export class WaterMill extends Structure {
@@ -98,6 +123,13 @@ export class Road extends TravelWay {
     constructor(name: string, locations: Location[], quests: Quest[], conversations: ((hero: Character, addGameLog: (message: string) => void) => DialogueNode[])[], x: number, y: number) {
         super(name, locations, quests, conversations, x, y)
         this.imageSrc = roadImage;
+        this.imageAlt = "A Road"
+    }
+}
+export class RoadRotated extends TravelWay {
+    constructor(name: string, locations: Location[], quests: Quest[], conversations: ((hero: Character, addGameLog: (message: string) => void) => DialogueNode[])[], x: number, y: number) {
+        super(name, locations, quests, conversations, x, y)
+        this.imageSrc = roadRotatedImage;
         this.imageAlt = "A Road"
     }
 }
@@ -144,6 +176,13 @@ export class River extends WaterBody {
     constructor(name: string, locations: Location[], quests: Quest[], conversations: ((hero: Character, addGameLog: (message: string) => void) => DialogueNode[])[], x: number, y: number) {
         super(name, locations, quests, conversations, x, y)
         this.imageSrc = riverImage;
+        this.imageAlt = "A River"
+    }
+}
+export class RiverRotated extends WaterBody {
+    constructor(name: string, locations: Location[], quests: Quest[], conversations: ((hero: Character, addGameLog: (message: string) => void) => DialogueNode[])[], x: number, y: number) {
+        super(name, locations, quests, conversations, x, y)
+        this.imageSrc = riverRotatedImage;
         this.imageAlt = "A River"
     }
 }

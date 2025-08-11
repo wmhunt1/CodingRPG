@@ -91,8 +91,8 @@ function Game() {
     // Create a memoized array of surrounding areas for efficient rendering
     const surroundingAreas = useMemo(() => {
         const areas = [];
-        for (let y = area.yCoord + 2; y >= area.yCoord - 2; y--) {
-            for (let x = area.xCoord - 2; x <= area.xCoord + 2; x++) {
+        for (let y = area.yCoord + 4; y >= area.yCoord - 4; y--) {
+            for (let x = area.xCoord - 4; x <= area.xCoord + 4; x++) {
                 // Find the area by coordinates. If not found, create a new NotArea.
                 const foundArea = areaMap.areas.find(a => a.xCoord === x && a.yCoord === y) || new NotArea(x, y);
                 areas.push(foundArea);

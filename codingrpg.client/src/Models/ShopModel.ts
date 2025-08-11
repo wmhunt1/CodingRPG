@@ -1,5 +1,5 @@
 import { CombatEncounter, NoCombatEncounter, RatCellarCombatEncounter } from "./EncounterModel.ts";
-import { basicFishingRod, basicHealSpellTome, basicSickle, beer, bread, bucket, butter, club, Item, milk, woodenShield } from "./ItemModel"
+import { basicFishingRod, basicHealSpellTome,basicHealthPotion, basicManaPotion, basicSickle, basicStaminaPotion, beer, bread, bucket, butter, club, Item, milk, woodenShield } from "./ItemModel"
 import { CookingRange, SkillNodeModel } from "./SkillNodeModel.ts"
 export class ShopModel {
     name: string;
@@ -46,6 +46,15 @@ export class MagicShop extends ShopModel {
     constructor() {
         const name = "Magic Shop";
         const inventory: Item[] = []
+        const skillNodes: SkillNodeModel[] = [];
+        const combatEncounter = new NoCombatEncounter();
+        super(name, inventory, skillNodes, combatEncounter)
+    }
+}
+export class PotionShop extends ShopModel {
+    constructor() {
+        const name = "Potion Shop";
+        const inventory: Item[] = [basicHealthPotion,basicManaPotion,basicStaminaPotion]
         const skillNodes: SkillNodeModel[] = [];
         const combatEncounter = new NoCombatEncounter();
         super(name, inventory, skillNodes, combatEncounter)
