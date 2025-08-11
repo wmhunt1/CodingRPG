@@ -192,7 +192,7 @@ function Game() {
     }, [handleCombat, handleShop, handleSkillNode]);
 
     const handleCombatEnd = useCallback(
-        (result: "victory" | "defeat" | "run" | "exit", updatedHeroes: Hero[]) => {
+        (result: "victory" | "defeat" | "run" | "exit", updatedHeroes: Character[]) => {
             setActiveScreen(lastScreen);
             setHero(updatedHeroes[0]);
             setParty(updatedHeroes[0].party);

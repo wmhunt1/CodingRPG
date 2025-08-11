@@ -6,11 +6,12 @@ import {
     Neck, OffHand, pants,
     ratBite, Ring, shoes, ShoulderArmor,
     tunic,
-    WaistArmor, Weapon, WristArmor
+    WaistArmor, Weapon, WristArmor,
+    basicHealthPotion
 } from './ItemModel.ts';
 import { Quest } from "./QuestModel.ts"
 import { cookingSkill, farmingSkill, fishingSkill, Skill } from "./SkillModel.ts"
-import { Spell } from "./SpellModel.ts"
+import {basicHealSpell, Spell } from "./SpellModel.ts"
 
 export class Character {
     name: string = "";
@@ -132,10 +133,10 @@ export class Hero extends Humanoid {
         const strength = 10;
         const gold = 10;
         super(name, maxHP, currentHP, maxMP, currentMP, maxSP, currentSP, level, currentXP, maxXP, strength, gold)
-        this.inventory = []
+        this.inventory = [basicHealthPotion]
         this.party = [loyalHound]
         this.skillBook = [cookingSkill, farmingSkill, fishingSkill]
-        this.spellBook = []
+        this.spellBook = [basicHealSpell]
     }
 }
 export class Beast extends Character {
