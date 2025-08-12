@@ -1,7 +1,7 @@
 //Models/ItemModel.ts
 
 import { Character } from "./CharacterModel";
-import { basicHealSpell, Spell } from "./SpellModel"
+import { basicHealSpell, magicBoltSpell, Spell } from "./SpellModel"
 import { addItemToInventory, removeItemFromInventory } from "..//Utils/InventoryUtils";
 import { healCharacter } from "../Utils/GameUtil";
 import { addSpellToSpellBook } from "../Utils/SpellUtil";
@@ -150,6 +150,7 @@ export class SpellTome extends Item {
     }
 }
 export const basicHealSpellTome = new SpellTome("Tome: Basic Heal", "Consumable", "SpellTome", 1, 10, "Teaches Basic Heal", basicHealSpell)
+export const magicBoltSpellTome = new SpellTome("Tome: Magic Bolt", "Consumable", "SpellTome", 1, 10, "Teaches Magic Bolt", magicBoltSpell)
 export class Equipable extends Item {
     slot: string;
     constructor(name: string, type: string = "Equipable", subType: string = "N/A", quantity: number, cost: number, description: string, slot: string) {

@@ -25,7 +25,6 @@ export const leatherWorkingSkill = new CraftingSkill("Leatherworking", 1,0,50)
 //firemaking or utility
 //fletching
 //jewelcrafting
-//leatherworking
 //pottery
 //export const smithingSkill = new CraftingSkill("Smithing", 1, 0, 50)
 //tailoring

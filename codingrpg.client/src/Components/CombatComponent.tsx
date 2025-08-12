@@ -15,7 +15,6 @@ import "../StyleSheets/GameStyle.css";
 // Utility Imports
 import { executeCombatRound } from "../Utils/CombatUtils";
 import { checkCombatOutcome } from "../Utils/CombatOutcomeUtils";
-import { addItemToInventory, removeItemFromInventory } from "../Utils/InventoryUtils"
 
 interface CombatArenaProps {
     heroes: Character[];
@@ -29,14 +28,14 @@ interface CombatArenaProps {
 //add target selection later
 function CombatArena({ heroes, enemies, onCombatEnd, onUpdateHeroes, addGameLog }: CombatArenaProps) {
     // We now store a copy of the initial enemies to ensure the full list is available for looting on victory
-    const originalEnemiesRef = useRef<Character[]>(enemies.map((enemy) => ({ ...enemy })));
+    const originalEnemiesRef = useRef<Character[]>(enemies.map((enemy, index) => ({ ...enemy, name: `${enemy.name} ${index + 1}` })));
 
     const [combatOngoing, setCombatOngoing] = useState(true);
     const [currentHeroes, setCurrentHeroes] = useState<Character[]>(() =>
         heroes.map((hero) => ({ ...hero }))
     );
     const [currentEnemies, setCurrentEnemies] = useState<Character[]>(() =>
-        enemies.map((enemy) => ({ ...enemy }))
+        enemies.map((enemy, index) => ({ ...enemy, name: `${enemy.name} ${index + 1}` }))
     );
     const [action, setAction] = useState("Attack")
     const [target, setTarget] = useState(enemies[0])
@@ -78,25 +77,14 @@ function CombatArena({ heroes, enemies, onCombatEnd, onUpdateHeroes, addGameLog 
     const handleCombatRound = useCallback(() => {
         if (!combatOngoing) return;
         const selectedTarget = targetType === "Ally" ? currentHeroes[targetedIndex] : currentEnemies[targetedIndex];
-
-        if (action === "Item" && useItem) {
-            //later move this to inside the execute combat round
-            removeItemFromInventory(currentHeroes[0].inventory, useItem, 1)
-            addItemToInventory(selectedTarget.inventory, useItem, 1)
-            useItem.use(selectedTarget)
-            addGameLog(`${selectedTarget.name} uses a ${useItem.name}`)
-        }
-        if (action === "Spell" && useSpell) {
-            //later move this inside execute combat
-            useSpell.cast(currentHeroes[0], selectedTarget)
-            addGameLog(`${currentHeroes[0].name} casts ${useSpell.name} on ${selectedTarget.name}`)
-        }
         const { updatedHeroes, updatedEnemies } = executeCombatRound(
             currentHeroes,
             currentEnemies,
             addGameLog,
             action,
-            selectedTarget
+            selectedTarget,
+            useItem,
+            useSpell,
         );
 
         setCurrentEnemies(updatedEnemies);
@@ -145,6 +133,14 @@ function CombatArena({ heroes, enemies, onCombatEnd, onUpdateHeroes, addGameLog 
         setShowAbilityModal(false);
         handleSelectAction("Ability")
         //setSpell
+    }
+    const handleSetUseItem = (item: Item) => {
+        setUseItem(item)
+        closeItemModal()
+    }
+    const handleSetUseSpell = (spell: Spell) => {
+        setUseSpell(spell)
+        closeSpellModal()
     }
 
     return (
@@ -239,7 +235,7 @@ function CombatArena({ heroes, enemies, onCombatEnd, onUpdateHeroes, addGameLog 
                         {heroes[0].inventory.map((item, index) => (
                             <div key={index}>
                                 <p>{item.name} x {item.quantity}</p>
-                                <button className="buy-sell-button" onClick={() => setUseItem(item)}>Use</button>
+                                <button className="buy-sell-button" onClick={() => handleSetUseItem(item)}>Use</button>
                             </div>
                         ))}
                         <button onClick={closeItemModal}>Close</button>
@@ -256,7 +252,7 @@ function CombatArena({ heroes, enemies, onCombatEnd, onUpdateHeroes, addGameLog 
                             <div key={index}>
                                 <p>{spell.name} - {spell.manaCost} MP</p>
                                 <p>{spell.description}</p>
-                                <button className="buy-sell-button" onClick={() => setUseSpell(spell)}>Use</button>
+                                <button className="buy-sell-button" onClick={() => handleSetUseSpell(spell)}>Cast</button>
                             </div>
                         ))}
                         <button onClick={closeSpellModal}>Close</button>

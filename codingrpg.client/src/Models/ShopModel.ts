@@ -3,7 +3,7 @@ import {
     basicFishingRod, basicHatchet, basicHealSpellTome, basicHealthPotion, basicManaPotion, basicNeedleAndThread, basicSickle, basicStaminaPotion,
     beer, bread, bucket, butter, club, Item,
     leatherBelt, leatherBoots, leatherBracers, leatherChest, leatherCowl, leatherGauntlets, leatherLegs, leatherPauldrons,
-    milk, woodenShield
+    magicBoltSpellTome, milk, woodenShield
 } from "./ItemModel"
 import { CookingRange, SkillNodeModel } from "./SkillNodeModel.ts"
 export class ShopModel {
@@ -50,7 +50,7 @@ export class InnShop extends ShopModel {
 export class MagicShop extends ShopModel {
     constructor() {
         const name = "Magic Shop";
-        const inventory: Item[] = []
+        const inventory: Item[] = [magicBoltSpellTome]
         const skillNodes: SkillNodeModel[] = [];
         const combatEncounter = new NoCombatEncounter();
         super(name, inventory, skillNodes, combatEncounter)

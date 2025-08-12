@@ -1,4 +1,4 @@
-import { healCharacter } from "../Utils/GameUtil";
+import { damageCharacter, healCharacter } from "../Utils/GameUtil";
 import { addSpellToSpellBook } from "../Utils/SpellUtil";
 import { Character } from "./CharacterModel"
 export class Spell {
@@ -12,7 +12,7 @@ export class Spell {
     spellValue: number;
     duration: number;
     //effect: () => void;
-    constructor(name: string, description: string, school: string, level: number, type: string, subType: string, manaCost: number, spellValue: number,duration:number) {
+    constructor(name: string, description: string, school: string, level: number, type: string, subType: string, manaCost: number, spellValue: number, duration: number) {
         this.name = name;
         this.description = description;
         this.school = school;
@@ -32,18 +32,33 @@ export class Spell {
         return learner;
     }
 }
-export class HealingSpell extends Spell {
-    constructor(name: string, description: string, school: string, level: number, type: string, subType: string, manaCost: number, spellValue: number,duration:number){
-        super(name, description, school, level, type, subType, manaCost, spellValue,duration)
+export class DamagingSpell extends Spell {
+    constructor(name: string, description: string, school: string, level: number, type: string, subType: string, manaCost: number, spellValue: number, duration: number) {
+        super(name, description, school, level, type, subType, manaCost, spellValue, duration)
     }
     override cast(caster: Character, target: Character): { caster: Character, target: Character } {
         if (caster.currentMP >= this.manaCost) {
             caster.currentMP -= this.manaCost
-            healCharacter(target,this.spellValue)
+            console.log(target.currentHP)
+            damageCharacter(target, this.spellValue)
+            console.log(target.currentHP)
         }
         return { caster, target };
     }
 }
-export const basicHealSpell = new HealingSpell("Basic Heal", "A basic healing spell that restores 5 HP", "Restoration", 1, "Restoration", "Healing", 5, 5,0)
+export const magicBoltSpell = new DamagingSpell("Magic Bolt", "A bolt of magical that deals 5 DMG", "Destruction", 1, "Destruction", "Damaging", 5, 5, 0)
+export class HealingSpell extends Spell {
+    constructor(name: string, description: string, school: string, level: number, type: string, subType: string, manaCost: number, spellValue: number, duration: number) {
+        super(name, description, school, level, type, subType, manaCost, spellValue, duration)
+    }
+    override cast(caster: Character, target: Character): { caster: Character, target: Character } {
+        if (caster.currentMP >= this.manaCost) {
+            caster.currentMP -= this.manaCost
+            healCharacter(target, this.spellValue)
+        }
+        return { caster, target };
+    }
+}
+export const basicHealSpell = new HealingSpell("Basic Heal", "A basic healing spell that restores 5 HP", "Restoration", 1, "Restoration", "Healing", 5, 5, 0)
 //heal
 //multiHeal

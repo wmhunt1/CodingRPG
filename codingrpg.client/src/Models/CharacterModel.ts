@@ -1,13 +1,13 @@
 import {
     Back, bareBack, bareChest, bareFeet, bareFinger, bareFist, bareHands, bareHead, bareLegs, bareNeck, bareShoulders, bareWaist, bareWrists,
-    charge, cheese, ChestArmor, cowLeather,
+    charge, cheese, ChestArmor, club, cowLeather,
     dogBite, emptyHand, FootArmor,
     HandArmor, HeadArmor, Item,
     LegArmor,
     Neck, OffHand, pants,
-    ratBite,rawBeef, Ring, shoes, ShoulderArmor,
+    ratBite, rawBeef, Ring, shoes, ShoulderArmor,
     tunic,
-    WaistArmor, Weapon, WristArmor,
+    WaistArmor, Weapon, woodenShield, WristArmor,
 } from './ItemModel.ts';
 import { Quest } from "./QuestModel.ts"
 import { cookingSkill, farmingSkill, fishingSkill, leatherWorkingSkill, Skill, woodcuttingSkill } from "./SkillModel.ts"
@@ -99,7 +99,22 @@ export class Character {
         // as they will be overwritten anyway. Or initialize with minimal defaults.
     }
 }
-
+export class Construct extends Character {
+    constructor(name: string, maxHP: number,
+        currentHP: number,
+        maxMP: number,
+        currentMP: number,
+        maxSP: number,
+        currentSP: number,
+        level: number,
+        currentXP: number,
+        maxXP: number, strength: number,
+        gold: number) {
+        const type = "Construct"
+        const subType = "";
+        super(name, type, subType, maxHP, currentHP, maxMP, currentMP, maxSP, currentSP, level, currentXP, maxXP, strength, gold)
+    }
+}
 export class Humanoid extends Character {
     constructor(name: string, maxHP: number,
         currentHP: number,
@@ -135,7 +150,7 @@ export class Hero extends Humanoid {
         super(name, maxHP, currentHP, maxMP, currentMP, maxSP, currentSP, level, currentXP, maxXP, strength, gold)
         this.inventory = []
         this.party = [loyalHound]
-        this.skillBook = [cookingSkill, farmingSkill, fishingSkill,leatherWorkingSkill,woodcuttingSkill]
+        this.skillBook = [cookingSkill, farmingSkill, fishingSkill, leatherWorkingSkill, woodcuttingSkill]
         this.spellBook = []
     }
 }
@@ -216,6 +231,59 @@ export class Rat extends Beast {
         this.inventory = [cheese]
     }
 }
+export class Undead extends Character {
+    constructor(name: string, subType: string, maxHP: number,
+        currentHP: number,
+        maxMP: number,
+        currentMP: number,
+        maxSP: number,
+        currentSP: number,
+        level: number,
+        currentXP: number,
+        maxXP: number, strength: number,
+        gold: number) {
+        const type = "Undead"
+        super(name, type, subType, maxHP, currentHP, maxMP, currentMP, maxSP, currentSP, level, currentXP, maxXP, strength, gold)
+    }
+}
+export class BasicSkeleton extends Undead {
+    constructor() {
+        const name = "Skeleton";
+        const subType = "Skeleton"
+        const maxHP = 10;
+        const currentHP = 10;
+        const maxMP = 10;
+        const currentMP = 10;
+        const maxSP = 10;
+        const currentSP = 10;
+        const level = 1;
+        const currentXP = 10;
+        const maxXP = 50;
+        const strength = 10;
+        const gold = 5;
+        super(name, subType, maxHP, currentHP, maxMP, currentMP, maxSP, currentSP, level, currentXP, maxXP, strength, gold)
+        this.mainHand = club;
+        this.offHand = woodenShield;
+        this.inventory = [club, woodenShield]
+    }
+}
+export class BasicZombie extends Undead {
+    constructor() {
+        const name = "Zombie";
+        const subType = "Zombie"
+        const maxHP = 10;
+        const currentHP = 10;
+        const maxMP = 10;
+        const currentMP = 10;
+        const maxSP = 10;
+        const currentSP = 10;
+        const level = 1;
+        const currentXP = 10;
+        const maxXP = 50;
+        const strength = 10;
+        const gold = 5;
+        super(name, subType, maxHP, currentHP, maxMP, currentMP, maxSP, currentSP, level, currentXP, maxXP, strength, gold)
+        this.mainHand = bareFist;
+    }
 
-
-
+}

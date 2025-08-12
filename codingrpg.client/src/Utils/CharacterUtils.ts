@@ -9,7 +9,7 @@ import {
 
 import { Quest } from "../Models/QuestModel"
 import { Skill } from "../Models/SkillModel"
-import { HealingSpell, Spell } from "../Models/SpellModel"
+import { DamagingSpell, HealingSpell, Spell } from "../Models/SpellModel"
 
 /**
  * Creates an instance of an Item subclass from a plain JavaScript object.
@@ -104,6 +104,8 @@ export function instantiateItem(plainItem: any): Item {
 export function instantiateSpell(plainSpell: any): Spell {
     // Use a switch statement on the item's `type` and `subType` for robust instantiation
     switch (plainSpell.subType) {
+        case "Damaging":
+            return new DamagingSpell(plainSpell.name, plainSpell.description, plainSpell.school, plainSpell.level, plainSpell.type, plainSpell.subType, plainSpell.manaCost, plainSpell.spellValue, plainSpell.duration)
         case "Healing":
             return new HealingSpell(plainSpell.name, plainSpell.description, plainSpell.school, plainSpell.level, plainSpell.type, plainSpell.subType, plainSpell.manaCost, plainSpell.spellValue,plainSpell.duration)
         default:

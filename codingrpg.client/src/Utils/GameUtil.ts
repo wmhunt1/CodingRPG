@@ -10,6 +10,10 @@ export function fullHeal(character: Character) {
     })
     return character;
 }
+export function damageCharacter(char: Character, damageValue: number) {
+    char.currentHP -= damageValue;
+    return char
+}
 export function healCharacter(char: Character, healValue: number) {
     char.currentHP += healValue;
     if (char.currentHP > char.maxHP) {

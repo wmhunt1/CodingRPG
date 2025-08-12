@@ -40,7 +40,7 @@ function SpellBook({ hero, back, addGameLog }: SpellBookProps) {
                                     .map((spell, index) => <div key={index}>
                                         <h3>{spell.name} - {spell.school}</h3>
                                         <p>{spell.description}</p>
-                                        <button className="use-equip-button" onClick={() => handleCastSpell(spell, hero, currentTarget)}>Cast</button>
+                                        {spell.subType !== "Damaging" ? <button className="use-equip-button" onClick={() => handleCastSpell(spell, hero, currentTarget)}>Cast</button> : <></>}
                                     </div>)
                             }
                         </div>
