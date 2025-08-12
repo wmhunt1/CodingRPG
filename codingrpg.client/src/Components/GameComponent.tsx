@@ -39,6 +39,7 @@ import { useCallback, useMemo, useState } from "react";
 import "../StyleSheets/GameStyle.css";
 
 //Util Imports
+import { instantiateCharacterItems } from "../Utils/CharacterUtils"
 import { calculateNewLocation } from "../Utils/MovementUtil"
 import { acceptQuest, checkQuestProgress } from "../Utils/QuestUtils";
 import { QuestManager } from "../Models/QuestManager";
@@ -84,7 +85,7 @@ function Game() {
     }, [])
     const availableQuests = area.quests.filter(quest => {
         const journalEntry = hero.journal.find(journalQuest => journalQuest.id === quest.id);
-        return !journalEntry || journalEntry.status !== "Completed" ;
+        return !journalEntry || journalEntry.status !== "Completed";
     });
     // --- UPDATED CODE STARTS HERE --
 
@@ -122,18 +123,24 @@ function Game() {
     // The handleDialogue function now accepts a function that generates dialogue
     const handleDialogue = useCallback((dialogueGenerator: (hero: Hero, addGameLog: (message: string) => void) => DialogueNode[]) => {
         // Call the dialogue generator function with the current hero object
-        const dialogueData = dialogueGenerator(hero,addGameLog);
+        const dialogueData = dialogueGenerator(hero, addGameLog);
         setCurrentDialogueData(dialogueData);
         setActiveScreen("Dialogue");
-    }, [hero,addGameLog]); // Add hero as a dependency
+    }, [hero, addGameLog]); // Add hero as a dependency
 
     const handleExitGame = useCallback(() => {
         console.log("Exiting Game");
     }, []);
 
     const handleLoadGame = useCallback(() => {
-        setActiveScreen("LoadGame");
-    }, []);
+        const storedHero = localStorage.getItem('currentUser');
+        console.log(storedHero)
+        const updatedHero = instantiateCharacterItems(storedHero ? JSON.parse(storedHero) : null)
+        addGameLog("Loading Character..." + updatedHero.name)
+        setHero(updatedHero)
+
+    }, [addGameLog]);
+
     const handleMovement = useCallback((direction: string) => {
         const { newArea, way, message } = calculateNewLocation(area.xCoord, area.yCoord, direction, areaMap);
 
@@ -164,6 +171,12 @@ function Game() {
             checkQuestProgress(hero, hero.journal, handledQuest, addGameLog)
         }
     }, [hero, addGameLog]);
+    const handleSaveGame = useCallback((hero: Character) => {
+        console.log(hero.name)
+        localStorage.setItem('currentUser', JSON.stringify(hero));
+        addGameLog("Saving Character... " + hero.name)
+    }, [addGameLog]);
+
     const handleSettings = useCallback(() => {
         setActiveScreen("Settings");
     }, []);
@@ -332,7 +345,7 @@ function Game() {
                                 {area.conversations.map((dialogueGenerator, index) => (
                                     // Pass the dialogue function, not the result
                                     <button key={index} className="area-button" onClick={() => handleDialogue(dialogueGenerator)}>
-                                        Speak with {dialogueGenerator(hero,addGameLog)[0].character}
+                                        Speak with {dialogueGenerator(hero, addGameLog)[0].character}
                                     </button>
                                 ))}
                             </div>
@@ -374,6 +387,8 @@ function Game() {
                         continueGame={handleContinueGame}
                         newGame={handleNewGame}
                         loadGame={handleLoadGame}
+                        hero={hero}
+                        saveGame={handleSaveGame}
                         settings={handleSettings}
                         exitGame={handleExitGame}
                     />

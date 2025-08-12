@@ -5,6 +5,7 @@ import {
     DairyCowLocation, FarmShopLocation,
     GeneralStoreLocation, InnLocation,
     Location,
+    MagicShopLocation,
     MillLocation,
     SmithShopLocation,
     WellLocation, WheatFieldLocation
@@ -17,6 +18,7 @@ import farmImage from "../assets/wheat.png";
 import forestImage from "../assets/forest.png";
 import graveyardImage from "../assets/tombstone.png"
 import hauntedHouseImage from "../assets/spooky-house.png"
+import mountainImage from "../assets/peaks.png"
 import notAreaImage from "../assets/plain-square.png"
 import roadImage from "../assets/stone-path.png"
 import roadRotatedImage from "../assets/stone-path-rotate.png"
@@ -24,6 +26,7 @@ import riverImage from "../assets/river.png";
 import riverRotatedImage from "../assets/river-rotated.png";
 import villageImage from "../assets/village.png";
 import waterMillImage from "../assets/water-mill.png";
+import wizardTowerImage from "../assets/wizard-hat.png"
 
 export class AreaModel {
     name: string;
@@ -86,6 +89,14 @@ export class Graveyard extends AreaModel {
         this.imageAlt = "A graveyard";
     }
 }
+export class Mountain extends AreaModel {
+    //hunting spot lumbering
+    constructor(name: string, locations: Location[], quests: Quest[], conversations: ((hero: Character, addGameLog: (message: string) => void) => DialogueNode[])[], x: number, y: number) {
+        super(name, locations, quests, conversations, x, y)
+        this.imageSrc = mountainImage;
+        this.imageAlt = "A mountain";
+    }
+}
 export class Structure extends AreaModel {
     constructor(name: string, locations: Location[], quests: Quest[], conversations: ((hero: Character, addGameLog: (message: string) => void) => DialogueNode[])[], x: number, y: number) {
         super(name, locations, quests, conversations, x, y)
@@ -113,6 +124,14 @@ export class WaterMill extends Structure {
         super(name, locations, quests, conversations, x, y)
         this.imageSrc = waterMillImage;
         this.imageAlt = "Water Mill";
+    }
+}
+export class WizardTower extends Structure {
+    constructor(name: string, quests: Quest[], conversations: ((hero: Character, addGameLog: (message: string) => void) => DialogueNode[])[], x: number, y: number) {
+        const locations: Location[] = [new MagicShopLocation(name)]
+        super(name, locations, quests, conversations, x, y)
+        this.imageSrc = wizardTowerImage;
+        this.imageAlt = "A wizard hat to represent a wizard tower";
     }
 }
 export class TravelWay extends AreaModel {

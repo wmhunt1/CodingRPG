@@ -132,11 +132,17 @@ export function instantiateCharacterItems(plainCharacter: any): Character {
     );
 
     newCharacter.mainHand = plainCharacter.mainHand ? instantiateItem(plainCharacter.mainHand) as Weapon : bareFist;
-    if (plainCharacter.offHand.power !== undefined) {
-        newCharacter.offHand = plainCharacter.offHand ? instantiateItem(plainCharacter.offHand) as OffHandWeapon : emptyHand;
-    }
-    if (plainCharacter.offHand.protection !== undefined) {
-        newCharacter.offHand = plainCharacter.offHand ? instantiateItem(plainCharacter.offHand) as Shield : emptyHand;
+    if (plainCharacter.offHand) {
+        const offHandItem = instantiateItem(plainCharacter.offHand);
+        if (offHandItem.subType === "Shield") {
+            newCharacter.offHand = offHandItem as Shield;
+        } else if (offHandItem.subType === "OffHandWeapon") {
+            newCharacter.offHand = offHandItem as OffHandWeapon;
+        } else {
+            newCharacter.offHand = emptyHand; // or some other default
+        }
+    } else {
+        newCharacter.offHand = emptyHand;
     }
     newCharacter.head = plainCharacter.head ? instantiateItem(plainCharacter.head) as HeadArmor : bareHead;
     newCharacter.shoulders = plainCharacter.shoulders ? instantiateItem(plainCharacter.shoulders) as ShoulderArmor : bareShoulders;
