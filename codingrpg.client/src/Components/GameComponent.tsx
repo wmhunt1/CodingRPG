@@ -240,9 +240,7 @@ function Game() {
 
 
     const handleUpdateSingleHero = useCallback((updatedHero: Character) => {
-        setHero(updatedHero as Hero);
-
-        //setParty(updatedHero.party);
+        setHero(updatedHero as Character);
     }, []);
 
     const showCharacterSheet = useCallback(() => {
@@ -398,8 +396,6 @@ function Game() {
                         hero={hero}
                         back={() => setActiveScreen("MainMenu")}
                         onCreateEnd={handleOnCreateEnd}
-                        // Pass down the gameLog state and the function to update it
-                        gameLog={gameLog}
                         addGameLog={addGameLog}
                     />
                 )}

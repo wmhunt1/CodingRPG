@@ -1,0 +1,62 @@
+Look into using Redux for state management
+Add dungeon with seperate map
+
+rat quest dialogue
+goblin quest and dialogue
+
+bronze and iron weapons and armor
+and skill recipes, and skill nodes
+
+blacksmithing skill
+
+zombie and skeleton quest and dialogoue in graveyard
+
+lumbermill and quest
+
+lake 
+orcs
+
+Sheepscale and kobolds
+
+stolen ring quest with crows and spider cave
+
+add Ferra Forgeheart
+add Ferra Forgeheart quest
+add Ferra Forgeheart dialogue
+
+add Abraham Arkwright
+
+add bandits
+
+add tactics for npc actions
+
+maybe change ui to be less cluttered
+
+look into material ui
+
+react-router for navigation?
+
+firemaking skill
+tailoring skill
+spin flax
+tailoring for linen pants and shirts
+
+more attributes and effects
+dexterity, agility, intelligence, wisdom, charisma
+luck, perception, endurance, 
+
+combat and utility skills such as speech or thievery
+
+feats?
+
+add abilites such as cleave, charge, power attack, etc
+
+add stamina usage to skills or add new resource
+
+ability to talk to party members (add button in party sidebar)
+
+shop dialogues
+
+find actual usage for back end
+
+implment redux and router

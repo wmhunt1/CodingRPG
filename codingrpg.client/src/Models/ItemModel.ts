@@ -29,6 +29,7 @@ export class Item {
         return user;
     }
 }
+export const ashes = new Item("Ashes", "Misc", "Misc", 1, 5, "A pile of ash")
 export const bucket = new Item("Bucket", "Misc", "Misc", 1, 5, "A bucket")
 export const burntBeef = new Item("Burnt Beef", "Junk", "BurntBeef", 1, 0, "A bit too well done")
 export const burntBread = new Item("Burnt Bread", "Junk", "BurntBread", 1, 0, "A burnt loaf of bread")
@@ -425,6 +426,25 @@ export class Resource extends Item {
         return super.use(user);
     }
 }
+export class Bar extends Resource {
+    constructor(name: string, type: string = "Resource", subType: string = "Bar", quantity: number, cost: number, description: string) {
+        super(name, type, subType, quantity, cost, description);
+    }
+    override use(user: Character): Character {
+        return super.use(user);
+    }
+}
+export const bronzeBar = new Bar("Bronze Bar", "Resource", "Bar", 1, 1, "A smelted Bronze Bar")
+export const ironBar = new Bar("Iron Bar", "Resource", "Bar", 1, 5, "A smelted Iron Bar")
+export class Cloth extends Resource {
+    constructor(name: string, type: string = "Resource", subType: string = "Cloth", quantity: number, cost: number, description: string) {
+        super(name, type, subType, quantity, cost, description);
+    }
+    override use(user: Character): Character {
+        return super.use(user);
+    }
+}
+export const linenCloth = new Cloth("Linen Cloth", "Resource", "Cloth", 1, 1, "Some spun linen cloth")
 export class Leather extends Resource {
     constructor(name: string, type: string = "Resource", subType: string = "Leather", quantity: number, cost: number, description: string) {
         super(name, type, subType, quantity, cost, description);
@@ -434,6 +454,7 @@ export class Leather extends Resource {
     }
 }
 export const cowLeather = new Leather("Leather", "Resource", "Leather", 1, 1, "Leather from a cow")
+export const wool = new Leather("Wool", "Resource", "Leather", 1, 1, "Some soft woll")
 export class Logs extends Resource {
     constructor(name: string, type: string = "Resource", subType: string = "Logs", quantity: number, cost: number, description: string) {
         super(name, type, subType, quantity, cost, description);
@@ -443,6 +464,36 @@ export class Logs extends Resource {
     }
 }
 export const woodLogs = new Logs("Logs", "Resource", "Logs", 1, 1, "Logs from a generic tree")
+export class Ore extends Resource {
+    constructor(name: string, type: string = "Resource", subType: string = "Ore", quantity: number, cost: number, description: string) {
+        super(name, type, subType, quantity, cost, description);
+    }
+    override use(user: Character): Character {
+        return super.use(user);
+    }
+}
+export const copperOre = new Ore("Copper Ore", "Resource", "Ore", 1, 1, "A chunk of Copper ore")
+export const ironOre = new Ore("Iron Ore", "Resource", "Ore", 1, 5, "A chunk of Iron ore")
+export const tinOre = new Ore("Tin Ore", "Resource", "Ore", 1, 1, "A chunk of Tin ore")
+export class Processed extends Resource {
+    constructor(name: string, type: string = "Resource", subType: string = "Processed", quantity: number, cost: number, description: string) {
+        super(name, type, subType, quantity, cost, description);
+    }
+    override use(user: Character): Character {
+        return super.use(user);
+    }
+}
+export const wheatFlour = new Processed("Wheat Flour", "Resource", "Processed", 1, 1, "A bag of flour")
+export class Produce extends Resource {
+    constructor(name: string, type: string = "Resource", subType: string = "Produce", quantity: number, cost: number, description: string) {
+        super(name, type, subType, quantity, cost, description);
+    }
+    override use(user: Character): Character {
+        return super.use(user);
+    }
+}
+export const flax = new Produce("Flax", "Resource", "Produce", 1, 1, "A bundle of flax")
+export const wheat = new Produce("Wheat", "Resource", "Produce", 1, 1, "A sheaf of wheat")
 export class RawFish extends Resource {
     constructor(name: string, type: string = "Resource", subType: string = "RawFish", quantity: number, cost: number, description: string) {
         super(name, type, subType, quantity, cost, description);
@@ -463,24 +514,6 @@ export class RawMeat extends Resource {
     }
 }
 export const rawBeef = new RawFish("Raw Beef", "Resource", "RawMeat", 1, 1, "A slab of raw beef")
-export class Processed extends Resource {
-    constructor(name: string, type: string = "Resource", subType: string = "Processed", quantity: number, cost: number, description: string) {
-        super(name, type, subType, quantity, cost, description);
-    }
-    override use(user: Character): Character {
-        return super.use(user);
-    }
-}
-export const wheatFlour = new Processed("Wheat Flour", "Resource", "Processed", 1, 1, "A bag of flour")
-export class Produce extends Resource {
-    constructor(name: string, type: string = "Resource", subType: string = "Produce", quantity: number, cost: number, description: string) {
-        super(name, type, subType, quantity, cost, description);
-    }
-    override use(user: Character): Character {
-        return super.use(user);
-    }
-}
-export const wheat = new Produce("Wheat", "Resource", "Produce", 1, 1, "A sheaf of wheat")
 export class Tool extends Item {
     constructor(name: string, type: string = "Tool", subType: string = "N/A", quantity: number, cost: number, description: string) {
         super(name, type, subType, quantity, cost, description);
@@ -524,6 +557,7 @@ export class Pickaxe extends Tool {
     //    return super.use(user);
     //}
 }
+export const basicPickaxe = new Pickaxe("Basic Pickaxe", "Tool", "Pickaxe", 1, 5, "A basic pickaxe for mining ore")
 export class NeedleAndThread extends Tool {
     constructor(name: string, type: string = "Tool", subType: string = "Needle and Thread", quantity: number, cost: number, description: string) {
         super(name, type, subType, quantity, cost, description);
@@ -534,6 +568,15 @@ export class NeedleAndThread extends Tool {
     //}
 }
 export const basicNeedleAndThread = new NeedleAndThread("Basic Needle and Thread", "Tool", "Needl and Thread", 1, 5, "A basic needle and thread")
+export class Shears extends Tool {
+    constructor(name: string, type: string = "Tool", subType: string = "Shears", quantity: number, cost: number, description: string) {
+        super(name, type, subType, quantity, cost, description);
+    }
+    //override use(user: Character): Character {
+    //    return super.use(user);
+    //}
+}
+export const basicShears = new Shears("Basic Shears", "Tool", "Shears", 1, 5, "A pair of shears for shearing sheep")
 export class Sickle extends Tool {
     constructor(name: string, type: string = "Tool", subType: string = "Sickle", quantity: number, cost: number, description: string) {
         super(name, type, subType, quantity, cost, description);
