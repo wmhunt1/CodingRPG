@@ -120,7 +120,7 @@ function Inventory({ hero, back, onUpdateHero, addGameLog,inventorySkillNode }: 
                                             buttonText = "Eat";
                                         } else if (item.type === "Drink" || item.type === "Potion") {
                                             buttonText = "Drink";
-                                        } else if (item.type === "Armor" || item.type === "Weapon" || item.type === "Accessory" || item.type === "OffHand") {
+                                        } else if (item.type === "Armor" || item.type === "Weapon" || item.type === "Accessory" || item.type === "OffHand" || item.type === "2H Weapon") {
                                             buttonText = "Equip";
                                         }
 

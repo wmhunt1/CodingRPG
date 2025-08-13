@@ -34,6 +34,10 @@ function Equipment({ hero, back, onUpdateHero, addGameLog }: EquipmentProps) {
             else {
                 updatedHero.mainHand = bareFist; // Assuming 'Weapon' unequips to a bare fist in the main hand
             }
+            if (itemToUnEquip.type === "2H Weapon")
+            {
+                updatedHero.offHand = emptyHand
+            }
         } else if (itemToUnEquip.slot === "OffHand") {
             updatedHero.offHand = emptyHand; // Assuming 'Weapon' unequips to a bare fist in the main hand
         } else if (itemToUnEquip.slot === "Head") {
@@ -89,7 +93,7 @@ function Equipment({ hero, back, onUpdateHero, addGameLog }: EquipmentProps) {
                         <h3>Weapons</h3>
                         <div className="stats">
                             <p>Weapon: {currentHero.mainHand.name} ({currentHero.mainHand.power}) {currentHero.mainHand.name !== "Bare Fist" && currentHero.mainHand.name !== "Dog Bite" ? <button className="use-equip-button" onClick={() => handleUnEquipItem(currentHero.mainHand)}>UnEquip</button> : <></>}</p>
-                            <p>OffHand: {currentHero.offHand.name} {currentHero.offHand instanceof OffHandWeapon ? `(${currentHero.offHand.power})` : <></>}{currentHero.offHand instanceof Shield ? `(${currentHero.offHand.protection})` : <></>}{currentHero.offHand.name !== "Empty Hand" ? <button className="use-equip-button" onClick={() => handleUnEquipItem(currentHero.offHand)}>UnEquip</button> : <></>}</p>
+                            <p>OffHand: {currentHero.offHand.name} {currentHero.offHand instanceof OffHandWeapon ? `(${currentHero.offHand.power})` : <></>}{currentHero.offHand instanceof Shield ? `(${currentHero.offHand.protection})` : <></>}{currentHero.offHand.name !== "Empty Hand" && currentHero.offHand.name !== "Full Hand" ? <button className="use-equip-button" onClick={() => handleUnEquipItem(currentHero.offHand)}>UnEquip</button> : <></>}</p>
                         </div>
                     </div>
                     <div className="stats-container">

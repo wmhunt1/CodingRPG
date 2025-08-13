@@ -3,10 +3,9 @@ import { Character } from "../Models/CharacterModel";
 
 import {
     Armor, Back, bareBack, bareChest, bareFeet, bareFinger, bareFist, bareHands, bareHead, bareLegs, bareNeck, bareShoulders, bareWaist, bareWrists,
-    ChestArmor, Consumable, emptyHand, Equipable, FootArmor, HandArmor, HeadArmor, HealthPotion, Item, LegArmor, Neck, OffHandWeapon, Potion, Ring, Shield, ShoulderArmor, WaistArmor, Weapon, WristArmor,
-    Food, Drink, AlcoholicDrink, ManaPotion, StaminaPotion, Resource, RawFish, SpellTome,
-    OneHandedWeapon,
-    TwoHandedWeapon
+    ChestArmor, Consumable, emptyHand, Equipable, FootArmor,fullHand, HandArmor, HeadArmor, HealthPotion, Item, LegArmor, Neck, OffHandWeapon,OneHandedWeapon,
+    Potion, Ring, Shield, ShoulderArmor, WaistArmor, Weapon, WristArmor,
+    Food, Drink, AlcoholicDrink, ManaPotion, StaminaPotion, Resource, RawFish, SpellTome,TwoHandedWeapon
 } from "../Models/ItemModel";
 
 import { Quest } from "../Models/QuestModel"
@@ -42,14 +41,11 @@ export function instantiateItem(plainItem: any): Item {
     // Use a switch statement on the item's `type` and `subType` for robust instantiation
     switch (plainItem.type) {
         case "Weapon":
-            if (plainItem.slot === "Weapon") {
-                return new OneHandedWeapon(plainItem.name, plainItem.type, plainItem.subType, plainItem.quantity, plainItem.cost, plainItem.description, plainItem.slot, plainItem.power);
-            }
-            if (plainItem.subType === "BothHands") {
-                return new TwoHandedWeapon(plainItem.name, plainItem.type, plainItem.subType, plainItem.quantity, plainItem.cost, plainItem.description, plainItem.slot, plainItem.power);
-            }
             return new Weapon(plainItem.name, plainItem.type, plainItem.subType, plainItem.quantity, plainItem.cost, plainItem.description, plainItem.slot, plainItem.power);
-
+        case "1H Weapon":
+            return new OneHandedWeapon(plainItem.name, plainItem.type, plainItem.subType, plainItem.quantity, plainItem.cost, plainItem.description, plainItem.slot, plainItem.power);
+        case "2H Weapon":
+            return new TwoHandedWeapon(plainItem.name, plainItem.type, plainItem.subType, plainItem.quantity, plainItem.cost, plainItem.description, plainItem.slot, plainItem.power);
         case "OffHand":
             if (plainItem.subType === "Shield") {
                 return new Shield(plainItem.name, plainItem.type, plainItem.subType, plainItem.quantity, plainItem.cost, plainItem.description, plainItem.slot, plainItem.protection);
@@ -133,19 +129,27 @@ export function instantiateCharacterItems(plainCharacter: any): Character {
         plainCharacter.gold
     );
 
+    // Instantiate the main hand first
     newCharacter.mainHand = plainCharacter.mainHand ? instantiateItem(plainCharacter.mainHand) as Weapon : bareFist;
-    if (plainCharacter.offHand) {
+
+    // Check if the newly equipped main hand is a 2H weapon
+    if (newCharacter.mainHand.type === "2H Weapon") {
+        newCharacter.offHand = fullHand;
+    } else if (plainCharacter.offHand) {
+        // Only if it's not a 2H weapon, instantiate the offHand from saved data
         const offHandItem = instantiateItem(plainCharacter.offHand);
         if (offHandItem.subType === "Shield") {
             newCharacter.offHand = offHandItem as Shield;
         } else if (offHandItem.subType === "OffHandWeapon") {
             newCharacter.offHand = offHandItem as OffHandWeapon;
         } else {
-            newCharacter.offHand = emptyHand; // or some other default
+            newCharacter.offHand = emptyHand;
         }
     } else {
+        // Default to emptyHand if no offHand is specified and it's not a 2H weapon
         newCharacter.offHand = emptyHand;
     }
+
     newCharacter.head = plainCharacter.head ? instantiateItem(plainCharacter.head) as HeadArmor : bareHead;
     newCharacter.shoulders = plainCharacter.shoulders ? instantiateItem(plainCharacter.shoulders) as ShoulderArmor : bareShoulders;
     newCharacter.chest = plainCharacter.chest ? instantiateItem(plainCharacter.chest) as ChestArmor : bareChest;

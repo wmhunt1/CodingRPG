@@ -168,6 +168,10 @@ export class Equipable extends Item {
             case "Weapon":
                 oldEquippedItem = user.mainHand;
                 user.mainHand = this as unknown as Weapon;
+                if (user.mainHand.type === "2H Weapon") {
+                    addItemToInventory(user.inventory, user.offHand, 1)
+                    user.offHand = fullHand;
+                }
                 if (user.subType === "Dog") {
                     bareItem = dogBite;
                 }
@@ -177,6 +181,10 @@ export class Equipable extends Item {
                 break;
             case "OffHand":
                 oldEquippedItem = user.offHand;
+                if (user.mainHand.type === "2H Weapon") {
+                    addItemToInventory(user.inventory, user.mainHand, 1)
+                    user.mainHand = bareFist;
+                }
                 user.offHand = this as OffHand;
                 bareItem = emptyHand;
                 break;
@@ -243,9 +251,10 @@ export class Equipable extends Item {
         // Remove the newly equipped item from the inventory.
         removeItemFromInventory(user.inventory, this, 1);
         console.log(`${user.name} equipped ${this.name}.`);
+        console.log(user.offHand.name)
 
         // If there was an old item, and it wasn't a "bare" item, add it back to the inventory.
-        if (oldEquippedItem && bareItem && oldEquippedItem.name !== bareItem.name) {
+        if (oldEquippedItem && bareItem && oldEquippedItem.name !== bareItem.name && oldEquippedItem.name !== "Full Hand") {
             addItemToInventory(user.inventory, oldEquippedItem, 1);
             console.log(`${user.name} unequipped ${oldEquippedItem.name} and it was added to the inventory.`);
         } else if (oldEquippedItem && !bareItem) {
@@ -395,6 +404,7 @@ export class OffHand extends Equipable {
     }
 }
 export const emptyHand = new OffHand("Empty Hand", "OffHand", "N/A", 1, 0, "Your off-hand is empty", "OffHand")
+export const fullHand = new OffHand("Full Hand", "OffHand", "N/A", 1, 0, "Your off-hand is occupied by a Two-Handed Weapon", "OffHand")
 
 export class OffHandWeapon extends OffHand {
     power: number
@@ -404,54 +414,54 @@ export class OffHandWeapon extends OffHand {
     }
 }
 export class OffHandAxe extends OffHandWeapon {
-    constructor(name: string, type: string = "OffHand", subType: string = "OffHandAxe", quantity: number, cost: number, description: string, slot: string, power: number) {
+    constructor(name: string, type: string = "OffHand", subType: string = "OffHandWeapon", quantity: number, cost: number, description: string, slot: string, power: number) {
         super(name, type, subType, quantity, cost, description, slot, power);
     }
 }
-export const bronzeAxeOffHand = new OffHandAxe("Bronze Axe", "OffHand", "OffHandAxe", 1, 5, "A sturdy bronze axe", "OffHand", 2)
+export const bronzeAxeOffHand = new OffHandAxe("Bronze Axe", "OffHand", "OffHandWeapon", 1, 5, "A sturdy bronze axe", "OffHand", 2)
 export const ironAxeOffHand = new OffHandAxe("Iron Axe", "OffHand", "OffHandAxe", 1, 10, "A sturdy iron axe", "OffHand", 3)
 export class OffHandDagger extends OffHandWeapon {
-    constructor(name: string, type: string = "OffHand", subType: string = "OffHandDagger", quantity: number, cost: number, description: string, slot: string, power: number) {
+    constructor(name: string, type: string = "OffHand", subType: string = "OffHandWeapon", quantity: number, cost: number, description: string, slot: string, power: number) {
         super(name, type, subType, quantity, cost, description, slot, power);
     }
 }
-export const bronzeDaggerOffHand = new OffHandDagger("Bronze Dagger", "OffHand", "OffHandDagger", 1, 5, "A sharp bronze dagger", "OffHand", 2)
-export const ironDaggerOffHand = new OffHandDagger("Iron Dagger", "OffHand", "OffHandDagger", 1, 10, "A sharp iron dagger", "OffHand", 3)
+export const bronzeDaggerOffHand = new OffHandDagger("Bronze Dagger (OffHand)", "OffHand", "OffHandWeapon", 1, 5, "A sharp bronze dagger", "OffHand", 2)
+export const ironDaggerOffHand = new OffHandDagger("Iron Dagger (OffHand)", "OffHand", "OffHandWeapon", 1, 10, "A sharp iron dagger", "OffHand", 3)
 export class OffHandClub extends OffHandWeapon {
-    constructor(name: string, type: string = "OffHand", subType: string = "OffHandClub", quantity: number, cost: number, description: string, slot: string, power: number) {
+    constructor(name: string, type: string = "OffHand", subType: string = "OffHandWeapon", quantity: number, cost: number, description: string, slot: string, power: number) {
         super(name, type, subType, quantity, cost, description, slot, power);
     }
 }
-export const clubOffHand = new OffHandClub("Wooden Club", "OffHand", "OffHandClub", 1, 1, "A crude wooden club", "OffHand", 1)
+export const clubOffHand = new OffHandClub("Wooden Club (OffHand)", "OffHand", "OffHandWeapon", 1, 1, "A crude wooden club", "OffHand", 1)
 export class OffHandHammer extends OffHandWeapon {
-    constructor(name: string, type: string = "OffHand", subType: string = "OffHandHammer", quantity: number, cost: number, description: string, slot: string, power: number) {
+    constructor(name: string, type: string = "OffHand", subType: string = "OffHandWeapon", quantity: number, cost: number, description: string, slot: string, power: number) {
         super(name, type, subType, quantity, cost, description, slot, power);
     }
 }
-export const bronzeHammerOffHand = new OffHandHammer("Bronze Hammer", "OffHand", "OffHandHammer", 1, 5, "A sturdy bronze hammer", "OffHand", 2)
-export const ironHammerOffHand = new OffHandHammer("Iron Hammer", "OffHand", "OffHandHammer", 1, 10, "A sturdy iron hammer", "OffHand", 3)
+export const bronzeHammerOffHand = new OffHandHammer("Bronze Hammer (OffHand)", "OffHand", "OffHandWeapon", 1, 5, "A sturdy bronze hammer", "OffHand", 2)
+export const ironHammerOffHand = new OffHandHammer("Iron Hammer (OffHand)", "OffHand", "OffHandWeapon", 1, 10, "A sturdy iron hammer", "OffHand", 3)
 
 export class OffHandMace extends OffHandWeapon {
-    constructor(name: string, type: string = "OffHand", subType: string = "OffHandHammer", quantity: number, cost: number, description: string, slot: string, power: number) {
+    constructor(name: string, type: string = "OffHand", subType: string = "OffHandWeapon", quantity: number, cost: number, description: string, slot: string, power: number) {
         super(name, type, subType, quantity, cost, description, slot, power);
     }
 }
-export const bronzeMaceOffHand = new OffHandMace("Bronze Mace", "OffHand", "OffHandHammer", 1, 5, "A sturdy bronze mace", "OffHand", 2)
-export const ironMaceOffHand = new OffHandMace("Iron Mace", "OffHand", "OffHandHammer", 1, 10, "A sturdy iron mace", "OffHand", 3)
+export const bronzeMaceOffHand = new OffHandMace("Bronze Mace (OffHand)", "OffHand", "OffHandWeapon", 1, 5, "A sturdy bronze mace", "OffHand", 2)
+export const ironMaceOffHand = new OffHandMace("Iron Mace (OffHand)", "OffHand", "OffHandWeapon", 1, 10, "A sturdy iron mace", "OffHand", 3)
 export class OffHandSpear extends OffHandWeapon {
-    constructor(name: string, type: string = "OffHand", subType: string = "OffHandSpear", quantity: number, cost: number, description: string, slot: string, power: number) {
+    constructor(name: string, type: string = "OffHand", subType: string = "OffHandWeapon", quantity: number, cost: number, description: string, slot: string, power: number) {
         super(name, type, subType, quantity, cost, description, slot, power);
     }
 }
-export const bronzeSpearOffHand = new OffHandSpear("Bronze Spear", "OffHand", "OffHandSpear", 1, 5, "A sturdy bronze spear", "OffHand", 2)
-export const ironSpearOffHand = new OffHandSpear("Iron Spear", "OffHand", "OffHandSpear", 1, 10, "A sturdy iron spear", "OffHand", 3)
+export const bronzeSpearOffHand = new OffHandSpear("Bronze Spear (OffHand)", "OffHand", "OffHandWeapon", 1, 5, "A sturdy bronze spear", "OffHand", 2)
+export const ironSpearOffHand = new OffHandSpear("Iron Spear (OffHand)", "OffHand", "OffHandWeapon", 1, 10, "A sturdy iron spear", "OffHand", 3)
 export class OffHandSword extends OffHandWeapon {
-    constructor(name: string, type: string = "OffHand", subType: string = "OffHandSword", quantity: number, cost: number, description: string, slot: string, power: number) {
+    constructor(name: string, type: string = "OffHand", subType: string = "OffHandWeapon", quantity: number, cost: number, description: string, slot: string, power: number) {
         super(name, type, subType, quantity, cost, description, slot, power);
     }
 }
-export const bronzeSwordOffHand = new OffHandSword("Bronze Sword", "OffHand", "OffHandSword", 1, 5, "A sturdy bronze sword", "OffHand", 2)
-export const ironSwordOffHand = new OffHandSword("Iron Sword", "OffHand", "OffHandSword", 1, 10, "A sturdy iron sword", "OffHand", 3)
+export const bronzeSwordOffHand = new OffHandSword("Bronze Sword (OffHand)", "OffHand", "OffHandWeapon", 1, 5, "A sturdy bronze sword", "OffHand", 2)
+export const ironSwordOffHand = new OffHandSword("Iron Sword (OffHand)", "OffHand", "OffHandWeapon", 1, 10, "A sturdy iron sword", "OffHand", 3)
 
 export class Shield extends OffHand {
     protection: number
@@ -534,67 +544,66 @@ export class OneHandedSwordWeapon extends OneHandedWeapon {
 export const bronzeSword = new OneHandedSwordWeapon("Bronze Sword", "1H Weapon", "1H Sword", 1, 5, "A sturdy bronze sword", "Weapon", 2)
 export const ironSword = new OneHandedSwordWeapon("Iron Sword", "1H Weapon", "1H Sword", 1, 10, "A sturdy iron sword", "Weapon", 3)
 export class TwoHandedWeapon extends Weapon {
-    constructor(name: string, type: string = "2H Weapon", subType: string = "N/A", quantity: number, cost: number, description: string, slot: string = "BothHands", power: number) {
+    constructor(name: string, type: string = "2H Weapon", subType: string = "N/A", quantity: number, cost: number, description: string, slot: string = "Weapon", power: number) {
         super(name, type, subType, quantity, cost, description, slot, power);
         this.power = power;
     }
 }
-export class TwoHandedRangedWeapon extends TwoHandedWeapon { }
 export class TwoHandedAxeWeapon extends TwoHandedWeapon {
-    constructor(name: string, type: string = "2H Weapon", subType: string = "2H Axe", quantity: number, cost: number, description: string, slot: string = "BothHands", power: number) {
+    constructor(name: string, type: string = "2H Weapon", subType: string = "2H Axe", quantity: number, cost: number, description: string, slot: string = "Weapon", power: number) {
         super(name, type, subType, quantity, cost, description, slot, power);
         this.power = power;
     }
 }
-export const bronzeTwoHandedAxe = new TwoHandedAxeWeapon("Bronze Two-Handed Axe", "2H Weapon", "2H Axe", 1, 10, "A sturdy bronze two-handed axe", "BothHands", 4)
-export const ironTwoHandedAxe = new TwoHandedAxeWeapon("Iron Two-Handed Axe", "2H Weapon", "2H Axe", 1, 20, "A sturdy iron two-handed axe", "BothHands", 6)
+export const bronzeTwoHandedAxe = new TwoHandedAxeWeapon("Bronze Two-Handed Axe", "2H Weapon", "2H Axe", 1, 10, "A sturdy bronze two-handed axe", "Weapon", 4)
+export const ironTwoHandedAxe = new TwoHandedAxeWeapon("Iron Two-Handed Axe", "2H Weapon", "2H Axe", 1, 20, "A sturdy iron two-handed axe", "Weapon", 6)
 export class TwoHandedClubWeapon extends TwoHandedWeapon {
-    constructor(name: string, type: string = "2H Weapon", subType: string = "2H Club", quantity: number, cost: number, description: string, slot: string = "BothHands", power: number) {
+    constructor(name: string, type: string = "2H Weapon", subType: string = "2H Club", quantity: number, cost: number, description: string, slot: string = "Weapon", power: number) {
         super(name, type, subType, quantity, cost, description, slot, power);
         this.power = power;
     }
 }
 export class TwoHandedHammerWeapon extends TwoHandedWeapon {
-    constructor(name: string, type: string = "2H Weapon", subType: string = "2H Hammer", quantity: number, cost: number, description: string, slot: string = "BothHands", power: number) {
+    constructor(name: string, type: string = "2H Weapon", subType: string = "2H Hammer", quantity: number, cost: number, description: string, slot: string = "Weapon", power: number) {
         super(name, type, subType, quantity, cost, description, slot, power);
         this.power = power;
     }
 }
-export const bronzeTwoHandedHammer = new TwoHandedHammerWeapon("Bronze Two-Handed Hammer", "2H Weapon", "2H Hammer", 1, 10, "A sturdy bronze two-handed hammer", "BothHands", 4)
-export const ironTwoHandedHammer = new TwoHandedHammerWeapon("Iron Two-Handed Hammer", "2H Weapon", "2H Hammer", 1, 20, "A sturdy iron two-handed hammer", "BothHands", 6)
+export const bronzeTwoHandedHammer = new TwoHandedHammerWeapon("Bronze Two-Handed Hammer", "2H Weapon", "2H Hammer", 1, 10, "A sturdy bronze two-handed hammer", "Weapon", 4)
+export const ironTwoHandedHammer = new TwoHandedHammerWeapon("Iron Two-Handed Hammer", "2H Weapon", "2H Hammer", 1, 20, "A sturdy iron two-handed hammer", "Weapon", 6)
 export class TwoHandedMaceWeapon extends TwoHandedWeapon {
-    constructor(name: string, type: string = "2H Weapon", subType: string = "2H Mace", quantity: number, cost: number, description: string, slot: string = "BothHands", power: number) {
+    constructor(name: string, type: string = "2H Weapon", subType: string = "2H Mace", quantity: number, cost: number, description: string, slot: string = "Weapon", power: number) {
         super(name, type, subType, quantity, cost, description, slot, power);
         this.power = power;
     }
 }
-export const bronzeTwoHandedMace = new TwoHandedMaceWeapon("Bronze Two-Handed Mace", "2H Weapon", "2H Mace", 1, 10, "A sturdy bronze two-handed mace", "BothHands", 4)
-export const ironTwoHandedMace = new TwoHandedMaceWeapon("Iron Two-Handed Mace", "2H Weapon", "2H Mace", 1, 20, "A sturdy iron two-handed mace", "BothHands", 6)
+export const bronzeTwoHandedMace = new TwoHandedMaceWeapon("Bronze Two-Handed Mace", "2H Weapon", "2H Mace", 1, 10, "A sturdy bronze two-handed mace", "Weapon", 4)
+export const ironTwoHandedMace = new TwoHandedMaceWeapon("Iron Two-Handed Mace", "2H Weapon", "2H Mace", 1, 20, "A sturdy iron two-handed mace", "Weapon", 6)
 export class TwoHandedSpearWeapon extends TwoHandedWeapon {
-    constructor(name: string, type: string = "2H Weapon", subType: string = "2H Spear", quantity: number, cost: number, description: string, slot: string = "BothHands", power: number) {
+    constructor(name: string, type: string = "2H Weapon", subType: string = "2H Spear", quantity: number, cost: number, description: string, slot: string = "Weapon", power: number) {
         super(name, type, subType, quantity, cost, description, slot, power);
         this.power = power;
     }
 }
-export const bronzeTwoHandedSpear = new TwoHandedSpearWeapon("Bronze Two-Handed Spear", "2H Weapon", "2H Spear", 1, 10, "A sturdy bronze two-handed spear", "BothHands", 4)
-export const ironTwoHandedSpear = new TwoHandedSpearWeapon("Iron Two-Handed Spear", "2H Weapon", "2H Spear", 1, 20, "A sturdy iron two-handed spear", "BothHands", 6)
+export const bronzeTwoHandedSpear = new TwoHandedSpearWeapon("Bronze Two-Handed Spear", "2H Weapon", "2H Spear", 1, 10, "A sturdy bronze two-handed spear", "Weapon", 4)
+export const ironTwoHandedSpear = new TwoHandedSpearWeapon("Iron Two-Handed Spear", "2H Weapon", "2H Spear", 1, 20, "A sturdy iron two-handed spear", "Weapon", 6)
 export class TwoHandedSwordWeapon extends TwoHandedWeapon {
-    constructor(name: string, type: string = "2H Weapon", subType: string = "2H Sword", quantity: number, cost: number, description: string, slot: string = "BothHands", power: number) {
+    constructor(name: string, type: string = "2H Weapon", subType: string = "2H Sword", quantity: number, cost: number, description: string, slot: string = "Weapon", power: number) {
         super(name, type, subType, quantity, cost, description, slot, power);
         this.power = power;
     }
 }
-export const bronzeTwoHandedSword = new TwoHandedSwordWeapon("Bronze Two-Handed Sword", "2H Weapon", "2H Sword", 1, 10, "A sturdy bronze two-handed sword", "BothHands", 4)
-export const ironTwoHandedSword = new TwoHandedSwordWeapon("Iron Two-Handed Sword", "2H Weapon", "2H Sword", 1, 20, "A sturdy iron two-handed sword", "BothHands", 6)
+export const bronzeTwoHandedSword = new TwoHandedSwordWeapon("Bronze Two-Handed Sword", "2H Weapon", "2H Sword", 1, 10, "A sturdy bronze two-handed sword", "Weapon", 4)
+export const ironTwoHandedSword = new TwoHandedSwordWeapon("Iron Two-Handed Sword", "2H Weapon", "2H Sword", 1, 20, "A sturdy iron two-handed sword", "Weapon", 6)
 export class StaffWeapon extends TwoHandedWeapon {
-    constructor(name: string, type: string = "2H Weapon", subType: string = "2H Staff", quantity: number, cost: number, description: string, slot: string = "BothHands", power: number) {
+    constructor(name: string, type: string = "2H Weapon", subType: string = "2H Staff", quantity: number, cost: number, description: string, slot: string = "Weapon", power: number) {
         super(name, type, subType, quantity, cost, description, slot, power);
         this.power = power;
     }
 }
-export const bronzeStaff = new StaffWeapon("Bronze Staff", "2H Weapon", "2H Staff", 1, 10, "A sturdy bronze staff", "BothHands", 4)
-export const ironStaff = new StaffWeapon("Iron Staff", "2H Weapon", "2H Staff", 1, 20, "A sturdy iron staff", "BothHands", 6)
-export const woodenStaff = new StaffWeapon("Wooden Staff", "2H Weapon", "2H Staff", 1, 1, "A simple wooden staff", "BothHands", 2)
+export const bronzeStaff = new StaffWeapon("Bronze Staff", "2H Weapon", "2H Staff", 1, 10, "A sturdy bronze staff", "Weapon", 4)
+export const ironStaff = new StaffWeapon("Iron Staff", "2H Weapon", "2H Staff", 1, 20, "A sturdy iron staff", "Weapon", 6)
+export const woodenStaff = new StaffWeapon("Wooden Staff", "2H Weapon", "2H Staff", 1, 1, "A simple wooden staff", "Weapon", 2)
 
 export const leatherArmor = [
     leatherChest,

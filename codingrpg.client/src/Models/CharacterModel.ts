@@ -7,7 +7,9 @@ import {
     Neck, OffHand, pants,
     ratBite, rawBeef, Ring, shoes, ShoulderArmor,
     tunic,
-    WaistArmor, Weapon, woodenShield, WristArmor,
+    WaistArmor, Weapon, woodenShield, WristArmor, bronzeTwoHandedSword,
+    bronzeDagger,
+    bronzeDaggerOffHand
 } from './ItemModel.ts';
 import { Quest } from "./QuestModel.ts"
 import { cookingSkill, farmingSkill, fishingSkill, leatherWorkingSkill, miningSkill, Skill, smithingSkill, tailoringSkill, woodcuttingSkill } from "./SkillModel.ts"
@@ -148,10 +150,12 @@ export class Hero extends Humanoid {
         const strength = 10;
         const gold = 10;
         super(name, maxHP, currentHP, maxMP, currentMP, maxSP, currentSP, level, currentXP, maxXP, strength, gold)
-        this.inventory = []
+        this.inventory = [bronzeTwoHandedSword]
         this.party = [loyalHound]
         this.skillBook = [cookingSkill, farmingSkill, fishingSkill, leatherWorkingSkill, miningSkill, smithingSkill, tailoringSkill, woodcuttingSkill]
         this.spellBook = []
+        this.mainHand = bronzeDagger
+        this.offHand = bronzeDaggerOffHand
     }
 }
 export class Beast extends Character {
