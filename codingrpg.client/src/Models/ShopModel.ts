@@ -1,8 +1,8 @@
 import { CombatEncounter, NoCombatEncounter, RatCellarCombatEncounter } from "./EncounterModel.ts";
 import {
     basicFishingRod, basicHatchet, basicHealSpellTome, basicHealthPotion, basicManaPotion, basicNeedleAndThread, basicSickle, basicStaminaPotion,
-    beer, bread, bucket, butter, club, Item,
-    leatherBelt, leatherBoots, leatherBracers, leatherChest, leatherCowl, leatherGauntlets, leatherLegs, leatherPauldrons,
+    beer, bread, bronzeArmor, bronzeWeapons, bucket, butter, club, ironArmor, ironWeapons, Item,
+    leatherArmor,
     magicBoltSpellTome, milk, woodenShield
 } from "./ItemModel"
 import { CookingRange, SkillNodeModel } from "./SkillNodeModel.ts"
@@ -77,7 +77,7 @@ export class TempleShop extends ShopModel {
 export class SmithShop extends ShopModel {
     constructor() {
         const name = "Smithy";
-        const inventory: Item[] = [club, leatherBelt, leatherBoots, leatherBracers, leatherChest, leatherCowl, leatherGauntlets, leatherLegs, leatherPauldrons, woodenShield]
+        const inventory: Item[] = [club, ...bronzeArmor, ...bronzeWeapons, ...ironArmor, ...ironWeapons, ...leatherArmor, woodenShield]
         const skillNodes: SkillNodeModel[] = [];
         const combatEncounter = new NoCombatEncounter();
         super(name, inventory, skillNodes, combatEncounter)

@@ -4,7 +4,9 @@ import { Character } from "../Models/CharacterModel";
 import {
     Armor, Back, bareBack, bareChest, bareFeet, bareFinger, bareFist, bareHands, bareHead, bareLegs, bareNeck, bareShoulders, bareWaist, bareWrists,
     ChestArmor, Consumable, emptyHand, Equipable, FootArmor, HandArmor, HeadArmor, HealthPotion, Item, LegArmor, Neck, OffHandWeapon, Potion, Ring, Shield, ShoulderArmor, WaistArmor, Weapon, WristArmor,
-    Food, Drink, AlcoholicDrink, ManaPotion, StaminaPotion, BluntWeapon, NaturalWeapon, Resource, RawFish,SpellTome
+    Food, Drink, AlcoholicDrink, ManaPotion, StaminaPotion, Resource, RawFish, SpellTome,
+    OneHandedWeapon,
+    TwoHandedWeapon
 } from "../Models/ItemModel";
 
 import { Quest } from "../Models/QuestModel"
@@ -40,11 +42,11 @@ export function instantiateItem(plainItem: any): Item {
     // Use a switch statement on the item's `type` and `subType` for robust instantiation
     switch (plainItem.type) {
         case "Weapon":
-            if (plainItem.subType === "Blunt") {
-                return new BluntWeapon(plainItem.name, plainItem.type, plainItem.subType, plainItem.quantity, plainItem.cost, plainItem.description, plainItem.slot, plainItem.power);
+            if (plainItem.slot === "Weapon") {
+                return new OneHandedWeapon(plainItem.name, plainItem.type, plainItem.subType, plainItem.quantity, plainItem.cost, plainItem.description, plainItem.slot, plainItem.power);
             }
-            if (plainItem.subType === "Natural") {
-                return new NaturalWeapon(plainItem.name, plainItem.type, plainItem.subType, plainItem.quantity, plainItem.cost, plainItem.description, plainItem.slot, plainItem.power);
+            if (plainItem.subType === "BothHands") {
+                return new TwoHandedWeapon(plainItem.name, plainItem.type, plainItem.subType, plainItem.quantity, plainItem.cost, plainItem.description, plainItem.slot, plainItem.power);
             }
             return new Weapon(plainItem.name, plainItem.type, plainItem.subType, plainItem.quantity, plainItem.cost, plainItem.description, plainItem.slot, plainItem.power);
 
@@ -107,9 +109,9 @@ export function instantiateSpell(plainSpell: any): Spell {
         case "Damaging":
             return new DamagingSpell(plainSpell.name, plainSpell.description, plainSpell.school, plainSpell.level, plainSpell.type, plainSpell.subType, plainSpell.manaCost, plainSpell.spellValue, plainSpell.duration)
         case "Healing":
-            return new HealingSpell(plainSpell.name, plainSpell.description, plainSpell.school, plainSpell.level, plainSpell.type, plainSpell.subType, plainSpell.manaCost, plainSpell.spellValue,plainSpell.duration)
+            return new HealingSpell(plainSpell.name, plainSpell.description, plainSpell.school, plainSpell.level, plainSpell.type, plainSpell.subType, plainSpell.manaCost, plainSpell.spellValue, plainSpell.duration)
         default:
-            return new Spell(plainSpell.name, plainSpell.description, plainSpell.school, plainSpell.level, plainSpell.type, plainSpell.subType, plainSpell.manaCost, plainSpell.spellValue,plainSpell.duration)
+            return new Spell(plainSpell.name, plainSpell.description, plainSpell.school, plainSpell.level, plainSpell.type, plainSpell.subType, plainSpell.manaCost, plainSpell.spellValue, plainSpell.duration)
     }
 }
 

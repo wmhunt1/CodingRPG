@@ -2,12 +2,11 @@ import { Character } from "./CharacterModel.ts"
 import { type DialogueNode } from "./DialogueNodeModel.ts"
 import {
     ButterChurnLocation, CookingRangeLocation, CowCombatLocation,
-    DairyCowLocation, FarmShopLocation,
+    DairyCowLocation, FarmShopLocation, FlaxFieldLocation,
     GeneralStoreLocation, InnLocation,
-    Location,
-    MagicShopLocation,
-    MillLocation,
-    SmithShopLocation,
+    Location, LoomLocation,
+    MagicShopLocation, MillLocation,
+    SmithShopLocation, SpinningWheelLocation,
     WellLocation, WheatFieldLocation
 } from './LocationModel.ts';
 import { Quest, slayRatQuest1 } from "./QuestModel.ts"
@@ -18,6 +17,7 @@ import farmImage from "../assets/wheat.png";
 import forestImage from "../assets/forest.png";
 import graveyardImage from "../assets/tombstone.png"
 import hauntedHouseImage from "../assets/spooky-house.png"
+import lumberMillImage from "../assets/axe-in-stump.png"
 import mountainImage from "../assets/peaks.png"
 import notAreaImage from "../assets/plain-square.png"
 import roadImage from "../assets/stone-path.png"
@@ -67,7 +67,7 @@ export class Dungeon extends AreaModel {
 }
 export class Farm extends AreaModel {
     constructor(name: string, quests: Quest[], conversations: ((hero: Character, addGameLog: (message: string) => void) => DialogueNode[])[], x: number, y: number) {
-        const locations: Location[] = [new FarmShopLocation(`${name} Shop`), new ButterChurnLocation(), new CookingRangeLocation(), new CowCombatLocation(), new DairyCowLocation(), new WellLocation("Farm Well"), new WheatFieldLocation()]
+        const locations: Location[] = [new FarmShopLocation(`${name} Shop`), new ButterChurnLocation(), new CookingRangeLocation(), new CowCombatLocation(), new DairyCowLocation(), new FlaxFieldLocation(), new LoomLocation(), new SpinningWheelLocation(), new WellLocation("Farm Well"), new WheatFieldLocation()]
         super(name, locations, quests, conversations, x, y)
         this.imageSrc = farmImage;
         this.imageAlt = "Farm";
@@ -116,6 +116,13 @@ export class HauntedHouse extends Structure {
         super(name, locations, quests, conversations, x, y)
         this.imageSrc = hauntedHouseImage;
         this.imageAlt = "A Haunted House";
+    }
+}
+export class LumberMill extends Structure {
+    constructor(name: string, locations: Location[], quests: Quest[], conversations: ((hero: Character, addGameLog: (message: string) => void) => DialogueNode[])[], x: number, y: number) {
+        super(name, locations, quests, conversations, x, y)
+        this.imageSrc = lumberMillImage;
+        this.imageAlt = "An axe in a stump to represent a lumbermill";
     }
 }
 export class WaterMill extends Structure {

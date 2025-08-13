@@ -10,7 +10,7 @@ import {
     WaistArmor, Weapon, woodenShield, WristArmor,
 } from './ItemModel.ts';
 import { Quest } from "./QuestModel.ts"
-import { cookingSkill, farmingSkill, fishingSkill, leatherWorkingSkill, Skill, woodcuttingSkill } from "./SkillModel.ts"
+import { cookingSkill, farmingSkill, fishingSkill, leatherWorkingSkill, miningSkill, Skill, smithingSkill, tailoringSkill, woodcuttingSkill } from "./SkillModel.ts"
 import { Spell } from "./SpellModel.ts"
 
 export class Character {
@@ -150,7 +150,7 @@ export class Hero extends Humanoid {
         super(name, maxHP, currentHP, maxMP, currentMP, maxSP, currentSP, level, currentXP, maxXP, strength, gold)
         this.inventory = []
         this.party = [loyalHound]
-        this.skillBook = [cookingSkill, farmingSkill, fishingSkill, leatherWorkingSkill, woodcuttingSkill]
+        this.skillBook = [cookingSkill, farmingSkill, fishingSkill, leatherWorkingSkill, miningSkill, smithingSkill, tailoringSkill, woodcuttingSkill]
         this.spellBook = []
     }
 }

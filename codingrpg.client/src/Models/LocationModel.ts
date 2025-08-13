@@ -1,6 +1,6 @@
 import { CombatEncounter, CowCombatEncounter, RatCellarCombatEncounter } from "./EncounterModel.ts"
 import { FarmShop, GeneralShop, InnShop, MagicShop, PotionShop, ShopModel, SmithShop, TempleShop } from "./ShopModel.ts"
-import { ButterChurn, CookingRange, DairyCow, Mill, MinnowFishingSpot, RiverWater, SalmonFishingSpot, SkillNodeModel, TroutFishingSpot, Well, WheatField, WoodTree } from "./SkillNodeModel.ts"
+import { ButterChurn, CookingRange, DairyCow, FlaxField, Loom, Mill, MinnowFishingSpot, RiverWater, SalmonFishingSpot, SkillNodeModel, SpinningWheel, TroutFishingSpot, Well, WheatField, WoodTree } from "./SkillNodeModel.ts"
 export class Location {
     name: string;
     //add conversations
@@ -132,6 +132,25 @@ export class WellLocation extends CookingSKillLocation {
         super(name, skillNode)
     }
 }
+export class TailoringSKillLocation extends CraftingSkillLocation {
+    constructor(name: string, skilLNode: SkillNodeModel) {
+        super(name, skilLNode)
+    }
+}
+export class LoomLocation extends TailoringSKillLocation {
+    constructor() {
+        const name = "Loom";
+        const skillNode = new Loom()
+        super(name, skillNode)
+    }
+}
+export class SpinningWheelLocation extends TailoringSKillLocation {
+    constructor() {
+        const name = "Spinning Wheel"
+        const skillNode = new SpinningWheel()
+        super(name, skillNode)
+    }
+}
 export class GatheringSKillLocation extends SkillLocation {
     constructor(name: string, skilLNode: SkillNodeModel) {
         super(name, skilLNode)
@@ -146,6 +165,13 @@ export class DairyCowLocation extends FarmingSkillLocation {
     constructor() {
         const name = "Dairy Cow";
         const skillNode = new DairyCow()
+        super(name, skillNode)
+    }
+}
+export class FlaxFieldLocation extends FarmingSkillLocation {
+    constructor() {
+        const name = "Flax Field";
+        const skillNode = new FlaxField()
         super(name, skillNode)
     }
 }

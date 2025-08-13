@@ -1,13 +1,10 @@
-Look into using Redux for state management
 Add dungeon with seperate map
 
 rat quest dialogue
 goblin quest and dialogue
 
-bronze and iron weapons and armor
 and skill recipes, and skill nodes
 
-blacksmithing skill
 
 zombie and skeleton quest and dialogoue in graveyard
 
@@ -37,9 +34,6 @@ look into material ui
 react-router for navigation?
 
 firemaking skill
-tailoring skill
-spin flax
-tailoring for linen pants and shirts
 
 more attributes and effects
 dexterity, agility, intelligence, wisdom, charisma

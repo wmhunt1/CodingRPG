@@ -1,14 +1,20 @@
 import {
     bakeBread,
+    bronzeRecipes,
     chopWoodLogs,
     churnButter, cookRawBeef, cookRawMinow, cookRawSalmon, cookRawTrout,
     craftLeatherBelt, craftLeatherBoots, craftLeatherBracers, craftLeatherChest, craftLeatherCowl, craftLeatherGauntlets, craftLeatherLegs, craftLeatherPauldrons,
     fetchWater,
     fishRawMinnow, fishRawSalmon,
     harvestWheat,
+    ironRecipes,
     milkCow,
     millWheatFlour,
-    SkillRecipe
+    pickFlax,
+    SkillRecipe,
+    smeltBronzeBar, smeltIronBar,
+    spinFlax,
+    weaveCloak, weavePants, weaveSkirt, weaveTunic,
 } from "./SkillRecipesModel"
 export class SkillNodeModel {
     name: string;
@@ -79,6 +85,46 @@ export class LeatherworkingSKillNode extends CraftingSkillNode {
         super(name, recipes)
     }
 }
+export class SmithingSKillNode extends CraftingSkillNode {
+
+    constructor(name: string, recipes: SkillRecipe[]) {
+        super(name, recipes)
+    }
+}
+export class AnvilAndForge extends SmithingSKillNode {
+    constructor() {
+        const name = "Anvil and Forge";
+        const recipes: SkillRecipe[] = [...bronzeRecipes, ...ironRecipes]
+        super(name, recipes)
+    }
+}
+export class Smelter extends SmithingSKillNode {
+    constructor() {
+        const name = "Smelter"
+        const recipes: SkillRecipe[] = [smeltBronzeBar, smeltIronBar]
+        super(name, recipes)
+    }
+}
+export class TailoringSKillNode extends CraftingSkillNode {
+
+    constructor(name: string, recipes: SkillRecipe[]) {
+        super(name, recipes)
+    }
+}
+export class Loom extends TailoringSKillNode {
+    constructor() {
+        const name = "Loom";
+        const recipes: SkillRecipe[] = [weaveCloak, weavePants, weaveSkirt, weaveTunic,]
+        super(name, recipes)
+    }
+}
+export class SpinningWheel extends TailoringSKillNode {
+    constructor() {
+        const name = "Spinning Wheel";
+        const recipes: SkillRecipe[] = [spinFlax]
+        super(name, recipes)
+    }
+}
 export class GatheringSKillNode extends SkillNodeModel {
 
     constructor(name: string, recipes: SkillRecipe[]) {
@@ -92,6 +138,13 @@ export class FarmingSkillNode extends GatheringSKillNode {
 }
 export class FarmPlot extends FarmingSkillNode {
     constructor(name: string, recipes: SkillRecipe[]) {
+        super(name, recipes)
+    }
+}
+export class FlaxField extends FarmPlot {
+    constructor() {
+        const name = "Flax Field"
+        const recipes: SkillRecipe[] = [pickFlax]
         super(name, recipes)
     }
 }
