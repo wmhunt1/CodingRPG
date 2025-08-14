@@ -4,7 +4,7 @@ import { Character, Hero } from "../Models/CharacterModel"; // Assuming Characte
 import { Item, OffHandWeapon, Shield } from "../Models/ItemModel";
 import { Spell } from "../Models/SpellModel";
 import { addItemToInventory, removeItemFromInventory } from "./InventoryUtils";
-import { updateQuestProgress } from "./QuestUtils";
+import {  updateQuestProgress } from "./QuestUtils";
 
 /**
  * Applies a physical attack from an attacker to a target.
@@ -50,8 +50,9 @@ export const applyAttack = (hero: Character, attacker: Character, target: Charac
         }
 
         if (updatedTarget.currentHP <= 0) {
-            const existingQuest = hero.journal.find(quest => quest.objective === updatedTarget.name);
+            const existingQuest = hero.journal.find(quest => updatedTarget.name.includes(quest.objective));
             if (existingQuest) {
+                console.log("existing quest")
                 updateQuestProgress(hero, hero.journal, existingQuest, addGameLog);
             }
             addGameLog(`${updatedTarget.name} has been defeated!`);
@@ -128,11 +129,11 @@ export const executeCombatRound = (
     const heroesGoFirst = Math.random() > 0.5;
     updatedEnemies = updatedEnemies.filter((enemy) => enemy.currentHP > 0);
 
-
+    const firstHero = updatedHeroes[0];
     const turns = [
         () => { // Heroes' Turn
             if (updatedHeroes.length > 0) {
-                const firstHero = updatedHeroes[0];
+            
                 if (firstHero.currentHP > 0) {
                     if (action === 'Attack') {
                         const targetEnemy = updatedEnemies.find((enemy) => enemy.name === target.name);
@@ -172,16 +173,16 @@ export const executeCombatRound = (
                 updatedEnemies = updatedEnemies.filter((enemy) => enemy.currentHP > 0);
                 // Handle the rest of the heroes
                 for (let i = 1; i < updatedHeroes.length; i++) {
-                    const hero = updatedHeroes[i];
-                    if (hero.currentHP <= 0) continue;
+                    const updatedHero = updatedHeroes[i];
+                    if (updatedHero.currentHP <= 0) continue;
                     const targetEnemy = updatedEnemies.find((enemy) => enemy.currentHP > 0);
                     if (targetEnemy) {
                         const index = updatedEnemies.findIndex(e => e.name === targetEnemy.name);
-                        updatedEnemies[index] = applyAttack(hero, hero, targetEnemy, addGameLog);
-                        if (updatedEnemies[index].currentHP <= 0) {
-                            hero.currentXP += targetEnemy.currentXP;
-                            hero.gold += targetEnemy.gold;
-                        }
+                        updatedEnemies[index] = applyAttack(firstHero, updatedHero, targetEnemy, addGameLog);
+                        //if (updatedEnemies[index].currentHP <= 0) {
+                        //    hero.currentXP += targetEnemy.currentXP;
+                        //    hero.gold += targetEnemy.gold;
+                        //}
                     }
                 }
             }

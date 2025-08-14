@@ -1,6 +1,5 @@
 Add dungeon with seperate map
 
-rat quest dialogue
 goblin quest and dialogue
 
 and skill recipes, and skill nodes
@@ -27,7 +26,6 @@ add bandits
 
 add tactics for npc actions
 
-maybe change ui to be less cluttered
 
 look into material ui
 

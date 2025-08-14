@@ -1,5 +1,5 @@
 import { Character } from "./CharacterModel.ts"
-import { type DialogueNode } from "./DialogueNodeModel.ts"
+import { getSlayRatQuest1Dialogue, type DialogueNode } from "./DialogueNodeModel.ts"
 import {
     ButterChurnLocation, CookingRangeLocation, CowCombatLocation,
     DairyCowLocation, FarmShopLocation, FlaxFieldLocation,
@@ -9,7 +9,7 @@ import {
     SmithShopLocation, SpinningWheelLocation,
     WellLocation, WheatFieldLocation
 } from './LocationModel.ts';
-import { Quest, slayRatQuest1 } from "./QuestModel.ts"
+import { Quest } from "./QuestModel.ts"
 import bridgeImage from "../assets/stone-bridge.png"
 import cabinImage from "../assets/wood-cabin.png"
 import dockImage from "../assets/wooden-pier.png"
@@ -186,8 +186,8 @@ export class StartingVillage extends Village {
         const name = "Starting Village"
         //maybe move cellar to inn location
         const locations: Location[] = [new GeneralStoreLocation("Joe the Trader's"), new InnLocation("Dreaming Worker Inn", 5), new SmithShopLocation("Forgeheart Smithy"), new WellLocation("Village Well")]
-        const conversations: ((hero: Character, addGameLog: (message: string) => void) => DialogueNode[])[] = []
-        const quests: Quest[] = [slayRatQuest1]
+        const conversations: ((hero: Character, addGameLog: (message: string) => void) => DialogueNode[])[] = [getSlayRatQuest1Dialogue]
+        const quests: Quest[] = []
         const x = 0;
         const y = 0;
         super(name, locations, quests, conversations, x, y)

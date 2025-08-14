@@ -5,6 +5,7 @@ import { addItemToInventory, removeItemFromInventory } from "./InventoryUtils"
 import { levelUpHero } from "./LevelingUtils"
 //acceptQuest
 export const acceptQuest = (character: Character, journal: Quest[], questToAdd: Quest, addGameLog: (message: string) => void): void => {
+    console.log(journal)
     const existingQuest = journal.find(quest => quest.name === questToAdd.name);
     if (!existingQuest) {
         questToAdd.status = "In-Progress"
@@ -14,6 +15,7 @@ export const acceptQuest = (character: Character, journal: Quest[], questToAdd: 
     else {
         addGameLog(`${character.name} has already accepted Quest: ${questToAdd.name}`)
     }
+    console.log(journal)
 }
 //increaseQuestProgress
 export const updateQuestProgress = (character: Character, journal: Quest[], questToUpdate: Quest, addGameLog: (message: string) => void): void => {
