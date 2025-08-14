@@ -1,7 +1,7 @@
 
 // src/Utils/CombatUtils.ts
 import { Character, Hero } from "../Models/CharacterModel"; // Assuming CharacterModel is accessible
-import { Item } from "../Models/ItemModel";
+import { Item, OffHandWeapon, Shield } from "../Models/ItemModel";
 import { Spell } from "../Models/SpellModel";
 import { addItemToInventory, removeItemFromInventory } from "./InventoryUtils";
 import { updateQuestProgress } from "./QuestUtils";
@@ -16,39 +16,49 @@ import { updateQuestProgress } from "./QuestUtils";
  * @returns The updated target character.
  */
 export const applyAttack = (hero: Character, attacker: Character, target: Character, addGameLog: (message: string) => void): Character => {
-    // Define the base hit chance as a decimal (e.g., 85% chance to hit)
-    // This could be a stat on the character object in the future.
     const hitChance = 0.85;
     const hitRoll = Math.random();
 
     if (hitRoll <= hitChance) {
-        // The attack is a hit
-        const totalProtection = Math.floor((target.head.protection + target.shoulders.protection + target.chest.protection + target.hands.protection + target.wrists.protection + target.waist.protection + target.legs.protection + target.feet.protection) / 8)
-        const strengthBonus = Math.floor(attacker.strength / 10);
-        const totalAttack = attacker.mainHand.power + strengthBonus;
-        let damage = totalAttack - totalProtection;
-        if (damage < 0) { damage = 0 }
+        let shieldBonus = 0;
+        if (target.offHand instanceof Shield) {
+            shieldBonus = target.offHand.protection;
+        }
+
+        // Calculate the attacker's total power
+        let totalPower = attacker.mainHand.power;
+        if (attacker.offHand instanceof OffHandWeapon) {
+            totalPower += attacker.offHand.power;
+        }
+
+        const totalStrength = Math.floor((attacker.strength + attacker.strengthBonus - attacker.strengthPenalty + attacker.strengthTempBonus - attacker.strengthTempPenalty) / 10);
+        totalPower += totalStrength;
+
+        const totalProtection = Math.floor((target.head.protection + target.shoulders.protection + target.chest.protection + target.hands.protection + target.wrists.protection + target.waist.protection + target.legs.protection + target.feet.protection) / 8) + shieldBonus;
+
+        let damage = totalPower - totalProtection;
+        if (damage < 0) {
+            damage = 0;
+        }
+
         const updatedTarget = { ...target, currentHP: target.currentHP - damage };
 
-        if (damage != 0) {
+        if (damage !== 0) {
             addGameLog(`${attacker.name} attacks ${target.name} for ${damage} damage!`);
-        }
-        else {
+        } else {
             addGameLog(`${attacker.name} attacks ${target.name} but does no damage!`);
         }
 
         if (updatedTarget.currentHP <= 0) {
             const existingQuest = hero.journal.find(quest => quest.objective === updatedTarget.name);
             if (existingQuest) {
-                updateQuestProgress(hero, hero.journal, existingQuest, addGameLog)
+                updateQuestProgress(hero, hero.journal, existingQuest, addGameLog);
             }
             addGameLog(`${updatedTarget.name} has been defeated!`);
         }
         return updatedTarget;
     } else {
-        // The attack is a miss
         addGameLog(`${attacker.name} misses ${target.name}!`);
-        // Return the target unchanged since the attack missed
         return target;
     }
 };

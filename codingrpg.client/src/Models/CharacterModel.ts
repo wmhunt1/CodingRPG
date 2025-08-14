@@ -1,15 +1,14 @@
 import {
     Back, bareBack, bareChest, bareFeet, bareFinger, bareFist, bareHands, bareHead, bareLegs, bareNeck, bareShoulders, bareWaist, bareWrists,
+    bronzeSpear, bronzeShield,
     charge, cheese, ChestArmor, club, cowLeather,
-    dogBite, emptyHand, FootArmor,
+    dogBite, dogCollar, emptyHand, FootArmor,
     HandArmor, HeadArmor, Item,
     LegArmor,
     Neck, OffHand, pants,
     ratBite, rawBeef, Ring, shoes, ShoulderArmor,
     tunic,
-    WaistArmor, Weapon, woodenShield, WristArmor, bronzeTwoHandedSword,
-    bronzeDagger,
-    bronzeDaggerOffHand
+    WaistArmor, Weapon, woodenShield, WristArmor
 } from './ItemModel.ts';
 import { Quest } from "./QuestModel.ts"
 import { cookingSkill, farmingSkill, fishingSkill, leatherWorkingSkill, miningSkill, Skill, smithingSkill, tailoringSkill, woodcuttingSkill } from "./SkillModel.ts"
@@ -25,14 +24,31 @@ export class Character {
     //basestats
     currentHP: number = 10;
     maxHP: number = 10;
+    hpBonus: number = 0;
+    hpPenalty: number = 0;
+    hpTempBonus: number = 0;
+    hpTempPenalty: number = 0;
     currentMP: number = 10;
     maxMP: number = 10;
+    mpBonus: number = 0;
+    mpPenalty: number = 0;
+    mpTempBonus: number = 0;
+    mpTempPenalty: number = 0;
     currentSP: number = 10;
     maxSP: number = 10;
+    spBonus: number = 0;
+    spPenalty: number = 0;
+    spTempBonus: number = 0;
+    spTempPenalty: number = 0;
+
 
     //attributes
     //physical
     strength: number = 10;
+    strengthBonus: number = 0;
+    strengthPenalty: number = 0;
+    strengthTempBonus: number = 0;
+    strengthTempPenalty: number = 0;
     //agility,constitution,dexterity,endurance
     //mental
     //intelligence wisdom willpower charisma or personality perception
@@ -150,12 +166,12 @@ export class Hero extends Humanoid {
         const strength = 10;
         const gold = 10;
         super(name, maxHP, currentHP, maxMP, currentMP, maxSP, currentSP, level, currentXP, maxXP, strength, gold)
-        this.inventory = [bronzeTwoHandedSword]
+        this.inventory = []
         this.party = [loyalHound]
         this.skillBook = [cookingSkill, farmingSkill, fishingSkill, leatherWorkingSkill, miningSkill, smithingSkill, tailoringSkill, woodcuttingSkill]
         this.spellBook = []
-        this.mainHand = bronzeDagger
-        this.offHand = bronzeDaggerOffHand
+        this.mainHand = club;
+        this.offHand = woodenShield;
     }
 }
 export class Beast extends Character {
@@ -212,6 +228,7 @@ export class Dog extends Beast {
         const gold = 0;
         super(name, subType, maxHP, currentHP, maxMP, currentMP, maxSP, currentSP, level, currentXP, maxXP, strength, gold)
         this.mainHand = dogBite;
+        this.neck = dogCollar
     }
 }
 export const loyalHound = new Dog()
@@ -266,9 +283,9 @@ export class BasicSkeleton extends Undead {
         const strength = 10;
         const gold = 5;
         super(name, subType, maxHP, currentHP, maxMP, currentMP, maxSP, currentSP, level, currentXP, maxXP, strength, gold)
-        this.mainHand = club;
-        this.offHand = woodenShield;
-        this.inventory = [club, woodenShield]
+        this.mainHand = bronzeSpear;
+        this.offHand = bronzeShield;
+        this.inventory = [bronzeShield, bronzeSpear]
     }
 }
 export class BasicZombie extends Undead {

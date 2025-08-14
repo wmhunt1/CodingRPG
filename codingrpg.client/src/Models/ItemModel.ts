@@ -288,6 +288,7 @@ export class Neck extends Accessory {
     }
 }
 export const bareNeck = new Neck("Bare Neck", "Acessory", "Neck", 1, 0, "You're not wearing anything around your neck", "Neck")
+export const dogCollar = new Neck("Dog Collar", "Acessory", "Neck", 1, 0, "A simple dog collar", "Neck")
 
 export class Ring extends Accessory {
     constructor(name: string, type: string = "Accessory", subType: string = "Ring", quantity: number, cost: number, description: string, slot: string) {
