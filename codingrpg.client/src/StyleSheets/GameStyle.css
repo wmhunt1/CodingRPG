@@ -45,7 +45,27 @@ body, html, #root {
 .game-layout-grid {
     display: grid;
     /* Use 'minmax(0, 1fr)' for flexible columns and rows.
-       This is a robust pattern that prevents content from overflowing the grid. */
+        This is a robust pattern that prevents content from overflowing the grid. */
+    grid-template-areas:
+        "toolbar toolbar toolbar"
+        "left main options"
+        "bottom bottom bottom";
+    grid-template-columns: 1fr 3fr 1fr;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    width: 100%;
+    height: 100%;
+    gap: 15px;
+    padding: 15px; /* Added padding to the grid itself */
+    box-sizing: border-box;
+    /* Add a background to the grid to make it a distinct area */
+    background-color: #2e2e4e;
+    border-radius: 8px;
+}
+
+.combat-layout-grid,.inventory-layout-grid {
+    display: grid;
+    /* Use 'minmax(0, 1fr)' for flexible columns and rows.
+        This is a robust pattern that prevents content from overflowing the grid. */
     grid-template-areas:
         "toolbar toolbar toolbar"
         "left main options"
@@ -125,6 +145,30 @@ body, html, #root {
     max-height: 290px;
 }
 
+.combat-content-left,
+.combat-content-main,
+.combat-options,
+.inventory-content-left,
+.inventory-content-main,
+.inventory-options{
+    background-color: #3b3b5b;
+    padding: 15px;
+    border-radius: 5px;
+    overflow-y: auto; /* **CRUCIAL**: Allows vertical scrolling for long content */
+    overflow-x: hidden; /* Prevents horizontal scrolling inside these panels */
+    box-sizing: border-box;
+    max-height: 400px;
+}
+
+.combat-content-left,.inventory-content-left {
+    grid-area: left;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: stretch;
+}
+
 .game-content-left {
     grid-area: left;
     text-align: center;
@@ -132,6 +176,15 @@ body, html, #root {
     flex-direction: column;
     gap: 10px;
     align-items: stretch;
+}
+
+.combat-content-main,.inventory-content-main {
+    grid-area: main;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start; /* Aligned to the top */
+    text-align: center;
 }
 
 .game-content-main {
@@ -143,17 +196,23 @@ body, html, #root {
     text-align: center;
 }
 
-.area-options {
+/* FIX: Corrected the CSS selector by adding a dot. */
+.area-options, .combat-options,.inventory-options {
     grid-area: options;
     display: flex;
     flex-direction: column;
     gap: 10px;
     align-items: stretch;
+    box-sizing: border-box;
 }
 
     .area-options h3,
     .game-content-left h3,
-    .game-content-bottom h3 {
+    .game-content-bottom h3,
+    .combat-content-left h3,
+    .combat-options h3,
+    .inventory-content-left h3,
+    .inventory-options h3{
         margin-top: 0;
         margin-bottom: 15px;
         color: #a0a0ff;
@@ -346,6 +405,7 @@ body, html, #root {
     position: relative;
     font-family: 'Press Start 2P', cursive;
 }
+
 .close-btn {
     background-color: #8e44ad;
     color: white;
@@ -368,6 +428,7 @@ body, html, #root {
         text-decoration: none;
         cursor: pointer;
     }
+
     .close-btn:active {
         background-color: #7f399c;
         transform: translateY(0);

@@ -97,18 +97,18 @@ export default function DialogueSystem({ dialogueManager, back }: DialogueSystem
 
     return (
         <div className="w-full flex flex-col items-center justify-center p-4">
-            <div className="game-layout-grid grid grid-cols-3 grid-rows-[auto_1fr_auto] gap-4 w-full h-full max-w-7xl max-h-[90vh]">
+            <div className="inventory-layout-grid grid grid-cols-3 grid-rows-[auto_1fr_auto] gap-4 w-full h-full max-w-7xl max-h-[90vh]">
                 <div className="col-span-3 toolbar bg-gray-800 rounded-lg shadow p-4 text-white">
                     {/*    <h2>Game Title</h2>*/}
                     <h2>Dialogue</h2>
                 </div>
 
-                <div className="game-content-left col-span-1 bg-gray-800 rounded-lg shadow p-4 text-white">
+                <div className="inventory-content-left col-span-1 bg-gray-800 rounded-lg shadow p-4 text-white">
                     <h3>Placeholder</h3>
                 </div>
 
                 {/* The main content area where the dialogue system is rendered */}
-                <div className="game-content-main col-span-1 md:col-span-2 bg-gray-900 rounded-lg shadow p-4 text-white flex flex-col items-center justify-center max-w-3xl mx-auto w-full">
+                <div className="inventory-content-main col-span-1 md:col-span-2 bg-gray-900 rounded-lg shadow p-4 text-white flex flex-col items-center justify-center max-w-3xl mx-auto w-full">
                     {isDialogueVisible ? (
                         renderDialogue()
                     ) : (
@@ -127,15 +127,15 @@ export default function DialogueSystem({ dialogueManager, back }: DialogueSystem
                     )}
                 </div>
 
-                <div className="area-options col-span-3 md:col-span-1 bg-gray-800 rounded-lg shadow p-4 text-white">
+                <div className="inventory-options col-span-3 md:col-span-1 bg-gray-800 rounded-lg shadow p-4 text-white">
                     <h3>Area Options</h3>
                     <button className='area-button w-full px-4 py-2 my-2 bg-gray-700 hover:bg-gray-600 text-white font-medium rounded-lg transition-colors' onClick={() => back()}>Leave</button>
                 </div>
 
-                <div className="game-content-bottom col-span-3 md:col-span-2 bg-gray-800 rounded-lg shadow p-4 text-white">
-                    <h3>Placeholder</h3>
-                    <p>Placeholder for your items.</p>
-                </div>
+                {/*<div className="game-content-bottom col-span-3 md:col-span-2 bg-gray-800 rounded-lg shadow p-4 text-white">*/}
+                {/*    <h3>Placeholder</h3>*/}
+                {/*    <p>Placeholder for your items.</p>*/}
+                {/*</div>*/}
             </div>
         </div>
     );

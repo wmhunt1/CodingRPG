@@ -7,15 +7,15 @@ interface JournalProps {
 }
 function Journal({ hero, back }: JournalProps) {
     return (
-        <div className="game-layout-grid" id="character-sheet">
+        <div className="inventory-layout-grid" id="character-sheet">
             <div className="toolbar">
                 <h2>{hero.name}'s Journal</h2>
             </div>
-            <div className="game-content-left">
+            <div className="inventory-content-left">
                 <h3>Placeholder</h3>
                 <p>Placeholder</p>
             </div>
-            <div className="game-content-main">
+            <div className="inventory-content-main">
                 <div className="inventory-display-area">
                     {hero.journal.length > 0 ? (
                         <div className="inventory-items">
@@ -35,14 +35,14 @@ function Journal({ hero, back }: JournalProps) {
                     )}
                 </div>
             </div>
-            <div className="area-options">
+            <div className="inventory-options">
                 <h3>Area Options</h3>
                 <button className='area-button' onClick={() => back()}>Back</button>
             </div>
-            <div className="game-content-bottom">
-                <h3>Placeholder</h3>
-                <p>Placeholder for Bottom Panel</p>
-            </div>
+            {/*<div className="game-content-bottom">*/}
+            {/*    <h3>Placeholder</h3>*/}
+            {/*    <p>Placeholder for Bottom Panel</p>*/}
+            {/*</div>*/}
         </div>
     );
 }

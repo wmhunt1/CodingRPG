@@ -15,11 +15,11 @@ function SpellBook({ hero, back, addGameLog }: SpellBookProps) {
         addGameLog(`${caster.name} casts ${spellToCast.name} on ${target.name}`)
     }
     return (
-        <div className="game-layout-grid" id="character-sheet">
+        <div className="inventory-layout-grid" id="character-sheet">
             <div className="toolbar">
                 <h2>{hero.name}'s SpellBook</h2>
             </div>
-            <div className="game-content-left">
+            <div className="inventory-content-left">
                 <h3>Party</h3>
                 <p>{hero.name}</p>
                 <button className="action-button" onClick={() => setCurrentTarget(hero)}>Select</button>
@@ -30,7 +30,7 @@ function SpellBook({ hero, back, addGameLog }: SpellBookProps) {
                     </div>
                 ))}
             </div>
-            <div className="game-content-main">
+            <div className="inventory-content-main">
                 <div className="inventory-display-area">
                     {hero.spellBook.length > 0 ? (
                         <div className="inventory-items">
@@ -49,14 +49,14 @@ function SpellBook({ hero, back, addGameLog }: SpellBookProps) {
                     )}
                 </div>
             </div>
-            <div className="area-options">
+            <div className="inventory-options">
                 <h3>Area Options</h3>
                 <button className='area-button' onClick={() => back()}>Back</button>
             </div>
-            <div className="game-content-bottom">
-                <h3>Current Spell Target</h3>
-                <p>{currentTarget.name}</p>
-            </div>
+            {/*<div className="game-content-bottom">*/}
+            {/*    <h3>Current Spell Target</h3>*/}
+            {/*    <p>{currentTarget.name}</p>*/}
+            {/*</div>*/}
         </div>
     );
 }

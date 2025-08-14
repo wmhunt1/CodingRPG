@@ -65,20 +65,20 @@ function Shop({ hero, back, shop, onUpdateHero, addGameLog, shopSkillNode, shopC
         removeItemFromInventory(updatedHero.inventory, itemToSell, 1)
         setCurrentHero(updatedHero);
         onUpdateHero(updatedHero);
-        addGameLog(`${hero.name} has sold ${itemToSell.name} for ${Math.floor(itemToSell.cost / 2)}.`);
+        addGameLog(`${hero.name} has sold ${itemToSell.name} for ${Math.floor(itemToSell.cost / 2)} GP.`);
         console.log(updatedHero.party)
     }
     return (
-        <div id="shop" className="game-layout-grid">
+        <div id="shop" className="inventory-layout-grid">
             <div className="toolbar">
                 <h2>{shop.name}</h2>
             </div>
-            <div className="game-content-left">
+            <div className="inventory-content-left">
                 <h3>Player Gold</h3>
                 <p>{currentHero.gold} GP</p>
                 {/*or put skilling and talking options*/}
             </div>
-            <div className="game-content-main">
+            <div className="inventory-content-main">
                 <div className="inventory-display-area">
                     <div id="shop-inventory" className="inventory-items-container">
                         <h3>Buy</h3>
@@ -119,7 +119,7 @@ function Shop({ hero, back, shop, onUpdateHero, addGameLog, shopSkillNode, shopC
                     </div>
                 </div>
             </div>
-            <div className="area-options">
+            <div className="inventory-options">
                 <h3>Options</h3>
                 {shop instanceof InnShop ? <button className='area-button' onClick={() => handleInnStay(shop.innStay)}>Rest ({shop.innStay} GP)</button> : <></>}
                 {
@@ -134,11 +134,11 @@ function Shop({ hero, back, shop, onUpdateHero, addGameLog, shopSkillNode, shopC
                 }
                 <button className='area-button' onClick={() => back()}>Leave</button>
             </div>
-            <div className="game-content-bottom">
-                <h3>Interaction / Status</h3>
-                <p>Placeholder for Bottom Panel</p>
-                <p>Maybe put rest here or cooking etc</p>
-            </div>
+            {/*<div className="game-content-bottom">*/}
+            {/*    <h3>Interaction / Status</h3>*/}
+            {/*    <p>Placeholder for Bottom Panel</p>*/}
+            {/*    <p>Maybe put rest here or cooking etc</p>*/}
+            {/*</div>*/}
         </div>
     );
 }

@@ -72,11 +72,11 @@ function Equipment({ hero, back, onUpdateHero, addGameLog }: EquipmentProps) {
     }
 
     return (
-        <div className="game-layout-grid" id="character-sheet">
+        <div className="inventory-layout-grid" id="character-sheet">
             <div className="toolbar">
                 <h2>{currentHero.name}'s Equipment</h2>
             </div>
-            <div className="game-content-left">
+            <div className="inventory-content-left">
                 <h3>Party</h3>
                 <p>{hero.name}</p>
                 <button className="action-button" onClick={() => setCurrentHero(hero)}>Select</button>
@@ -87,7 +87,7 @@ function Equipment({ hero, back, onUpdateHero, addGameLog }: EquipmentProps) {
                     </div>
                 ))}
             </div>
-            <div className="game-content-main">
+            <div className="inventory-content-main">
                 <div className="stats-display-area">
                     <div className="stats-container">
                         <h3>Weapons</h3>
@@ -119,14 +119,14 @@ function Equipment({ hero, back, onUpdateHero, addGameLog }: EquipmentProps) {
                     </div>
                 </div>
             </div>
-            <div className="area-options">
+            <div className="inventory-options">
                 <h3>Area Options</h3>
                 <button className='area-button' onClick={() => back()}>Back</button>
             </div>
-            <div className="game-content-bottom">
-                <h3>Placeholder</h3>
-                <p>Placeholder for Bottom Panel</p>
-            </div>
+            {/*<div className="game-content-bottom">*/}
+            {/*    <h3>Placeholder</h3>*/}
+            {/*    <p>Placeholder for Bottom Panel</p>*/}
+            {/*</div>*/}
         </div>
     );
 }

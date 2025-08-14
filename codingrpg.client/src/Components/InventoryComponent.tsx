@@ -89,12 +89,12 @@ function Inventory({ hero, back, onUpdateHero, addGameLog,inventorySkillNode }: 
     }
 
     return (
-        <div className="game-layout-grid inventory-wrapper" id="inventory">
+        <div className="inventory-layout-grid inventory-wrapper" id="inventory">
             <div className="toolbar">
                 {/* The title now reflects the main hero whose inventory is being displayed */}
                 <h2>{hero.name}'s Inventory</h2>
             </div>
-            <div className="game-content-left">
+            <div className="inventory-content-left">
                 <h3>Party</h3>
                 <p>{hero.name}</p>
                 {/* A button to select the main hero */}
@@ -107,7 +107,7 @@ function Inventory({ hero, back, onUpdateHero, addGameLog,inventorySkillNode }: 
                     </div>
                 ))}
             </div>
-            <div className="game-content-main inventory-items-container">
+            <div className="inventory-content-main inventory-items-container">
                 <div className="inventory-display-area">
                     {hero.inventory.length > 0 ? (
                         <div className="inventory-items">
@@ -144,15 +144,15 @@ function Inventory({ hero, back, onUpdateHero, addGameLog,inventorySkillNode }: 
                     )}
                 </div>
             </div>
-            <div className="area-options">
+            <div className="inventory-options">
                 <h3>Area Options</h3>
                 <button className="area-button" onClick={() => inventorySkillNode(new LeatherworkingSKillNode)}>Leatherworking</button>
                 <button className='area-button' onClick={() => back()}>Back</button>
             </div>
-            <div className="game-content-bottom">
-                <h3>Interaction / Status</h3>
-                <p>Selected Character: {currentHero.name}</p>
-            </div>
+            {/*<div className="game-content-bottom">*/}
+            {/*    <h3>Interaction / Status</h3>*/}
+            {/*    <p>Selected Character: {currentHero.name}</p>*/}
+            {/*</div>*/}
         </div>
     );
 }

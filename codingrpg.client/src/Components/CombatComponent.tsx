@@ -75,6 +75,7 @@ function CombatArena({ heroes, enemies, onCombatEnd, onUpdateHeroes, addGameLog 
 
     // No longer filtering enemies inside this function
     const handleCombatRound = useCallback(() => {
+        console.log(target)
         if (!combatOngoing) return;
         const selectedTarget = targetType === "Ally" ? currentHeroes[targetedIndex] : currentEnemies[targetedIndex];
         const { updatedHeroes, updatedEnemies } = executeCombatRound(
@@ -93,7 +94,7 @@ function CombatArena({ heroes, enemies, onCombatEnd, onUpdateHeroes, addGameLog 
         setRound(round + 1)
         setUseItem(undefined)
         setUseSpell(undefined)
-    }, [combatOngoing, currentHeroes, currentEnemies, addGameLog, handleCheckCombatOutcome, action, targetType, targetedIndex, round, useItem, useSpell]);
+    }, [combatOngoing, currentHeroes, currentEnemies, addGameLog, handleCheckCombatOutcome, action, targetType, targetedIndex, round, useItem, useSpell,target]);
 
     const handleRun = useCallback(() => {
         setCombatOngoing(false);
@@ -144,11 +145,11 @@ function CombatArena({ heroes, enemies, onCombatEnd, onUpdateHeroes, addGameLog 
     }
 
     return (
-        <div className="game-layout-grid">
+        <div className="combat-layout-grid">
             <div className="toolbar">
                 <h2>Combat Round {round}</h2>
             </div>
-            <div className="game-content-left">
+            <div className="combat-content-left">
                 <h3>Action Options</h3>
                 {combatOngoing ? (
                     <>
@@ -169,7 +170,7 @@ function CombatArena({ heroes, enemies, onCombatEnd, onUpdateHeroes, addGameLog 
                     <></>
                 )}
             </div>
-            <div className="game-content-main">
+            <div className="combat-content-main">
                 <div className="combat-display-area">
                     <div className="heroes-container">
                         <h3>Heroes</h3>
@@ -205,7 +206,7 @@ function CombatArena({ heroes, enemies, onCombatEnd, onUpdateHeroes, addGameLog 
                     </div>
                 </div>
             </div>
-            <div className="area-options">
+            <div className="combat-options">
                 <h3>Combat Options</h3>
                 {combatOngoing ? (
                     <>
@@ -222,10 +223,10 @@ function CombatArena({ heroes, enemies, onCombatEnd, onUpdateHeroes, addGameLog 
                     </button>
                 )}
             </div>
-            <div className="game-content-bottom">
-                <h3>Current Target/Current Action </h3>
-                <p>{target.name} ({targetType})/{action}</p>
-            </div>
+            {/*<div className="game-content-bottom">*/}
+            {/*    <h3>Current Target/Current Action </h3>*/}
+            {/*    <p>{target.name} ({targetType})/{action}</p>*/}
+            {/*</div>*/}
 
             {/* Item Modal */}
             {showItemModal && (

@@ -115,14 +115,14 @@ function SkillNode({ hero, back, skillNode, onUpdateHero, addGameLog }: SkillNod
     }
 
     return (
-        <div id="skillNode" className="game-layout-grid">
+        <div id="skillNode" className="inventory-layout-grid">
             <div className="toolbar">
                 <h2>{skillNode.name}</h2>
             </div>
-            <div className="game-content-left">
+            <div className="inventory-content-left">
                 <h3>Placeholder</h3>
             </div>
-            <div className="game-content-main">
+            <div className="inventory-content-main">
                 <div className="skill-recipe-display-area">
                     <div className="skill-recipe-container">
                         <h3>{skillNode.name}</h3>
@@ -169,14 +169,14 @@ function SkillNode({ hero, back, skillNode, onUpdateHero, addGameLog }: SkillNod
                     </div>
                 </div>
             </div>
-            <div className="area-options">
+            <div className="inventory-options">
                 <h3>Options</h3>
                 <button className='area-button' onClick={() => back()}>Leave</button>
             </div>
-            <div className="game-content-bottom">
-                <h3>Interaction / Status</h3>
-                <p>Placeholder for Bottom Panel</p>
-            </div>
+            {/*<div className="game-content-bottom">*/}
+            {/*    <h3>Interaction / Status</h3>*/}
+            {/*    <p>Placeholder for Bottom Panel</p>*/}
+            {/*</div>*/}
         </div>
     );
 }
