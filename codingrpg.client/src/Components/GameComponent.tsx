@@ -68,7 +68,7 @@ type AppLocation = CombatLocation | ShopLocation | SkillLocation | Location;
 function Game() {
     const [activeScreen, setActiveScreen] = useState<GameState>("MainMenu");
     const [area, setArea] = useState<AreaModel>(new StartingVillage());
-    const [currentShop, setCurrentShop] = useState<ShopModel>(new ShopModel("", [], [], new NoCombatEncounter()))
+    const [currentShop, setCurrentShop] = useState<ShopModel>(new ShopModel("", [], [], new NoCombatEncounter(),[]))
     const [currentSkillNode, setCurrentSkillNode] = useState<SkillNodeModel>(new SkillNodeModel("Empty", []))
     const [hero, setHero] = useState<Hero>(new Hero("Hero"));
     const [enemies, setEnemies] = useState<CombatEncounter>(new CombatEncounter("", []))
