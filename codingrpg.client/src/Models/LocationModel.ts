@@ -1,3 +1,6 @@
+
+import { Character } from "./CharacterModel.ts"
+import { type DialogueNode } from "./DialogueNodeModel.ts"
 import { CombatEncounter, CowCombatEncounter, RatCellarCombatEncounter } from "./EncounterModel.ts"
 import { FarmShop, GeneralShop, InnShop, MagicShop, PotionShop, ShopModel, SmithShop, TempleShop } from "./ShopModel.ts"
 import { ButterChurn, CookingRange, DairyCow, FlaxField, Loom, Mill, MinnowFishingSpot, RiverWater, SalmonFishingSpot, SkillNodeModel, SpinningWheel, TroutFishingSpot, Well, WheatField, WoodTree } from "./SkillNodeModel.ts"
@@ -31,54 +34,56 @@ export class RatCellar extends CombatLocation {
 }
 export class ShopLocation extends Location {
     shop: ShopModel;
-    constructor(name: string, shop: ShopModel) {
+    conversations: ((hero: Character, addGameLog: (message: string) => void) => DialogueNode[])[]
+    constructor(name: string, shop: ShopModel, conversations: ((hero: Character, addGameLog: (message: string) => void) => DialogueNode[])[]) {
         super(name)
         this.shop = shop;
+        this.conversations = conversations;
     }
 }
 export class FarmShopLocation extends ShopLocation {
-    constructor(name: string) {
-        const shop = new FarmShop()
-        super(name, shop)
+    constructor(name: string, conversations: ((hero: Character, addGameLog: (message: string) => void) => DialogueNode[])[]) {
+        const shop = new FarmShop(conversations)
+        super(name, shop, conversations)
     }
 }
 export class GeneralStoreLocation extends ShopLocation {
-    constructor(name: string) {
-        const shop = new GeneralShop()
-        super(name, shop)
+    constructor(name: string, conversations: ((hero: Character, addGameLog: (message: string) => void) => DialogueNode[])[]) {
+        const shop = new GeneralShop(conversations)
+        super(name, shop, conversations)
     }
 }
 export class InnLocation extends ShopLocation {
     innStay: number;
-    constructor(name: string, innStay: number) {
-        const shop = new InnShop(innStay);
-        super(name, shop)
+    constructor(name: string, innStay: number, conversations: ((hero: Character, addGameLog: (message: string) => void) => DialogueNode[])[]) {
+        const shop = new InnShop(innStay, conversations);
+        super(name, shop, conversations)
         this.shop = shop;
         this.innStay = innStay;
     }
 }
 export class MagicShopLocation extends ShopLocation {
-    constructor(name: string) {
-        const shop = new MagicShop()
-        super(name, shop)
+    constructor(name: string, conversations: ((hero: Character, addGameLog: (message: string) => void) => DialogueNode[])[]) {
+        const shop = new MagicShop(conversations)
+        super(name, shop, conversations)
     }
 }
 export class PotionShopLocation extends ShopLocation {
-    constructor(name: string) {
-        const shop = new PotionShop()
-        super(name, shop)
+    constructor(name: string, conversations: ((hero: Character, addGameLog: (message: string) => void) => DialogueNode[])[]) {
+        const shop = new PotionShop(conversations)
+        super(name, shop, conversations)
     }
 }
 export class SmithShopLocation extends ShopLocation {
-    constructor(name: string) {
-        const shop = new SmithShop()
-        super(name, shop)
+    constructor(name: string, conversations: ((hero: Character, addGameLog: (message: string) => void) => DialogueNode[])[]) {
+        const shop = new SmithShop(conversations)
+        super(name, shop, conversations)
     }
 }
 export class TempleShopLocation extends ShopLocation {
-    constructor(name: string) {
-        const shop = new TempleShop()
-        super(name, shop)
+    constructor(name: string, conversations: ((hero: Character, addGameLog: (message: string) => void) => DialogueNode[])[]) {
+        const shop = new TempleShop(conversations)
+        super(name, shop, conversations)
     }
 }
 export class SkillLocation extends Location {

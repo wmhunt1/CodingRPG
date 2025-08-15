@@ -1,5 +1,6 @@
 import '../StyleSheets/GameStyle.css';
-import { Character } from "../Models/CharacterModel";
+import { Character,Hero } from "../Models/CharacterModel";
+import { type DialogueNode} from "../Models/DialogueNodeModel"
 import type { CombatEncounter } from '../Models/EncounterModel';
 import { Item } from "../Models/ItemModel"
 import { SkillNodeModel } from "../Models/SkillNodeModel"
@@ -18,8 +19,9 @@ interface ShopProps {
     addGameLog: (message: string) => void;
     shopSkillNode: (skillNode: SkillNodeModel) => void;
     shopCombatEncounter: (combatEncounter: CombatEncounter) => void;
+    shopConversation: (dialogueGenerator: (hero: Hero, addGameLog: (message: string) => void) => DialogueNode[]) => void;
 }
-function Shop({ hero, back, shop, onUpdateHero, addGameLog, shopSkillNode, shopCombatEncounter }: ShopProps) {
+function Shop({ hero, back, shop, onUpdateHero, addGameLog, shopSkillNode, shopCombatEncounter,shopConversation }: ShopProps) {
     //const [activeScreen, setActiveScreen] = useState<ShopState>("Buy");
     const [currentHero, setCurrentHero] = useState(hero);
     const shopInventory = shop.inventory;
@@ -120,8 +122,9 @@ function Shop({ hero, back, shop, onUpdateHero, addGameLog, shopSkillNode, shopC
                 </div>
             </div>
             <div className="inventory-options">
-                <h3>Options</h3>
-                {shop instanceof InnShop ? <button className='area-button' onClick={() => handleInnStay(shop.innStay)}>Rest ({shop.innStay} GP)</button> : <></>}
+         {/*       <h3>Options</h3>*/}
+                {shop instanceof InnShop ?<div><h3>Inn Price</h3> <button className='area-button' onClick={() => handleInnStay(shop.innStay)}>Rest ({shop.innStay} GP)</button></div> : <></>}
+                <h3>Skills</h3>
                 {
                     shop.skillNodes.map((item, index) => (
                         <div key={index}>
@@ -129,8 +132,20 @@ function Shop({ hero, back, shop, onUpdateHero, addGameLog, shopSkillNode, shopC
                         </div>
                     ))
                 }
+                <div>
+                    <h3>People</h3>
+                    {shop.conversations.map((dialogueGenerator, index) => (
+                        // Pass the dialogue function, not the result
+                        <button key={index} className="area-button" onClick={() => shopConversation(dialogueGenerator)}>
+                            Speak with {dialogueGenerator(hero, addGameLog)[0].character}
+                        </button>
+                    ))}
+                </div>
                 {shop.combatEncounter.name !== "None" &&
-                    <button className='area-button' onClick={() => shopCombatEncounter(shop.combatEncounter)}>{shop.combatEncounter.name}</button>
+                <div>
+                <h3>Combat Encounter</h3>
+                        <button className='area-button' onClick={() => shopCombatEncounter(shop.combatEncounter)}>{shop.combatEncounter.name}</button>
+                    </div>
                 }
                 <button className='area-button' onClick={() => back()}>Leave</button>
             </div>

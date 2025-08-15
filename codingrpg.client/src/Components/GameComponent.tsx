@@ -408,7 +408,7 @@ function Game() {
                         setLastScreen("Game")
                     }
                     } shop={currentShop} onUpdateHero={handleUpdateSingleHero}
-                        addGameLog={addGameLog} shopSkillNode={handleSkillNode} shopCombatEncounter={handleCombat} />
+                        addGameLog={addGameLog} shopSkillNode={handleSkillNode} shopCombatEncounter={handleCombat} shopConversation={handleDialogue} />
                 )}
                 {activeScreen === "SkillBook" && (
                     <SkillBook hero={hero} back={() => setActiveScreen("Game")} />

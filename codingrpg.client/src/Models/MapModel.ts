@@ -19,7 +19,7 @@ export class ValleyMap extends MapModel {
         const name = "Valley Map"
         const areas = [
             new Road("Road", [], [], [], 0, 7), new Forest("Forest", forestLocations, [], [], 1, 7), new Forest("Forest", forestLocations, [], [], 2, 7),
-            new Road("Road", [], [], [], 0, 6), new Cabin("Witch's Cabin", [new PotionShopLocation("Witch's Potion Shop")], [], [], 1, 6), new Forest("Forest", forestLocations, [], [], 2, 6), new River("River", riverLocations, [], [], 3, 6),
+            new Road("Road", [], [], [], 0, 6), new Cabin("Witch's Cabin", [new PotionShopLocation("Witch's Potion Shop",[])], [], [], 1, 6), new Forest("Forest", forestLocations, [], [], 2, 6), new River("River", riverLocations, [], [], 3, 6),
             new Road("Road", [], [], [], 0, 5), new Forest("Forest", forestLocations, [], [], 1, 5), new River("River", riverLocations, [], [], 2, 5),
             new Forest("Forest", forestLocations, [], [], -1, 4), new Road("Road", [], [], [], 0, 4), new River("River", riverLocations, [], [], 1, 4),
             new Forest("Forest", forestLocations, [], [], -1, 3), new Bridge("Bridge", riverLocations, [], [], 0, 3), new Forest("Forest", forestLocations, [], [], 1, 3), new Forest("Forest", forestLocations, [], [], 2, 3), new Forest("Forest", forestLocations, [], [], 3, 3),
