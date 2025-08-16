@@ -167,7 +167,6 @@ export class Character {
         personality: number,
         luck: number,
         gold: number,
-        // No need to pass weapon, chest, inventory to constructor if they are initialized after
     ) {
         this.name = name;
         this.type = type;
@@ -195,8 +194,6 @@ export class Character {
         this.charisma = charisma;
         this.personality = personality;
         this.luck = luck;
-        // Do NOT initialize weapon, chest, inventory here if they're coming from plainCharacter,
-        // as they will be overwritten anyway. Or initialize with minimal defaults.
     }
 }
 export class Construct extends Character {
@@ -276,18 +273,18 @@ export class Hero extends Humanoid {
         const currentXP = 0;
         const maxXP = 50;
         const agility = 10
-        const constitution = 10;
+        const constitution = 12;
         const dexterity = 10;
         const endurance = 10;
-        const strength = 10;
-        const intelligence = 10;
+        const strength = 12;
+        const intelligence = 12;
         const perception = 10;
         const willpower = 10;
-        const wisdom = 10;
+        const wisdom = 12;
         const attractiveness = 10;
-        const charisma = 10;
+        const charisma = 12;
         const personality = 10;
-        const luck = 10;
+        const luck = 15;
         const gold = 10;
         super(name, maxHP, currentHP, maxMP, currentMP, maxSP, currentSP, level, currentXP, maxXP,
             agility, constitution, dexterity, endurance, strength, intelligence, perception, willpower, wisdom, attractiveness, charisma, personality, luck,
@@ -336,8 +333,8 @@ export class Cow extends Beast {
     constructor() {
         const name = "Cow";
         const subType = "Cow"
-        const maxHP = 20;
-        const currentHP = 20;
+        const maxHP = 30;
+        const currentHP = 30;
         const maxMP = 0;
         const currentMP = 0;
         const maxSP = 10;
@@ -345,20 +342,19 @@ export class Cow extends Beast {
         const level = 5;
         const currentXP = 25;
         const maxXP = 50;
-        const agility = 10
-        const constitution = 15;
-        const dexterity = 10;
-        const endurance = 10;
-        const strength = 15;
-        const intelligence = 10;
+        const agility = 8
+        const constitution = 18;
+        const dexterity = 8;
+        const endurance = 15;
+        const strength = 18;
+        const intelligence = 5;
         const perception = 10;
         const willpower = 10;
         const wisdom = 10;
-        const attractiveness = 10;
-        const charisma = 10;
+        const attractiveness = 1;
+        const charisma = 1;
         const personality = 10;
-        const luck = 10;
-
+        const luck = 5;
         const gold = 0;
         super(name, subType, maxHP, currentHP, maxMP, currentMP, maxSP, currentSP, level, currentXP, maxXP,
             agility, constitution, dexterity, endurance, strength, intelligence, perception, willpower, wisdom, attractiveness, charisma, personality, luck,
@@ -373,24 +369,24 @@ export class Dog extends Beast {
         const subType = "Dog"
         const maxHP = 10;
         const currentHP = 10;
-        const maxMP = 10;
-        const currentMP = 10;
+        const maxMP = 0;
+        const currentMP = 0;
         const maxSP = 10;
         const currentSP = 10;
         const level = 1;
         const currentXP = 0;
         const maxXP = 50;
-        const agility = 10
+        const agility = 15
         const constitution = 10;
         const dexterity = 10;
-        const endurance = 10;
-        const strength = 10;
-        const intelligence = 10;
-        const perception = 10;
-        const willpower = 10;
+        const endurance = 12;
+        const strength = 12;
+        const intelligence = 8;
+        const perception = 15;
+        const willpower = 12;
         const wisdom = 10;
         const attractiveness = 10;
-        const charisma = 10;
+        const charisma = 15;
         const personality = 10;
         const luck = 10;
         const gold = 0;
@@ -406,29 +402,29 @@ export class Rat extends Beast {
     constructor() {
         const name = "Rat";
         const subType = "Rat"
-        const maxHP = 5;
-        const currentHP = 5;
+        const maxHP = 3;
+        const currentHP = 3;
         const maxMP = 0;
         const currentMP = 0;
-        const maxSP = 5;
-        const currentSP = 5;
+        const maxSP = 15;
+        const currentSP = 15;
         const level = 1;
         const currentXP = 5;
         const maxXP = 50;
-        const agility = 10
-        const constitution = 10;
-        const dexterity = 10;
-        const endurance = 10;
+        const agility = 15
+        const constitution = 8;
+        const dexterity = 12;
+        const endurance = 15;
         const strength = 5;
-        const intelligence = 10;
-        const perception = 10;
-        const willpower = 10;
-        const wisdom = 10;
-        const attractiveness = 10;
-        const charisma = 10;
-        const personality = 10;
+        const intelligence = 8;
+        const perception = 12;
+        const willpower = 8;
+        const wisdom = 5;
+        const attractiveness = 1;
+        const charisma = 1;
+        const personality = 1;
         const luck = 10;
-        const gold = 5;
+        const gold = 0;
         super(name, subType, maxHP, currentHP, maxMP, currentMP, maxSP, currentSP, level, currentXP, maxXP,
             agility, constitution, dexterity, endurance, strength, intelligence, perception, willpower, wisdom, attractiveness, charisma, personality, luck,
             gold)
@@ -440,28 +436,28 @@ export class Wolf extends Beast {
     constructor() {
         const name = "Wolf";
         const subType = "Wolf"
-        const maxHP = 10;
-        const currentHP = 10;
-        const maxMP = 10;
-        const currentMP = 10;
-        const maxSP = 10;
-        const currentSP = 10;
+        const maxHP = 15;
+        const currentHP = 15;
+        const maxMP = 0;
+        const currentMP = 0;
+        const maxSP = 15;
+        const currentSP = 15;
         const level = 1;
         const currentXP = 10;
         const maxXP = 50;
-        const agility = 10
+        const agility = 12
         const constitution = 10;
-        const dexterity = 10;
-        const endurance = 10;
-        const strength = 10;
-        const intelligence = 10;
-        const perception = 10;
-        const willpower = 10;
+        const dexterity = 12;
+        const endurance = 15;
+        const strength = 15;
+        const intelligence = 8;
+        const perception = 15;
+        const willpower = 15;
         const wisdom = 10;
-        const attractiveness = 10;
-        const charisma = 10;
+        const attractiveness = 5;
+        const charisma = 5;
         const personality = 10;
-        const luck = 10;
+        const luck = 5;
         const gold = 0;
         super(name, subType, maxHP, currentHP, maxMP, currentMP, maxSP, currentSP, level, currentXP, maxXP,
             agility, constitution, dexterity, endurance, strength, intelligence, perception, willpower, wisdom, attractiveness, charisma, personality, luck,
@@ -495,7 +491,7 @@ export class Undead extends Character {
         luck: number,
         gold: number) {
         const type = "Undead"
-        super(name,type, subType, maxHP, currentHP, maxMP, currentMP, maxSP, currentSP, level, currentXP, maxXP,
+        super(name, type, subType, maxHP, currentHP, maxMP, currentMP, maxSP, currentSP, level, currentXP, maxXP,
             agility, constitution, dexterity, endurance, strength, intelligence, perception, willpower, wisdom, attractiveness, charisma, personality, luck,
             gold)
     }
@@ -504,29 +500,29 @@ export class BasicSkeleton extends Undead {
     constructor() {
         const name = "Skeleton";
         const subType = "Skeleton"
-        const maxHP = 10;
-        const currentHP = 10;
-        const maxMP = 10;
-        const currentMP = 10;
+        const maxHP = 8;
+        const currentHP = 8;
+        const maxMP = 0;
+        const currentMP = 0;
         const maxSP = 10;
         const currentSP = 10;
         const level = 1;
         const currentXP = 10;
         const maxXP = 50;
-        const agility = 10
-        const constitution = 10;
-        const dexterity = 10;
+        const agility = 12
+        const constitution = 15;
+        const dexterity = 12;
         const endurance = 10;
         const strength = 10;
-        const intelligence = 10;
+        const intelligence = 5;
         const perception = 10;
-        const willpower = 10;
-        const wisdom = 10;
-        const attractiveness = 10;
-        const charisma = 10;
-        const personality = 10;
+        const willpower = 15;
+        const wisdom = 5;
+        const attractiveness = 1;
+        const charisma = 1;
+        const personality = 1;
         const luck = 10;
-        const gold = 5;
+        const gold = 0;
         super(name, subType, maxHP, currentHP, maxMP, currentMP, maxSP, currentSP, level, currentXP, maxXP,
             agility, constitution, dexterity, endurance, strength, intelligence, perception, willpower, wisdom, attractiveness, charisma, personality, luck,
             gold)
@@ -539,29 +535,29 @@ export class BasicZombie extends Undead {
     constructor() {
         const name = "Zombie";
         const subType = "Zombie"
-        const maxHP = 10;
-        const currentHP = 10;
-        const maxMP = 10;
-        const currentMP = 10;
+        const maxHP = 20;
+        const currentHP = 20;
+        const maxMP = 0;
+        const currentMP = 0;
         const maxSP = 10;
         const currentSP = 10;
         const level = 1;
         const currentXP = 10;
         const maxXP = 50;
-        const agility = 10
-        const constitution = 10;
-        const dexterity = 10;
-        const endurance = 10;
-        const strength = 10;
-        const intelligence = 10;
-        const perception = 10;
-        const willpower = 10;
-        const wisdom = 10;
-        const attractiveness = 10;
-        const charisma = 10;
-        const personality = 10;
+        const agility = 5
+        const constitution = 15;
+        const dexterity = 5;
+        const endurance = 15;
+        const strength = 12;
+        const intelligence = 1;
+        const perception = 8;
+        const willpower = 15;
+        const wisdom = 1;
+        const attractiveness = 1;
+        const charisma = 1;
+        const personality = 1;
         const luck = 10;
-        const gold = 5;
+        const gold = 0;
         super(name, subType, maxHP, currentHP, maxMP, currentMP, maxSP, currentSP, level, currentXP, maxXP,
             agility, constitution, dexterity, endurance, strength, intelligence, perception, willpower, wisdom, attractiveness, charisma, personality, luck,
             gold)

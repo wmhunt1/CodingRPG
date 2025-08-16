@@ -21,3 +21,17 @@ export function healCharacter(char: Character, healValue: number) {
     }
     return char
 }
+export function restoreMP(char: Character, restoreValue: number) {
+    char.currentMP += restoreValue;
+    if (char.currentMP > char.maxMP) {
+        char.currentMP = char.maxMP;
+    }
+    return char
+}
+export function restoreSP(char: Character, restoreValue: number) {
+    char.currentSP += restoreValue;
+    if (char.currentSP > char.maxSP) {
+        char.currentSP = char.maxSP;
+    }
+    return char
+}
