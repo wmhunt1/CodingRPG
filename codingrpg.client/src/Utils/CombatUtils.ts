@@ -4,17 +4,8 @@ import { Character, Hero } from "../Models/CharacterModel"; // Assuming Characte
 import { Item, OffHandWeapon, Shield } from "../Models/ItemModel";
 import { Spell } from "../Models/SpellModel";
 import { addItemToInventory, removeItemFromInventory } from "./InventoryUtils";
-import {  updateQuestProgress } from "./QuestUtils";
+import { updateQuestProgress } from "./QuestUtils";
 
-/**
- * Applies a physical attack from an attacker to a target.
- * Calculates damage based on the attacker's strength and weapon power versus the target's protection.
- * @param hero The hero performing the attack (for quest tracking purposes).
- * @param attacker The character performing the attack.
- * @param target The character being attacked.
- * @param addGameLog The function to log combat messages.
- * @returns The updated target character.
- */
 export const applyAttack = (hero: Character, attacker: Character, target: Character, addGameLog: (message: string) => void): Character => {
     const hitChance = 0.85;
     const hitRoll = Math.random();
@@ -64,35 +55,30 @@ export const applyAttack = (hero: Character, attacker: Character, target: Charac
     }
 };
 
-/**
- * Casts a spell from a hero on a target.
- * @param hero The hero casting the spell.
- * @param target The character being affected by the spell.
- * @param spell The spell being cast.
- * @param addGameLog The function to log combat messages.
- * @returns The updated target character.
- */
-export const castSpell = (hero: Character, target: Character, spell: Spell, addGameLog: (message: string) => void): Character => {
-    const updatedTarget = { ...target };
-    spell.cast(hero, updatedTarget); // Assuming spell.cast modifies the target in place
-    if (spell.subType === "Healing") {
-        addGameLog(`${hero.name} casts ${spell.name} on ${target.name}, healing ${spell.spellValue} HP`);
-    }
-    if (spell.subType === "Damaging") {
-        addGameLog(`${hero.name} fires a ${spell.name} at ${target.name}, dealing ${spell.spellValue} DMG`);
-    }
-    // Return the updated target character.
-    return updatedTarget;
-}
+export const castSpell = (hero: Character, targets: Character[], spell: Spell, addGameLog: (message: string) => void): (Character[]) => {
 
-/**
- * Uses an item from a hero on a target.
- * @param hero The hero using the item.
- * @param target The character being affected by the item.
- * @param item The item being used.
- * @param addGameLog The function to log combat messages.
- * @returns The updated target character.
- */
+    const updatedTargets: Character[] = [];
+    console.log(targets)
+    if (hero.currentMP >= spell.manaCost) {
+        hero.currentMP -= spell.manaCost;
+        const { targets: updatedTargetArray } = spell.cast(hero, targets);
+        updatedTargets.push(updatedTargetArray[0]);
+
+        // Log messages for the whole group
+        console.log(spell.subType)
+        if (spell.type === "Healing") {
+            addGameLog(`${hero.name} casts ${spell.name} on ${targets.map(t => t.name).join(', ')}, healing ${spell.spellValue} HP`);
+        }
+        if (spell.type === "Damaging") {
+            addGameLog(`${hero.name} fires a ${spell.name} at ${targets.map(t => t.name).join(', ')}, dealing ${spell.spellValue} DMG`);
+        }
+    } else {
+        addGameLog(`${hero.name} does not have enough mana to cast ${spell.name}!`);
+    }
+
+    return updatedTargets
+};
+
 export const useItem = (hero: Character, target: Character, item: Item, addGameLog: (message: string) => void): Character => {
     removeItemFromInventory(hero.inventory, item, 1);
     const updatedTarget = { ...target };
@@ -102,17 +88,6 @@ export const useItem = (hero: Character, target: Character, item: Item, addGameL
     return updatedTarget;
 }
 
-/**
- * Executes a single round of combat, handling turns for heroes and enemies.
- * @param heroes The array of heroes in combat.
- * @param enemies The array of enemies in combat.
- * @param addGameLog The function to log combat messages.
- * @param action The action the first hero will take.
- * @param target The character targeted by the first hero.
- * @param item The item to use, if the action is "Item".
- * @param spell The spell to cast, if the action is "Spell".
- * @returns An object containing the updated arrays of heroes and enemies.
- */
 export const executeCombatRound = (
     heroes: Hero[],
     enemies: Character[],
@@ -133,7 +108,7 @@ export const executeCombatRound = (
     const turns = [
         () => { // Heroes' Turn
             if (updatedHeroes.length > 0) {
-            
+
                 if (firstHero.currentHP > 0) {
                     if (action === 'Attack') {
                         const targetEnemy = updatedEnemies.find((enemy) => enemy.name === target.name);
@@ -155,15 +130,45 @@ export const executeCombatRound = (
                         }
                     }
                     else if (action === "Spell" && spell) {
-                        // Find the target in either the hero or enemy array
-                        const targetAllyIndex = updatedHeroes.findIndex((hero) => hero.name === target.name);
-                        const targetEnemyIndex = updatedEnemies.findIndex((enemy) => enemy.name === target.name);
-
-                        if (targetAllyIndex !== -1) {
-                            updatedHeroes[targetAllyIndex] = castSpell(firstHero, updatedHeroes[targetAllyIndex], spell, addGameLog) as Hero;
+                        let targets: Character[] = [];
+                        console.log("Spell")
+                        // Determine targets based on spell subType and the selected target
+                        if (spell.subType === "Single-Target") {
+                            if (!target) {
+                                addGameLog(`${firstHero.name} tried to cast a single-target spell without a target!`);
+                                return;
+                            }
+                            targets.push(target);
+                            console.log(targets)
+                        } else if (spell.subType === "Multi-Target") {
+                            // Decide to target allies or enemies based on another property, like spell.school or spell.type
+                            // For example, if the spell is "Healing", target allies; otherwise, target enemies.
+                            if (spell.type === "Healing") {
+                                targets = updatedHeroes.filter(h => h.currentHP > 0);
+                            } else {
+                                targets = updatedEnemies.filter(e => e.currentHP > 0);
+                                console.log(targets)
+                            }
+                        } else {
+                            addGameLog(`Invalid spell sub-type for ${spell.name}.`);
+                            return;
                         }
-                        if (targetEnemyIndex !== -1) {
-                            updatedEnemies[targetEnemyIndex] = castSpell(firstHero, updatedEnemies[targetEnemyIndex], spell, addGameLog);
+
+                        // Call castSpell with the determined targets array
+                        const updatedTargets = castSpell(firstHero, targets, spell, addGameLog);
+
+                        // Update the hero/enemy arrays based on the returned characters
+                        if (Array.isArray(updatedTargets)) {
+                            updatedTargets.forEach(t => {
+                                const heroIndex = updatedHeroes.findIndex(h => h.name === t.name);
+                                if (heroIndex !== -1) {
+                                    updatedHeroes[heroIndex] = t as Hero;
+                                }
+                                const enemyIndex = updatedEnemies.findIndex(e => e.name === t.name);
+                                if (enemyIndex !== -1) {
+                                    updatedEnemies[enemyIndex] = t;
+                                }
+                            });
                         }
                     }
                     else {

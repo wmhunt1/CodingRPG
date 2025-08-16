@@ -1,7 +1,7 @@
 
 import { Character } from "./CharacterModel.ts"
 import { type DialogueNode } from "./DialogueNodeModel.ts"
-import { CombatEncounter, CowCombatEncounter, RatCellarCombatEncounter } from "./EncounterModel.ts"
+import { BasicSkeletonCombatEncounter, BasicZombieCombatEncounter, CombatEncounter, CowCombatEncounter, RatCellarCombatEncounter } from "./EncounterModel.ts"
 import { FarmShop, GeneralShop, InnShop, MagicShop, PotionShop, ShopModel, SmithShop, TempleShop } from "./ShopModel.ts"
 import { ButterChurn, CookingRange, DairyCow, FlaxField, Loom, Mill, MinnowFishingSpot, RiverWater, SalmonFishingSpot, SkillNodeModel, SpinningWheel, TroutFishingSpot, Well, WheatField, WoodTree } from "./SkillNodeModel.ts"
 export class Location {
@@ -16,6 +16,20 @@ export class CombatLocation extends Location {
     constructor(name: string, combatEncounter: CombatEncounter) {
         super(name)
         this.combatEncounter = combatEncounter;
+    }
+}
+export class BasicSkeletonCombatEncounterLocation extends CombatLocation {
+    constructor() {
+        const name = "A Clatter of Basic Skeletons (Crypt)"
+        const combatEncounter: CombatEncounter = new BasicSkeletonCombatEncounter()
+        super(name, combatEncounter)
+    }
+}
+export class BasicZombieCombatEncounterLocation extends CombatLocation {
+    constructor() {
+        const name = "A Horde of Basic Zombies (Graveyard)"
+        const combatEncounter: CombatEncounter = new BasicZombieCombatEncounter()
+        super(name, combatEncounter)
     }
 }
 export class CowCombatLocation extends CombatLocation {

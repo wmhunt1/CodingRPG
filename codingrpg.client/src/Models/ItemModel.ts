@@ -488,8 +488,10 @@ export class NaturalWeapon extends Weapon {
 }
 export const bareFist = new NaturalWeapon("Bare Fist", "Weapon", "Natural", 0, 1, "Your own two fists", "Weapon", 1)
 export const charge = new NaturalWeapon("Charge", "Weapon", "Natural", 0, 1, "A powerful charge", "Weapon", 1)
-export const dogBite = new NaturalWeapon("Dog Bite", "Weapon", "Natural", 0, 1, "A Dog's powerful jaws", "Weapon", 5)
+export const claw = new NaturalWeapon("Claw", "Weapon", "Natural", 0, 1, "A slash made with powerfful claws", "Weapon", 1)
+export const dogBite = new NaturalWeapon("Dog Bite", "Weapon", "Natural", 0, 1, "A Dog's powerful jaws", "Weapon", 1)
 export const ratBite = new NaturalWeapon("Rat Bite", "Weapon", "Natural", 0, 1, "A Rat's sharp teeth", "Weapon", 1)
+export const wolfBite = new NaturalWeapon("Wolf Bite", "Weapon", "Natural", 0, 1, "A Wolf's powerful jaws", "Weapon", 1)
 export class OneHandedWeapon extends Weapon {
     constructor(name: string, type: string = "1H Weapon", subType: string = "N/A", quantity: number, cost: number, description: string, slot: string = "Weapon", power: number) {
         super(name, type, subType, quantity, cost, description, slot, power);
@@ -705,7 +707,9 @@ export class Leather extends Resource {
         return super.use(user);
     }
 }
+export const bearFur = new Leather("Bear Fur", "Resource", "Leather", 1, 10, "Thick fur from a bear")
 export const cowLeather = new Leather("Leather", "Resource", "Leather", 1, 1, "Leather from a cow")
+export const wolfFur = new Leather("Wolf Fur", "Resource", "Leather", 1, 5, "Thick fur from a wolf")
 export const wool = new Leather("Wool", "Resource", "Leather", 1, 1, "Some soft woll")
 export class Logs extends Resource {
     constructor(name: string, type: string = "Resource", subType: string = "Logs", quantity: number, cost: number, description: string) {

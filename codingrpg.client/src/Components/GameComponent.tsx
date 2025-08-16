@@ -43,12 +43,14 @@ import { instantiateCharacterItems } from "../Utils/CharacterUtils"
 import { calculateNewLocation } from "../Utils/MovementUtil"
 import { acceptQuest, checkQuestProgress } from "../Utils/QuestUtils";
 import { QuestManager } from "../Models/QuestManager";
+import Abilities from "./AbilitiesComponent";
 
 
 // Define possible game states for better readability and type safety
 type GameState =
     | "MainMenu"
     | "Game"
+    | "Abilities"
     | "CharacterSheet"
     | "Combat"
     | "Dialogue"
@@ -68,7 +70,7 @@ type AppLocation = CombatLocation | ShopLocation | SkillLocation | Location;
 function Game() {
     const [activeScreen, setActiveScreen] = useState<GameState>("MainMenu");
     const [area, setArea] = useState<AreaModel>(new StartingVillage());
-    const [currentShop, setCurrentShop] = useState<ShopModel>(new ShopModel("", [], [], new NoCombatEncounter(),[]))
+    const [currentShop, setCurrentShop] = useState<ShopModel>(new ShopModel("", [], [], new NoCombatEncounter(), []))
     const [currentSkillNode, setCurrentSkillNode] = useState<SkillNodeModel>(new SkillNodeModel("Empty", []))
     const [hero, setHero] = useState<Hero>(new Hero("Hero"));
     const [enemies, setEnemies] = useState<CombatEncounter>(new CombatEncounter("", []))
@@ -116,9 +118,14 @@ function Game() {
     }, []);
 
     const handleCombat = useCallback((enemies: CombatEncounter) => {
-        setActiveScreen("Combat");
-        setEnemies(enemies)
-    }, [setEnemies]);
+        if (hero.currentHP > 0) {
+            setActiveScreen("Combat");
+            setEnemies(enemies)
+        }
+        else {
+            addGameLog("Your health is too low to fight")
+        }
+    }, [setEnemies, hero, addGameLog]);
 
     // The handleDialogue function now accepts a function that generates dialogue
     const handleDialogue = useCallback((dialogueGenerator: (hero: Hero, addGameLog: (message: string) => void) => DialogueNode[]) => {
@@ -243,6 +250,9 @@ function Game() {
         setHero(updatedHero as Character);
     }, []);
 
+    const showAbilities = useCallback(() => {
+        setActiveScreen("Abilities");
+    }, []);
     const showCharacterSheet = useCallback(() => {
         setActiveScreen("CharacterSheet");
     }, []);
@@ -265,6 +275,9 @@ function Game() {
     return (
         <div id="game">
             <div className="game-screen">
+                {activeScreen === "Abilities" && (
+                    <Abilities hero={hero} back={() => setActiveScreen("Game")} />
+                )}
                 {activeScreen === "CharacterSheet" && (
                     <CharacterSheet hero={hero} back={() => setActiveScreen("Game")} />
                 )}
@@ -295,7 +308,7 @@ function Game() {
                     // This is the new grid container for the "Game" screen
                     <div className="game-layout-grid">
                         <div className="toolbar">
-                            <Toolbar characterSheet={() => showCharacterSheet()} equipment={() => showEquipment()} inventory={() => showInventory()} journal={() => showJournal()} skill={() => showSkillBook()} spell={() => showSpellBook()} mainMenu={() => setActiveScreen("MainMenu")} />
+                            <Toolbar ability={() => showAbilities()} characterSheet={() => showCharacterSheet()} equipment={() => showEquipment()} inventory={() => showInventory()} journal={() => showJournal()} skill={() => showSkillBook()} spell={() => showSpellBook()} mainMenu={() => setActiveScreen("MainMenu")} />
                         </div>
                         <div className="game-content-left">
                             <PartySidebar hero={hero} party={party} />
@@ -340,12 +353,15 @@ function Game() {
                             </div>
                             <div>
                                 <h3>People</h3>
-                                {area.conversations.map((dialogueGenerator, index) => (
-                                    // Pass the dialogue function, not the result
-                                    <button key={index} className="area-button" onClick={() => handleDialogue(dialogueGenerator)}>
-                                        Speak with {dialogueGenerator(hero, addGameLog)[0].character}
-                                    </button>
-                                ))}
+                                {availableQuests.length > 0 ? (
+                                    area.conversations.map((dialogueGenerator, index) => (
+                                        // Pass the dialogue function, not the result
+                                        <button key={index} className="area-button" onClick={() => handleDialogue(dialogueGenerator)}>
+                                            Speak with {dialogueGenerator(hero, addGameLog)[0].character}
+                                        </button>
+                                    ))
+                                ) : (<p>No one is here</p>
+                                )}
                             </div>
                             {/*<div>*/}
                             {/*    <h3>Test Features</h3>*/}

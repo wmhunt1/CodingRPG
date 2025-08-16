@@ -1,3 +1,4 @@
+import { Ability } from "./AbilityModel.ts"
 import {
     Back, bareBack, bareChest, bareFeet, bareFinger, bareFist, bareHands, bareHead, bareLegs, bareNeck, bareShoulders, bareWaist, bareWrists,
     bronzeSpear, bronzeShield,
@@ -8,11 +9,11 @@ import {
     Neck, OffHand, pants,
     ratBite, rawBeef, Ring, shoes, ShoulderArmor,
     tunic,
-    WaistArmor, Weapon, woodenShield, WristArmor
+    WaistArmor, Weapon, wolfBite, wolfFur, woodenShield, WristArmor,
 } from './ItemModel.ts';
 import { Quest } from "./QuestModel.ts"
 import { cookingSkill, farmingSkill, fishingSkill, leatherWorkingSkill, miningSkill, Skill, smithingSkill, tailoringSkill, woodcuttingSkill } from "./SkillModel.ts"
-import { Spell } from "./SpellModel.ts"
+import { magicBoltSpell, Spell } from "./SpellModel.ts"
 
 export class Character {
     name: string = "";
@@ -79,9 +80,12 @@ export class Character {
     //abilities:
     //skills:
     party: Character[] = []
+    //to store party member progress if they leave the party
+    inactiveParty: Character[] = []
     journal: Quest[] = []
     skillBook: Skill[] = []
     spellBook: Spell[] = []
+    abilities: Ability[] = []
     constructor(
         name: string,
         type: string,
@@ -169,7 +173,7 @@ export class Hero extends Humanoid {
         this.inventory = []
         this.party = [loyalHound]
         this.skillBook = [cookingSkill, farmingSkill, fishingSkill, leatherWorkingSkill, miningSkill, smithingSkill, tailoringSkill, woodcuttingSkill]
-        this.spellBook = []
+        this.spellBook = [magicBoltSpell]
         this.mainHand = club;
         this.offHand = woodenShield;
     }
@@ -250,6 +254,26 @@ export class Rat extends Beast {
         super(name, subType, maxHP, currentHP, maxMP, currentMP, maxSP, currentSP, level, currentXP, maxXP, strength, gold)
         this.mainHand = ratBite;
         this.inventory = [cheese]
+    }
+}
+export class Wolf extends Beast {
+    constructor() {
+        const name = "Wolf";
+        const subType = "Wolf"
+        const maxHP = 10;
+        const currentHP = 10;
+        const maxMP = 10;
+        const currentMP = 10;
+        const maxSP = 10;
+        const currentSP = 10;
+        const level = 1;
+        const currentXP = 10;
+        const maxXP = 50;
+        const strength = 10;
+        const gold = 0;
+        super(name, subType, maxHP, currentHP, maxMP, currentMP, maxSP, currentSP, level, currentXP, maxXP, strength, gold)
+        this.mainHand = wolfBite;
+        this.inventory = [wolfFur]
     }
 }
 export class Undead extends Character {

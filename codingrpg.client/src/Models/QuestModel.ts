@@ -45,4 +45,6 @@ export class SlayerQuest extends Quest {
         super(id, name, status, type, description, objective, target, targetProgress, xpReward, goldReward, itemReward)
     }
 }
+export const slayBasicSkeletonQuest1 = new SlayerQuest("slayBasicSkeletonQuest1", "Skeleton Hunt", "Not Started", "Slay", "Slay the skeletons in the crypt", "Basic Skeleton", 5, 0, 50, 10, [])
+export const slayBasicZombieQuest1 = new SlayerQuest("slayBasicZombieQuest1", "Zombie Hunt", "Not Started", "Slay", "Slay the zombies in the graveyard", "Basic Zombie", 5, 0, 50, 10, [])
 export const slayRatQuest1 = new SlayerQuest("slayRatQuest1", "Rat Extermination", "Not Started", "Slay", "Exterminate the rats in the inn's cellar", "Rat", 3, 0, 50, 10, [beer])

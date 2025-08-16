@@ -1,23 +1,23 @@
 import '../StyleSheets/GameStyle.css';
 import { Character } from "../Models/CharacterModel";
-import { Spell } from "../Models/SpellModel"
+//import { Ability } from "../Models/SpellModel"
 import { useState } from "react"
 
-interface SpellBookProps {
+interface AbilitiesProps {
     hero: Character;
     back: () => void
-    addGameLog: (message: string) => void;
+    //addGameLog: (message: string) => void;
 }
-function SpellBook({ hero, back, addGameLog }: SpellBookProps) {
+function Abilities({ hero, back, /*addGameLog*/ }: AbilitiesProps) {
     const [currentTarget, setCurrentTarget] = useState(hero);
-    function handleCastSpell(spellToCast: Spell, caster: Character, target: Character) {
-        spellToCast.cast(caster, target)
-        addGameLog(`${caster.name} casts ${spellToCast.name} on ${target.name}`)
-    }
+    //function handleCastSpell(spellToCast: Spell, caster: Character, target: Character) {
+    //    spellToCast.cast(caster, target)
+    //    addGameLog(`${caster.name} casts ${spellToCast.name} on ${target.name}`)
+    //}
     return (
         <div className="inventory-layout-grid" id="character-sheet">
             <div className="toolbar">
-                <h2>{currentTarget.name}'s SpellBook</h2>
+                <h2>{currentTarget.name}'s Abilities</h2>
             </div>
             <div className="inventory-content-left">
                 <h3>Party</h3>
@@ -32,20 +32,20 @@ function SpellBook({ hero, back, addGameLog }: SpellBookProps) {
             </div>
             <div className="inventory-content-main">
                 <div className="inventory-display-area">
-                    {hero.spellBook.length > 0 ? (
+                    {currentTarget.abilities.length > 0 ? (
                         <div className="inventory-items">
                             {
-                                hero.spellBook
+                                currentTarget.abilities
                                     .sort((a, b) => a.name.localeCompare(b.name))
-                                    .map((spell, index) => <div key={index}>
-                                        <h3>{spell.name} - {spell.school}</h3>
-                                        <p>{spell.description}</p>
-                                        {spell.subType !== "Damaging" ? <button className="use-equip-button" onClick={() => handleCastSpell(spell, hero, currentTarget)}>Cast</button> : <></>}
+                                    .map((abil, index) => <div key={index}>
+                                        <h3>{abil.name}</h3>
+                                        <p>{abil.description}</p>
+                                        {/*       {abil.subType !== "Damaging" ? <button className="use-equip-button" onClick={() => handleCastSpell(spell, hero, currentTarget)}>Cast</button> : <></>}*/}
                                     </div>)
                             }
                         </div>
                     ) : (
-                        <div><p>Your SpellBook is empty</p></div>
+                        <div><p>You have no abilties</p></div>
                     )}
                 </div>
             </div>
@@ -61,4 +61,4 @@ function SpellBook({ hero, back, addGameLog }: SpellBookProps) {
     );
 }
 
-export default SpellBook;
+export default Abilities;

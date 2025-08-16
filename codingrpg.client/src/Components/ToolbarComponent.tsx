@@ -1,6 +1,7 @@
 import '../StyleSheets/GameStyle.css';
 
 interface ToolbarProps {
+    ability: () => void;
     characterSheet: () => void;
     equipment: () => void;
     inventory: () => void;
@@ -9,10 +10,10 @@ interface ToolbarProps {
     skill: () => void;
     spell: () => void;
 }
-function Toolbar({ characterSheet, equipment, inventory, journal, mainMenu,skill,spell }: ToolbarProps) {
+function Toolbar({ ability, characterSheet, equipment, inventory, journal, mainMenu, skill, spell }: ToolbarProps) {
     return (
         <div className="toolbar-options">
-            <button className="toolbar-button">
+            <button className="toolbar-button" onClick={ability}>
                 Abilties
             </button>
             <button className="toolbar-button" onClick={characterSheet}>

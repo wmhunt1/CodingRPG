@@ -6,7 +6,7 @@ import {
     GeneralStoreLocation, InnLocation,
     Location, LoomLocation,
     MagicShopLocation, MillLocation,
-    SmithShopLocation, SpinningWheelLocation,
+    SmithShopLocation, SpinningWheelLocation, TempleShopLocation,
     WellLocation, WheatFieldLocation
 } from './LocationModel.ts';
 import { Quest } from "./QuestModel.ts"
@@ -67,7 +67,7 @@ export class Dungeon extends AreaModel {
 }
 export class Farm extends AreaModel {
     constructor(name: string, quests: Quest[], conversations: ((hero: Character, addGameLog: (message: string) => void) => DialogueNode[])[], x: number, y: number) {
-        const locations: Location[] = [new FarmShopLocation(`${name} Shop`,[]), new ButterChurnLocation(), new CookingRangeLocation(), new CowCombatLocation(), new DairyCowLocation(), new FlaxFieldLocation(), new LoomLocation(), new SpinningWheelLocation(), new WellLocation("Farm Well"), new WheatFieldLocation()]
+        const locations: Location[] = [new FarmShopLocation(`${name} Shop`, []), new ButterChurnLocation(), new CookingRangeLocation(), new CowCombatLocation(), new DairyCowLocation(), new FlaxFieldLocation(), new LoomLocation(), new SpinningWheelLocation(), new WellLocation("Farm Well"), new WheatFieldLocation()]
         super(name, locations, quests, conversations, x, y)
         this.imageSrc = farmImage;
         this.imageAlt = "Farm";
@@ -135,7 +135,7 @@ export class WaterMill extends Structure {
 }
 export class WizardTower extends Structure {
     constructor(name: string, quests: Quest[], conversations: ((hero: Character, addGameLog: (message: string) => void) => DialogueNode[])[], x: number, y: number) {
-        const locations: Location[] = [new MagicShopLocation(name,[])]
+        const locations: Location[] = [new MagicShopLocation(name, [])]
         super(name, locations, quests, conversations, x, y)
         this.imageSrc = wizardTowerImage;
         this.imageAlt = "A wizard hat to represent a wizard tower";
@@ -185,7 +185,7 @@ export class StartingVillage extends Village {
     constructor() {
         const name = "Starting Village"
         //maybe move cellar to inn location
-        const locations: Location[] = [new GeneralStoreLocation("Joe the Trader's",[]), new InnLocation("Dreaming Worker Inn", 5,[getSlayRatQuest1Dialogue]), new SmithShopLocation("Forgeheart Smithy",[]), new WellLocation("Village Well")]
+        const locations: Location[] = [new InnLocation("Dreaming Worker Inn", 5, [getSlayRatQuest1Dialogue]), new SmithShopLocation("Forgeheart Smithy", []), new GeneralStoreLocation("Joe the Trader's", []), new TempleShopLocation("Village Chapel", []), new WellLocation("Village Well")]
         const conversations: ((hero: Character, addGameLog: (message: string) => void) => DialogueNode[])[] = []
         const quests: Quest[] = []
         const x = 0;

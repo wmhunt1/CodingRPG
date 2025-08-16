@@ -12,8 +12,7 @@ function Journal({ hero, back }: JournalProps) {
                 <h2>{hero.name}'s Journal</h2>
             </div>
             <div className="inventory-content-left">
-                <h3>Placeholder</h3>
-                <p>Placeholder</p>
+                <p>Put quest type filters here. Completed etc</p>
             </div>
             <div className="inventory-content-main">
                 <div className="inventory-display-area">
