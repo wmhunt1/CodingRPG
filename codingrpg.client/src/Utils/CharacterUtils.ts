@@ -125,7 +125,19 @@ export function instantiateCharacterItems(plainCharacter: any): Character {
         plainCharacter.level,
         plainCharacter.currentXP,
         plainCharacter.maxXP,
+        plainCharacter.agility,
+        plainCharacter.constitution,
+        plainCharacter.dexterity,
+        plainCharacter.endurance,
         plainCharacter.strength,
+        plainCharacter.intelligence,
+        plainCharacter.perception,
+        plainCharacter.willpower,
+        plainCharacter.wisdom,
+        plainCharacter.attractiveness,
+        plainCharacter.charisma,
+        plainCharacter.personality,
+        plainCharacter.luck,
         plainCharacter.gold
     );
 

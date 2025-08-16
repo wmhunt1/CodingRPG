@@ -7,7 +7,9 @@ import { addItemToInventory, removeItemFromInventory } from "./InventoryUtils";
 import { updateQuestProgress } from "./QuestUtils";
 
 export const applyAttack = (hero: Character, attacker: Character, target: Character, addGameLog: (message: string) => void): Character => {
-    const hitChance = 0.85;
+    const totalAttackerAgility = (attacker.agility + attacker.agilityBonus - attacker.agilityPenalty + attacker.agilityTempBonus - attacker.agilityTempPenalty) / 100
+    const totalTargetAgility = (target.agility + target.agilityBonus - target.agilityPenalty + target.agilityTempBonus - target.agilityTempPenalty) / 100
+    const hitChance = 0.85 + totalAttackerAgility - totalTargetAgility;
     const hitRoll = Math.random();
 
     if (hitRoll <= hitChance) {
@@ -28,13 +30,30 @@ export const applyAttack = (hero: Character, attacker: Character, target: Charac
         const totalProtection = Math.floor((target.head.protection + target.shoulders.protection + target.chest.protection + target.hands.protection + target.wrists.protection + target.waist.protection + target.legs.protection + target.feet.protection) / 8) + shieldBonus;
 
         let damage = totalPower - totalProtection;
-        if (damage < 0) {
-            damage = 0;
+
+        const totalAttackerLuck = (attacker.luck + attacker.luckBonus - attacker.luckPenalty + attacker.luckTempBonus - attacker.luckTempPenalty) / 100;
+        const totalTargetLuck = (target.luck + target.luckBonus - target.luckPenalty + target.luckTempBonus - target.luckTempPenalty)
+
+        const critChance = 0.05 + totalAttackerLuck - totalTargetLuck;
+        const critRoll = Math.random();
+        let isCritical = false;
+
+        // Check for a critical hit
+        if (critRoll <= critChance) {
+            isCritical = true;
+            damage *= 2;
+        }
+
+        // Ensure at least 1 damage is dealt if it's a critical hit or if damage is initially 0
+        if (damage < 1) {
+            damage = 1;
         }
 
         const updatedTarget = { ...target, currentHP: target.currentHP - damage };
 
-        if (damage !== 0) {
+        if (isCritical) {
+            addGameLog(`${attacker.name} lands a critical strike on ${target.name} for ${damage} damage!`);
+        } else if (damage > 0) {
             addGameLog(`${attacker.name} attacks ${target.name} for ${damage} damage!`);
         } else {
             addGameLog(`${attacker.name} attacks ${target.name} but does no damage!`);
