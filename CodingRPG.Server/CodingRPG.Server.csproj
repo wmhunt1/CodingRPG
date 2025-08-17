@@ -22,4 +22,9 @@
     </ProjectReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Classes\" />
+    <Folder Include="JSONDatabase\" />
+  </ItemGroup>
+
 </Project>

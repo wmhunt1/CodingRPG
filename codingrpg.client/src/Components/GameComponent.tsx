@@ -1,5 +1,20 @@
-// Game.tsx
+import { useCallback, useMemo, useState } from "react";
+
+// Model Imports
+import { AreaModel, NotArea, StartingVillage } from "../Models/AreaModel";
+import { Character, Hero } from "../Models/CharacterModel";
+import { type DialogueNode, getRawMinnowQuest1Dialogue } from "../Models/DialogueNodeModel";
+import { DialogueManager } from "../Models/DialogueManager";
+import { CombatEncounter, NoCombatEncounter } from "../Models/EncounterModel";
+import { CombatLocation, Location, ShopLocation, SkillLocation } from "../Models/LocationModel";
+import { ValleyMap } from "../Models/MapModel";
+import { Quest } from "../Models/QuestModel";
+import { ShopModel } from "../Models/ShopModel";
+import { SkillNodeModel } from "../Models/SkillNodeModel";
+import { QuestManager } from "../Models/QuestManager";
+
 // Component Imports
+import AreaMap from "./AreaMapComponent";
 import CharacterSheet from "./CharacterSheetComponent";
 import CombatArena from "./CombatComponent";
 import Compass from "./CompassComponent"
@@ -18,32 +33,18 @@ import SkillBook from "./SkillBookComponent"
 import SkillNode from "./SkillNodeComponent";
 import SpellBook from "./SpellBookComponent"
 import Toolbar from "./ToolbarComponent"
+import Abilities from "./AbilitiesComponent";
 
-// Model Imports
-import { AreaModel, NotArea, StartingVillage } from "../Models/AreaModel"
-import { Character, Hero } from "../Models/CharacterModel";
-// We now import the function, not the dialogue array itself
-import { type DialogueNode, getRawMinnowQuest1Dialogue } from "../Models/DialogueNodeModel"
-import { DialogueManager } from "../Models/DialogueManager"
-import { CombatEncounter, NoCombatEncounter } from "../Models/EncounterModel"
-import { CombatLocation, Location, ShopLocation, SkillLocation } from "../Models/LocationModel"
-import { ValleyMap } from "../Models/MapModel"
-import { Quest } from "../Models/QuestModel"
-import { ShopModel } from "../Models/ShopModel"
-import { SkillNodeModel } from "../Models/SkillNodeModel"
-
-// React Imports
-import { useCallback, useMemo, useState } from "react";
-
-// Stylesheet Imports
+// Style Imports
 import "../StyleSheets/GameStyle.css";
 
 //Util Imports
 import { instantiateCharacterItems } from "../Utils/CharacterUtils"
 import { calculateNewLocation } from "../Utils/MovementUtil"
 import { acceptQuest, checkQuestProgress } from "../Utils/QuestUtils";
-import { QuestManager } from "../Models/QuestManager";
-import Abilities from "./AbilitiesComponent";
+
+
+// Props for the AreaMap component
 
 
 // Define possible game states for better readability and type safety
@@ -89,7 +90,6 @@ function Game() {
         const journalEntry = hero.journal.find(journalQuest => journalQuest.id === quest.id);
         return !journalEntry || journalEntry.status !== "Completed";
     });
-    // --- UPDATED CODE STARTS HERE --
 
     // Create a memoized array of surrounding areas for efficient rendering
     const surroundingAreas = useMemo(() => {
@@ -104,7 +104,6 @@ function Game() {
         return areas;
     }, [area.xCoord, area.yCoord, areaMap.areas]); // Recalculate only when the current area changes
 
-    // --- UPDATED CODE ENDS HERE ---
 
     const addGameLog = useCallback((message: string) => {
         setGameLog((prevLog) => [...prevLog, message]);
@@ -314,19 +313,11 @@ function Game() {
                             <PartySidebar hero={hero} party={party} />
                         </div>
                         <div className="game-content-main">
-                            <div className="area-map">
-                                {/* This is the updated code for rendering the map grid */}
-                                {surroundingAreas.map((surroundingArea, index) => {
-                                    // Determine if the current area in the loop is the player's current location
-                                    const isCurrentLocation = surroundingArea.xCoord === area.xCoord && surroundingArea.yCoord === area.yCoord;
-                                    const imageClassName = `area-image${isCurrentLocation ? ' current-location' : ''}`;
-
-                                    return (
-                                        // The 'area-image-row' divs are no longer needed
-                                        <img key={index} className={imageClassName} src={surroundingArea.imageSrc} alt={surroundingArea.imageAlt} />
-                                    );
-                                })}
-                            </div>
+                            {/* This is where the new AreaMapComponent is used */}
+                            <AreaMap
+                                surroundingAreas={surroundingAreas}
+                                currentArea={area}
+                            />
                         </div>
                         <div className="area-options">
                             <div>
@@ -363,12 +354,6 @@ function Game() {
                                 ) : (<p>No one is here</p>
                                 )}
                             </div>
-                            {/*<div>*/}
-                            {/*    <h3>Test Features</h3>*/}
-                            {/*    <button className="area-button" onClick={() => handleDialogue(getRawMinnowQuest1Dialogue)}>*/}
-                            {/*        Speak with Old Fisherman*/}
-                            {/*    </button>*/}
-                            {/*</div>*/}
                         </div>
                         <div className="game-content-bottom">
                             <div id="area-info">
