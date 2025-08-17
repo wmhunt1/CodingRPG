@@ -1,13 +1,14 @@
 import { useCallback, useMemo, useState } from "react";
 
 // Model Imports
-import { AreaModel, NotArea, StartingVillage } from "../Models/AreaModel";
+import { AreaModel, NotArea,Road, StartingVillage } from "../Models/AreaModel";
 import { Character, Hero } from "../Models/CharacterModel";
 import { type DialogueNode, getRawMinnowQuest1Dialogue } from "../Models/DialogueNodeModel";
 import { DialogueManager } from "../Models/DialogueManager";
+import { DungeonModel } from "../Models/DungeonModel";
 import { CombatEncounter, NoCombatEncounter } from "../Models/EncounterModel";
 import { CombatLocation, Location, ShopLocation, SkillLocation } from "../Models/LocationModel";
-import { ValleyMap } from "../Models/MapModel";
+import { DungeonMap, ValleyMap } from "../Models/MapModel";
 import { Quest } from "../Models/QuestModel";
 import { ShopModel } from "../Models/ShopModel";
 import { SkillNodeModel } from "../Models/SkillNodeModel";
@@ -20,6 +21,7 @@ import CombatArena from "./CombatComponent";
 import Compass from "./CompassComponent"
 import CreateCharacter from "./CreateCharacterComponent";
 import DialogueSystem from "./DialogueSystemComponent";
+import Dungeon from "./DungeonComponent";
 import Equipment from "./EquipmentComponent";
 import Inventory from "./InventoryComponent";
 import Journal from "./JournalComponent";
@@ -55,6 +57,7 @@ type GameState =
     | "CharacterSheet"
     | "Combat"
     | "Dialogue"
+    | "Dungeon"
     | "Equipment"
     | "Inventory"
     | "Journal"
@@ -71,6 +74,7 @@ type AppLocation = CombatLocation | ShopLocation | SkillLocation | Location;
 function Game() {
     const [activeScreen, setActiveScreen] = useState<GameState>("MainMenu");
     const [area, setArea] = useState<AreaModel>(new StartingVillage());
+    const [dungeon, setDungeon] = useState<DungeonModel>(new DungeonModel("Test Dungeon", new DungeonMap("TestDungeon", [new Road("Road", [], [], [], 0, 0),])));
     const [currentShop, setCurrentShop] = useState<ShopModel>(new ShopModel("", [], [], new NoCombatEncounter(), []))
     const [currentSkillNode, setCurrentSkillNode] = useState<SkillNodeModel>(new SkillNodeModel("Empty", []))
     const [hero, setHero] = useState<Hero>(new Hero("Hero"));
@@ -133,6 +137,15 @@ function Game() {
         setCurrentDialogueData(dialogueData);
         setActiveScreen("Dialogue");
     }, [hero, addGameLog]); // Add hero as a dependency
+    const handleDungeon = useCallback((dungeon: DungeonModel) => {
+        if (hero.currentHP > 0) {
+            setDungeon(dungeon);
+            setActiveScreen("Dungeon");
+        }
+        else {
+            addGameLog("Your health is too low to fight")
+        }
+    }, [hero, addGameLog]);
 
     const handleExitGame = useCallback(() => {
         console.log("Exiting Game");
@@ -297,6 +310,16 @@ function Game() {
                             setLastScreen("Game")
                         }} />
                 )}
+                {activeScreen === "Dungeon" && (
+                    <Dungeon 
+                        dungeon={dungeon}
+                        hero={hero}
+                        addGameLog={addGameLog}
+                        back={() => {
+                            setActiveScreen("Game")
+                            setLastScreen("Game")
+                        }} />
+                )}
                 {activeScreen === "Equipment" && (
                     <Equipment hero={hero}
                         back={() => setActiveScreen("Game")}
@@ -353,6 +376,10 @@ function Game() {
                                     ))
                                 ) : (<p>No one is here</p>
                                 )}
+                            </div>
+                            <div>
+                                <h3>Test Features</h3>
+                                <button className="area-button" onClick={() => handleDungeon(dungeon)}>Test Dungeon</button>
                             </div>
                         </div>
                         <div className="game-content-bottom">

@@ -11,10 +11,23 @@ export class MapModel {
         this.areas = areas;
     }
 }
+export class DungeonMap extends MapModel {
+    constructor(name:string,areas:AreaModel[]) {
+        super(name, areas)
+    }
+}
+export class GoblinDungeon1Map extends DungeonMap {
+    constructor() {
+        const name = "Dwarven Mine overrun by goblins"
+        const areas: AreaModel[] = [new Road("Road", [], [], [], 0, 0),]
+        super(name,areas)
+    }
+}
 const forestLocations: Location[] = [new WoodTreeLocation()]
 const graveyardLocations: Location[] = [new BasicSkeletonCombatEncounterLocation(), new BasicZombieCombatEncounterLocation()]
 const riverFishingSpot = [new MinnowFishingSpotLocation(), new SalmonFishingSpotLocation(), new TroutFishingSpotLocation()];
 const riverLocations = [...riverFishingSpot, new RiverWaterLocation()]
+
 export class ValleyMap extends MapModel {
     constructor() {
         const name = "Valley Map"
